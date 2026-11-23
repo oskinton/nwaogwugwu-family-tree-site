@@ -425,6 +425,20 @@ main{flex:1;min-height:0;position:relative;display:flex}
 .maplist li{padding:12px 0;border-top:1px solid var(--line)}
 .mapppl{display:flex;flex-wrap:wrap;gap:0 10px;margin-top:4px}
 .leaflet-container{font-family:var(--body)}
+/* your family */
+.fam{margin:26px 0 0;padding:18px 18px 8px;border:1px solid var(--line);border-radius:16px;background:var(--surface);max-width:46rem}
+.fam h3{font-family:var(--display);font-size:1.3rem;margin:0 0 4px}
+.famlist{list-style:none;margin:10px 0 0;padding:0}
+.famrow{padding:12px 0;border-top:1px solid var(--line)}
+.famwho{display:flex;align-items:center;gap:10px}
+.famwho>div{display:flex;flex-direction:column}
+.famwho .pbtn{padding:2px 6px}
+.famfields{display:flex;flex-wrap:wrap;gap:8px 12px;margin:8px 0 0 50px}
+.famfields label{display:block;font-weight:700;font-size:.85rem}
+.famfields input{display:block;margin-top:4px;width:12.5rem;min-height:40px;padding:6px 10px;border:1.5px solid var(--muted);border-radius:10px;background:var(--bg);color:var(--ink)}
+.famrow .row{margin-left:50px!important}
+.clinks{margin:8px 0 0}.clinks summary{cursor:pointer;color:var(--muted)}
+@media (max-width:560px){.famfields,.famrow .row{margin-left:0!important}.famfields input{width:100%}.famfields label{flex:1 1 100%}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -1327,7 +1341,7 @@ function renderDetails(id){
   const e=getAny(id),d=details(id);let h="";
   if(d.name&&e.recordName&&e.recordName!==e.name)h+=`<p class="note">Spelled “${esc(e.recordName)}” in the 2026 record.</p>`;
   else if(d.name&&!e.recordName&&!e.added)h+=`<p class="note">Name added since the 2026 record.</p>`;
-  if(e.added)h+=`<p class="note">Added to the tree by <span data-names="${e.added.created_by||""}">a family editor</span> on ${when(e.added.created_at)}.</p>`;
+  if(e.added)h+=`<p class="note">Added to the tree by <span data-names="${e.added.created_by||""}">a family member</span> on ${when(e.added.created_at)}.</p>`;
   h+=meBlock(e);
   if(d.photo)h+=`<img class="portrait" src="${photoUrl(d.photo.v)}" alt="Photo of ${esc(e.name||"this person")}">`;
   else if(cloud.status==="ok")h+=photoPlaceholder(e);
@@ -1336,8 +1350,8 @@ function renderDetails(id){
   if(d.bio)h+=`<div class="bio">${esc(d.bio.v).split(/\n+/).map(p=>`<p>${p}</p>`).join("")}</div>`;
   const by=[...new Set(Object.values(d).map(x=>x.by).filter(Boolean))];
   if(by.length)h+=`<p class="byline">Details added by <span data-names="${by.join(",")}">family editors</span>.</p>`;
-  if(canEditNow())h+=`<button class="ghost small" data-act="edit">${Object.keys(d).length?"Add or change details":"Add details"}</button>`;
-  if(canEditNow()&&e.added){
+  if(canEditNow()||famAny(id))h+=`<button class="ghost small" data-act="edit">${Object.keys(d).length?"Add or change details":"Add details"}</button>`;
+  if((canEditNow()||famCan(id,"person"))&&e.added){
     const asked=cloud.myRem.some(r=>r.person_id===id&&r.field==="person"&&r.status==="pending");
     h+=`<div style="margin-top:14px">`+(cloud.isAdmin
       ?`<button class="linkish" data-act="rmp">Remove this person from the tree</button><div class="rmbox" data-for="person" hidden>Remove ${esc(e.name)} and anyone added under them, with their details? This cannot be undone.<div class="row" style="margin:8px 0 0"><button class="solid small" data-act="rmp-now">Yes, remove</button><button class="ghost small" data-act="rmp-cancel">Keep</button></div></div>`
@@ -1391,12 +1405,13 @@ function shrink(file){ // downscale to a JPEG no wider or taller than 1200px
 const newName=()=>(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2))+".jpg";
 async function saveDetails(id){
   const box=$("#pdetails"),d=details(id),rows=[];let blocked=false;
-  const ent=getAny(id),nv=box.querySelector('[name="name"]').value.trim().slice(0,120);
+  const ent=getAny(id),nv=(box.querySelector('[name="name"]')||{value:ent.name||""}).value.trim().slice(0,120);
   if(nv!==(ent.name||"")){if(!nv)blocked=true;else rows.push({person_id:id,field:"name",value:nv});}
-  const sv=box.querySelector('[name="sex"]').value;
+  const sv=(box.querySelector('[name="sex"]')||{value:ent.sex||""}).value;
   if(sv!==(ent.sex||"")){if(!sv)blocked=true;else rows.push({person_id:id,field:"sex",value:sv});}
   FIELDS.forEach(f=>{
-    const v=box.querySelector(`[name="${f.k}"]`).value.trim().slice(0,f.max),cur=d[f.k]?d[f.k].v:"";
+    const el=box.querySelector(`[name="${f.k}"]`);if(!el)return;
+    const v=el.value.trim().slice(0,f.max),cur=d[f.k]?d[f.k].v:"";
     if(v===cur)return;if(!v){blocked=true;return;}
     rows.push({person_id:id,field:f.k,value:v});
   });
@@ -1429,7 +1444,7 @@ $("#panel").addEventListener("click",async ev=>{
   const id=selected,k=b.dataset.k,box=$("#pdetails"),rb=k&&box.querySelector(`.rmbox[data-for="${k}"]`);
   try{
     switch(b.dataset.act){
-      case "edit":renderEditForm(id);break;
+      case "edit":renderEditForm(id);if(!cloud.isEditor)pruneForm(id);break;
       case "join":relateClose();setView("contribute");break;
       case "cancel":editing=false;renderDetails(id);break;
       case "save":await saveDetails(id);break;
@@ -1484,10 +1499,12 @@ function renderContribute(){
     const pend=cloud.people.filter(p=>p.status==="pending");
     const eds=cloud.people.filter(p=>p.is_editor);
     const rem=cloud.removals.filter(r=>r.status==="pending");
-    tab.innerHTML=`Admin${pend.length+rem.length?`<span class="badge">${pend.length+rem.length}</span>`:""}`;
+    const pc=cloud.people.filter(p=>p.claim_person&&!p.claim_approved).length;
+    tab.innerHTML=`Admin${pend.length+rem.length+pc?`<span class="badge">${pend.length+rem.length+pc}</span>`:""}`;
     h=`<h2>Admin</h2>`+signout+`<p>You decide who may add details, and nothing is removed from the tree unless you approve it. You can add and change details yourself in the <a href="#manage">Manage</a> tab or from any person’s panel.</p>`;
     h+=`<h3>People asking to become editors</h3>`+(pend.length?`<ul class="cards">`+pend.map(r=>`<li><span class="who2">${esc(r.name||"No name given")}</span>${claimOf(r.user_id)?` <span class="byline">says they are</span> ${btn(claimOf(r.user_id))}`:""} <span class="byline">(${esc(r.email||"")}, ${when(r.requested_at)})</span><p class="said">${esc(r.note||"")}</p><div class="row" style="margin:0"><button class="solid small" data-act="approve" data-uid="${r.user_id}">Approve as editor</button><button class="ghost small" data-act="decline" data-uid="${r.user_id}">Decline</button></div></li>`).join("")+`</ul>`:`<p>No one is waiting.</p>`);
-    h+=`<h3>Requests to remove something</h3>`+(rem.length?`<ul class="cards">`+rem.map(r=>{const e=getAny(r.person_id),cur=details(r.person_id)[r.field];return `<li><span class="who2">${r.field==="person"?"Remove this person (and anyone added under them):":`Remove the ${esc(FLABEL(r.field))} of`} ${e?`<button class="who" data-go="${e.id}">${esc(e.name||"Name not recorded")}</button>`:"someone no longer in the record"}</span>${cur&&r.field!=="photo"?`<p class="said">Currently: “${esc(cur.v.length>140?cur.v.slice(0,140)+"…":cur.v)}”</p>`:""}<p class="said">Asked by ${esc(cloud.names[r.requested_by]||"an editor")} on ${when(r.created_at)}: ${esc(r.reason||"")}</p><div class="row" style="margin:0"><button class="solid small" data-act="rem-yes" data-rid="${r.id}">Remove it</button><button class="ghost small" data-act="rem-no" data-rid="${r.id}">Keep it</button></div></li>`;}).join("")+`</ul>`:`<p>Nothing is waiting.</p>`);
+    h+=`<h3>Requests to remove something</h3>`+(rem.length?`<ul class="cards">`+rem.map(r=>{const e=getAny(r.person_id),cur=details(r.person_id)[r.field];return `<li><span class="who2">${r.field==="person"?"Remove this person (and anyone added under them):":`Remove the ${esc(FLABEL(r.field))} of`} ${e?`<button class="who" data-go="${e.id}">${esc(e.name||"Name not recorded")}</button>`:"someone no longer in the record"}</span>${cur&&r.field!=="photo"?`<p class="said">Currently: “${esc(cur.v.length>140?cur.v.slice(0,140)+"…":cur.v)}”</p>`:""}<p class="said">Asked by ${esc(cloud.names[r.requested_by]||"a family member")} on ${when(r.created_at)}: ${esc(r.reason||"")}</p><div class="row" style="margin:0"><button class="solid small" data-act="rem-yes" data-rid="${r.id}">Remove it</button><button class="ghost small" data-act="rem-no" data-rid="${r.id}">Keep it</button></div></li>`;}).join("")+`</ul>`:`<p>Nothing is waiting.</p>`);
+    h+=adminClaimsHtml();
     h+=`<h3>Editors</h3>`+(eds.length?`<ul class="cards">`+eds.map(u=>`<li><span class="who2">${esc(u.name||u.email||"Editor")}</span>${claimOf(u.user_id)?` ${btn(claimOf(u.user_id))}`:""} <span class="byline">${esc(u.email||"")}, since ${when(u.approved_at)}</span><div class="row" style="margin:6px 0 0"><button class="ghost small" data-act="revoke" data-uid="${u.user_id}">Take away editor access</button></div></li>`).join("")+`</ul><p class="byline">Taking away access stops someone adding more. What they already added stays until you remove it.</p>`:`<p>No editors yet.</p>`);
   }else if(cloud.isEditor){
     const mine=cloud.myRem.slice(0,10);
@@ -1496,6 +1513,10 @@ function renderContribute(){
   }else{
     const q=cloud.myReq;
     h+=signout;
+    if(isFamilyMember())h+=renderFamily();
+    else if(me())h+=`<p class="note">You’ve said you are ${btn(me())}. Once the admin confirms it, you can add your wife or husband and your children here, and your parents’ dates.</p>`;
+    else h+=`<p class="note">Find yourself on the tree and choose <i>This is me</i>. Once the admin confirms it, you can add your wife or husband and your children, and your parents’ dates of birth and death.</p>`;
+    h+=`<h3>${isFamilyMember()?"Want to help with the whole tree?":"Become an editor"}</h3>`;
     if(q&&q.status==="pending")h+=`<p>Your request to become an editor was sent on ${when(q.created_at)}. The admin has not answered yet.</p>`;
     else{
       if(q&&q.status==="declined")h+=`<p class="note">The admin declined your earlier request. You can send another if something has changed.</p>`;
@@ -1537,6 +1558,8 @@ $("#contribute-body").addEventListener("click",async ev=>{
         chk(await sb.from("editor_requests").upsert({user_id:cloud.me,name:name.slice(0,80),note:note.slice(0,400),status:"pending",decided_at:null,created_at:new Date().toISOString()},{onConflict:"user_id"}));
         await loadMine();break;}
       case "approve":chk(await sb.rpc("approve_editor",{uid}));await loadAdmin();break;
+      case "claim-yes":{const sc=claimScope(b.dataset.pid);chk(await sb.rpc("approve_claim",{uid,parents:sc.parents,family:sc.family,partner:sc.partner}));await loadAdmin();await loadClaims();break;}
+      case "claim-no":chk(await sb.from("claims").delete().eq("user_id",uid));await loadAdmin();await loadClaims();break;
       case "decline":chk(await sb.rpc("decline_editor",{uid}));await loadAdmin();break;
       case "revoke":chk(await sb.rpc("revoke_editor",{uid}));await loadAdmin();break;
       case "rem-yes":case "rem-no":{
@@ -2307,10 +2330,10 @@ function photoPlaceholder(e){
 
 /* ================= "This is me" ================= */
 async function loadClaims(){
-  cloud.myClaim=null;cloud.claimed=new Set();cloud.claimsAll=[];
+  cloud.myClaim=null;cloud.myClaimRow=null;cloud.claimed=new Set();cloud.claimsAll=[];
   if(!sb||!cloud.me)return;
-  const [mine,taken]=await Promise.all([sb.from("claims").select("person_id").eq("user_id",cloud.me).maybeSingle(),sb.rpc("claimed_ids")]);
-  cloud.myClaim=mine.data?mine.data.person_id:null;
+  const [mine,taken]=await Promise.all([sb.from("claims").select("person_id,approved,parents,family,partner").eq("user_id",cloud.me).maybeSingle(),sb.rpc("claimed_ids")]);
+  cloud.myClaim=mine.data?mine.data.person_id:null;cloud.myClaimRow=mine.data||null;
   cloud.claimed=new Set((taken.data||[]).map(r=>typeof r==="string"?r:r.claimed_ids||r.person_id));
   if(cloud.isAdmin)cloud.claimsAll=(await sb.from("claims").select("user_id,person_id")).data||[];
 }
@@ -2318,15 +2341,19 @@ const me=()=>cloud.myClaim&&getAny(cloud.myClaim);
 const claimOf=uid=>{const c=(cloud.claimsAll||[]).find(x=>x.user_id===uid);return c&&getAny(c.person_id);};
 function meBlock(e){
   if(!cloud.me||cloud.status!=="ok")return "";
-  if(cloud.myClaim===e.id)return `<p class="meline"><span class="mechip">This is you</span><button class="linkish" data-act="unme">This isn’t me</button></p>`;
+  if(cloud.myClaim===e.id)return cloud.myClaimRow&&cloud.myClaimRow.approved||cloud.isEditor
+    ?`<p class="meline"><span class="mechip">This is you</span>${isFamilyMember()?`<a class="linkish" href="#contribute">Update your family</a>`:""}<button class="linkish" data-act="unme">This isn’t me</button></p>`
+    :`<p class="meline"><span class="mechip">This is you</span><span class="mmuted">Waiting for the admin to confirm. Then you can add your family.</span><button class="linkish" data-act="unme">This isn’t me</button></p>`;
   if(cloud.claimed&&cloud.claimed.has(e.id))return `<p class="byline">Linked to a family member’s account.${cloud.isAdmin?` <button class="linkish" data-act="unlink-any">Unlink</button>`:""}</p>`;
   const m=me();
+  if(m&&cloud.myClaimRow&&cloud.myClaimRow.approved&&!cloud.isEditor)return ""; // a confirmed link is moved by the admin, not by a stray tap
   return `<p class="meline"><button class="ghost small" data-act="me">This is me</button>${m?`<span class="mmuted">Moves your link from ${esc(m.name)}</span>`:`<span class="mmuted">Link your account to your place on the tree</span>`}</p>`;
 }
 async function claimAction(act,id){
   if(act==="me"){
     const r=await sb.from("claims").upsert({user_id:cloud.me,person_id:id},{onConflict:"user_id"});
     if(r.error){if(String(r.error.code)==="23505")throw {message:"Someone else has already linked their account to this person. Ask the admin if that’s a mistake."};throw r.error;}
+    if(!cloud.names[cloud.me]){const e=getAny(id);if(e&&e.name){await sb.from("profiles").update({name:e.name.slice(0,80)}).eq("id",cloud.me);cloud.names[cloud.me]=e.name;}} // so their changes carry their name
   }else if(act==="unme")chk(await sb.from("claims").delete().eq("user_id",cloud.me));
   else if(act==="unlink-any")chk(await sb.from("claims").delete().eq("person_id",id));
   await loadClaims();cloudChanged();paintMe();
@@ -2489,6 +2516,125 @@ async function renderMap(){
   $("#map-body").querySelectorAll("#map-list [data-go]").forEach(b=>b.onclick=()=>select(b.dataset.go));
 }
 
+/* ================= family members: their own spouse, children and parents' dates ================= */
+const FAM_ROW_FIELDS=[{k:"born",label:"Born",max:80,ph:"e.g. 12 March 1950"},{k:"died",label:"Died",max:80,ph:"Leave empty if living"},{k:"place",label:"Location",max:120,ph:"Town, state, country"}];
+function famCan(id,fld){
+  const c=cloud.myClaimRow;if(!c||!c.approved)return false;
+  if((fld==="born"||fld==="died")&&(c.parents||[]).includes(id))return true;
+  if(["born","died","place","sex"].includes(fld)&&(id===c.person_id||(c.family||[]).includes(id)))return true;
+  const a=(cloud.added||[]).find(r=>r.id===id);
+  return !!(a&&["born","died","place","sex","name","person"].includes(fld)&&
+    (a.parent_id===c.person_id||a.other_parent===c.person_id||(c.partner&&a.parent_id===c.partner&&a.kind==="child")));
+}
+const famAny=id=>["born","died","place","sex","name"].some(f=>famCan(id,f));
+const isFamilyMember=()=>!cloud.isEditor&&!!(cloud.myClaimRow&&cloud.myClaimRow.approved);
+/* what the admin records when confirming a link: parents (dates only) and immediate family */
+function claimScope(pid){
+  const x=getAny(pid);if(!x)return {parents:[],family:[],partner:null};
+  if(x.kind==="spouse"){
+    return {parents:[],family:[x.partner.id,...kidsOf(x.union).map(c=>c.id)].filter(i=>!ADDED_RE.test(i)),partner:x.partner.id};
+  }
+  const parents=x.parent?[x.parent.id,x.union.spouse&&x.union.spouse.id].filter(Boolean):[];
+  const family=x.unions.flatMap(u=>[u.spouse&&u.spouse.id,...kidsOf(u).map(c=>c.id)]).filter(i=>i&&!ADDED_RE.test(i));
+  return {parents,family,partner:null};
+}
+function famPeople(){
+  const x=me();if(!x)return null;
+  if(x.kind==="spouse")return {x,parents:[],spouses:[x.partner],kids:kidsOf(x.union),canAddSpouse:false};
+  return {x,parents:x.parent?[x.parent,x.union.spouse].filter(Boolean):[],spouses:x.unions.map(u=>u.spouse).filter(Boolean),
+          kids:x.unions.flatMap(u=>kidsOf(u)),canAddSpouse:true};
+}
+function famRow(e,label){
+  const fields=FAM_ROW_FIELDS.filter(f=>famCan(e.id,f.k));
+  if(!fields.length)return `<li class="famrow"><div class="famwho">${avatar(e,40)}<div>${btn(e)}<span class="mmuted">${esc(label)}</span></div></div><p class="mmuted" style="margin:6px 0 0">An editor looks after this person’s details.</p></li>`;
+  return `<li class="famrow" data-fid="${e.id}"><div class="famwho">${avatar(e,40)}<div>${btn(e)}<span class="mmuted">${esc(label)}</span></div></div>
+    <div class="famfields">`+fields.map(f=>{const v=(details(e.id)[f.k]||{}).v||"";return `<label>${f.label}<input data-k="${f.k}" maxlength="${f.max}" value="${esc(v)}" data-orig="${esc(v)}" placeholder="${esc(f.ph)}"></label>`;}).join("")+
+    `</div><div class="row" style="margin:8px 0 0"><button class="solid small" data-f="save" disabled>Save</button><span class="status" data-st></span></div></li>`;
+}
+function renderFamily(){
+  const f=famPeople();if(!f)return "";
+  const {x,parents,spouses,kids,canAddSpouse}=f;
+  const role1=x.kind==="spouse"?"you married into the family":"you";
+  const pw=p=>p.kind==="spouse"?(p.sex==="m"?"Your father":p.sex==="f"?"Your mother":"Your parent"):(p.sex==="m"?"Your father":p.sex==="f"?"Your mother":"Your parent");
+  const sw=s=>x.sex==="m"?"Your wife":x.sex==="f"?"Your husband":"Your wife or husband";
+  const kw=k=>k.sex==="m"?"Your son":k.sex==="f"?"Your daughter":"Your child";
+  let h=`<section class="fam"><h3>Your family</h3><p>Keep your part of the tree up to date. Dates with the day and month, like <i>12 March 1950</i>, also put people on the birthday calendar.</p><ul class="famlist">`;
+  h+=famRow(x,"This is "+role1);
+  parents.forEach(p=>{h+=famRow(p,pw(p)+" (dates only)");});
+  spouses.forEach(s=>{h+=famRow(s,x.kind==="spouse"?(s.sex==="m"?"Your husband":s.sex==="f"?"Your wife":"Your wife or husband"):sw(s));});
+  kids.forEach(k=>{h+=famRow(k,kw(k));});
+  h+=`</ul><div class="row">${canAddSpouse?`<button class="ghost small" data-f="open-spouse">Add ${x.sex==="m"?"a wife":x.sex==="f"?"a husband":"a wife or husband"}</button>`:""}<button class="ghost small" data-f="open-child">Add a child</button></div><div id="famadd"></div>
+    <p class="byline">To fix someone else’s details, add photos or remove anything, ask the admin or an editor.</p></section>`;
+  return h;
+}
+function famAddForm(kind){
+  const f=famPeople();if(!f)return "";
+  let h=`<div class="madd" data-kind="${kind}"><b>${kind==="spouse"?(f.x.sex==="m"?"Add your wife":f.x.sex==="f"?"Add your husband":"Add your wife or husband"):"Add your child"}</b><div class="mgrid"><label>Full name<input name="nm" maxlength="120" autocomplete="off"></label>`;
+  if(kind==="child"){
+    h+=`<label>Son or daughter<select name="sx"><option value="">Not sure</option><option value="m">Son</option><option value="f">Daughter</option></select></label>`;
+    if(f.x.kind!=="spouse"&&f.x.unions.length)h+=`<label>Other parent<select name="op">${f.x.unions.map(u=>`<option value="${u.spouse?u.spouse.id:"u"+u.i}">${esc(u.spouse&&u.spouse.name?u.spouse.name:"Not recorded")}</option>`).join("")}</select></label>`;
+    h+=`<label>Born (optional)<input name="bn" maxlength="80" placeholder="e.g. 12 March 2015"></label>`;
+  }
+  return h+`</div><div class="row" style="margin:10px 0 0"><button class="solid small" data-f="add">Add to the tree</button><button class="ghost small" data-f="cancel">Cancel</button><span class="status" data-st></span></div></div>`;
+}
+const fst=(el,t,bad)=>{const s=el&&el.querySelector("[data-st]");if(s){s.textContent=t;s.classList.toggle("bad",!!bad);}};
+async function famSaveRow(li){
+  const id=li.dataset.fid,rows=[];
+  for(const i of li.querySelectorAll("input[data-k]")){
+    const v=i.value.trim();if(v===i.dataset.orig)continue;
+    if(!v){fst(li,"To clear a date or location, ask the admin.",true);return;}
+    rows.push({person_id:id,field:i.dataset.k,value:v.slice(0,+i.maxLength||120)});
+  }
+  if(!rows.length)return;
+  li.querySelector('[data-f="save"]').disabled=true;fst(li,"Saving…");
+  try{chk(await sb.from("person_details").upsert(rows,{onConflict:"person_id,field"}));await loadDetails();renderContribute();
+      const again=document.querySelector(`#contribute-body [data-fid="${id}"]`);fst(again,"Saved");geocodeMissing();}
+  catch(e){li.querySelector('[data-f="save"]').disabled=false;fst(li,errText(e),true);}
+}
+async function famAdd(form){
+  const f=famPeople(),kind=form.dataset.kind,nm=form.querySelector('[name="nm"]').value.trim();
+  if(!nm){fst(form,"Enter the person’s name.",true);return;}
+  const row={id:newPersonId(),kind,name:nm.slice(0,120)};
+  if(f.x.kind==="spouse"){row.parent_id=f.x.partner.id;row.other_parent=f.x.id;}
+  else{row.parent_id=f.x.id;const op=form.querySelector('[name="op"]');if(op&&op.value)row.other_parent=op.value;}
+  if(kind==="child"){const sx=form.querySelector('[name="sx"]').value;if(sx)row.sex=sx;}
+  const same=(kind==="spouse"?f.spouses:f.kids).find(p=>p.name&&fold(p.name)===fold(nm));
+  if(same&&!form.dataset.confirmed){form.dataset.confirmed="1";fst(form,`${same.name} is already listed. Select “Add to the tree” again if this is a different person.`,true);return;}
+  const bn=kind==="child"?form.querySelector('[name="bn"]').value.trim():"";
+  form.querySelectorAll("button").forEach(b=>b.disabled=true);fst(form,"Adding…");
+  try{
+    chk(await sb.from("added_people").insert(row));
+    if(bn)chk(await sb.from("person_details").upsert({person_id:row.id,field:"born",value:bn.slice(0,80)},{onConflict:"person_id,field"}));
+    await loadDetails();renderContribute();
+    const li=document.querySelector(`#contribute-body [data-fid="${row.id}"]`);if(li){fst(li,"Added");li.scrollIntoView({block:"center",behavior:reduce?"auto":"smooth"});}
+  }catch(e){form.querySelectorAll("button").forEach(b=>b.disabled=false);fst(form,errText(e),true);}
+}
+$("#contribute-body").addEventListener("input",ev=>{const li=ev.target.closest("[data-fid]");if(li&&ev.target.dataset.k){const d=[...li.querySelectorAll("input[data-k]")].some(i=>i.value.trim()!==i.dataset.orig);li.querySelector('[data-f="save"]').disabled=!d;}});
+$("#contribute-body").addEventListener("click",ev=>{
+  const b=ev.target.closest("[data-f]");if(!b)return;
+  switch(b.dataset.f){
+    case "save":famSaveRow(b.closest("[data-fid]"));break;
+    case "open-spouse":case "open-child":$("#famadd").innerHTML=famAddForm(b.dataset.f==="open-spouse"?"spouse":"child");{const i=$("#famadd input[name='nm']");if(i)i.focus();}break;
+    case "cancel":$("#famadd").innerHTML="";break;
+    case "add":famAdd(b.closest(".madd"));break;
+  }
+});
+/* admin: confirm or refuse a link */
+function adminClaimsHtml(){
+  const pend=cloud.people.filter(p=>p.claim_person&&!p.claim_approved),done=cloud.people.filter(p=>p.claim_person&&p.claim_approved);
+  let h=`<h3>People linking themselves to the tree</h3>`+(pend.length?`<ul class="cards">`+pend.map(p=>{const e=getAny(p.claim_person);
+    return `<li><span class="who2">${esc(p.name||p.email||"Someone")}</span> <span class="byline">(${esc(p.email||"")}, ${when(p.claimed_at)})</span>
+      <p class="said">Says they are ${e?btn(e):"someone no longer on the tree"}${e?`, ${esc(shortRel(e))}`:""}.</p>
+      <p class="said">Once confirmed, they can add their wife or husband and children, and their parents’ dates.</p>
+      <div class="row" style="margin:0"><button class="solid small" data-act="claim-yes" data-uid="${p.user_id}" data-pid="${p.claim_person}">Confirm</button><button class="ghost small" data-act="claim-no" data-uid="${p.user_id}">That’s not right</button></div></li>`;}).join("")+`</ul>`:`<p>No one is waiting.</p>`);
+  if(done.length)h+=`<details class="clinks"><summary>${done.length} confirmed ${done.length===1?"link":"links"}</summary><ul class="cards">`+done.map(p=>{const e=getAny(p.claim_person);
+    return `<li><span class="who2">${esc(p.name||p.email||"Someone")}</span> is ${e?btn(e):"no longer on the tree"} <button class="linkish" data-act="claim-no" data-uid="${p.user_id}">Remove link</button></li>`;}).join("")+`</ul></details>`;
+  return h;
+}
+
+function pruneForm(id){ // family members only see the boxes they may change
+  document.querySelectorAll("#pdetails .field").forEach(f=>{const i=f.querySelector("[name]");const n=i&&i.getAttribute("name");if(n&&!n.startsWith("why-")&&!famCan(id,n))f.remove();});
+}
 $("#t-me").addEventListener("click",()=>{const m=me();if(m)select(m.id);});
 /* ================= controls + routing ================= */
 document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>{
