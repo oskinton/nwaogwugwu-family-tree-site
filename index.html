@@ -125,6 +125,14 @@ main{flex:1;min-height:0;position:relative;display:flex}
 .node.haskids .dot{fill:var(--bc,var(--b0))}
 .node .count{font-size:11px;font-weight:700;fill:var(--bg);stroke:none;text-anchor:middle;pointer-events:none}
 .node.r .dot{stroke-dasharray:2.5 2.5}
+.node .pbg{fill:color-mix(in srgb,var(--bc,var(--b0)) 22%,var(--surface))}
+.node .pring{fill:none;stroke:var(--bc,var(--b0));stroke-width:1.6}
+.node.haskids .pring{stroke-width:3}
+.node.r .pring{stroke-dasharray:3 3}
+.node text.pini{font-size:11.5px;font-weight:700;text-anchor:middle;fill:color-mix(in srgb,var(--bc,var(--b0)) 75%,var(--ink));stroke:none;pointer-events:none}
+.node .badge rect{fill:var(--bc,var(--b0));stroke:var(--bg);stroke-width:2}
+.node text.btxt{font-size:11px;font-weight:700;fill:var(--bg);text-anchor:middle;stroke:none;pointer-events:none}
+.node .pic,.node .badge{cursor:pointer}
 .node.sel .main{fill:var(--accent)}
 .node.sel .halo{opacity:1}
 .node .halo{fill:none;stroke:var(--accent);stroke-width:2.5;opacity:0}
@@ -134,7 +142,7 @@ main{flex:1;min-height:0;position:relative;display:flex}
 .tools{position:absolute;left:16px;bottom:16px;display:flex;flex-wrap:wrap;gap:8px;max-width:calc(100% - 32px)}
 .tools button{height:40px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface);box-shadow:0 2px 8px rgba(0,0,0,.08)}
 .tools button.sq{width:40px;padding:0;font-size:1.2rem;line-height:1}
-.hint{position:absolute;left:16px;top:12px;margin:0;max-width:min(30rem,calc(100% - 32px));color:var(--muted);font-size:.9rem;pointer-events:none}
+.hint{position:absolute;left:16px;top:12px;margin:0;max-width:min(30rem,calc(100% - 32px));color:var(--muted);font-size:.9rem;pointer-events:none;background:color-mix(in srgb,var(--bg) 88%,transparent);padding:4px 8px;border-radius:8px}
 
 /* list */
 .list-root{margin:0 0 6px;font-family:var(--display);font-size:1.5rem}
@@ -481,7 +489,7 @@ main{flex:1;min-height:0;position:relative;display:flex}
   <main>
     <section class="view" id="view-tree" aria-label="Family tree">
       <svg id="tree-svg" role="group" aria-label="Family tree diagram"><g id="zoomg"><g id="links"></g><g id="nodes"></g></g></svg>
-      <p class="hint" id="hint">Select a filled circle to open a branch, or a name to see that person. Drag to move around; pinch or scroll to zoom.</p>
+      <p class="hint" id="hint">Select a picture to open or close a branch, or a name to see that person. Drag to move around; pinch or scroll to zoom.</p>
       <div class="tools">
         <button id="t-open">Open all</button>
         <button id="t-close">Close all</button>
@@ -525,11 +533,11 @@ main{flex:1;min-height:0;position:relative;display:flex}
 
         <h3>How to read the tree</h3>
         <ul class="key">
-          <li><svg width="26" height="26" aria-hidden="true"><circle cx="13" cy="13" r="11" fill="var(--b2)"/><text x="13" y="17" text-anchor="middle" font-size="11" font-weight="700" fill="var(--bg)">12</text></svg><span>A filled circle with a number is a closed branch. The number is how many descendants are recorded beneath it. Select it to open.</span></li>
-          <li><svg width="26" height="26" aria-hidden="true"><circle cx="13" cy="13" r="6" fill="var(--b2)"/></svg><span>A small filled circle is an open branch. Select it to close.</span></li>
-          <li><svg width="26" height="26" aria-hidden="true"><circle cx="13" cy="13" r="5" fill="var(--bg)" stroke="var(--b2)" stroke-width="2"/></svg><span>A hollow circle is someone with no children on record yet.</span></li>
+          <li><svg width="44" height="40" viewBox="0 0 44 42" aria-hidden="true"><circle cx="18" cy="18" r="16" fill="color-mix(in srgb,var(--b2) 22%,var(--surface))"/><text x="18" y="22" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--ink)">NU</text><circle cx="18" cy="18" r="16" fill="none" stroke="var(--b2)" stroke-width="3"/><rect x="19.0" y="21" width="22" height="18" rx="9" fill="var(--b2)" stroke="var(--bg)" stroke-width="2"/><text x="30" y="34" text-anchor="middle" font-size="11" font-weight="700" fill="var(--bg)">12</text></svg><span>A picture with a number on its corner is a closed branch. The number is how many descendants are recorded beneath that person. Select the picture to open it.</span></li>
+          <li><svg width="44" height="40" viewBox="0 0 44 42" aria-hidden="true"><circle cx="18" cy="18" r="16" fill="color-mix(in srgb,var(--b2) 22%,var(--surface))"/><text x="18" y="22" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--ink)">NU</text><circle cx="18" cy="18" r="16" fill="none" stroke="var(--b2)" stroke-width="3"/><rect x="21.0" y="21" width="18" height="18" rx="9" fill="var(--b2)" stroke="var(--bg)" stroke-width="2"/><text x="30" y="34" text-anchor="middle" font-size="11" font-weight="700" fill="var(--bg)">–</text></svg><span>A dash on the corner means the branch is open. Select the picture to close it.</span></li>
+          <li><svg width="44" height="40" viewBox="0 0 44 42" aria-hidden="true"><circle cx="18" cy="18" r="16" fill="color-mix(in srgb,var(--b2) 22%,var(--surface))"/><text x="18" y="22" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--ink)">NU</text><circle cx="18" cy="18" r="16" fill="none" stroke="var(--b2)" stroke-width="1.6"/></svg><span>A picture with no corner badge is someone with no children on record yet. Initials show until someone adds a photo.</span></li>
           <li><svg width="26" height="26" viewBox="-6 -6 36 36" aria-hidden="true" style="fill:var(--accent)"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg><span>A small pencil beside a name means someone has added or changed something since the 2026 record. Select it to see who changed what, and when.</span></li>
-          <li><svg width="26" height="26" aria-hidden="true"><circle cx="13" cy="13" r="5" fill="var(--bg)" stroke="var(--b3)" stroke-width="2" stroke-dasharray="2.5 2.5"/></svg><span>A dashed circle is a person who appears in two places in the record. Selecting it takes you to their main entry.</span></li>
+          <li><svg width="44" height="40" viewBox="0 0 44 42" aria-hidden="true"><circle cx="18" cy="18" r="16" fill="color-mix(in srgb,var(--b2) 22%,var(--surface))"/><text x="18" y="22" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--ink)">NU</text><circle cx="18" cy="18" r="16" fill="none" stroke="var(--b2)" stroke-width="1.6" stroke-dasharray="3 3"/></svg><span>A dashed ring is a person who appears in two places in the record. Selecting it takes you to their main entry.</span></li>
         </ul>
         <p>Each of Ukomadu’s six wives starts a branch with its own colour, and that colour follows her descendants all the way down.</p>
         <p>The record marks some marriages and children as “through inheritance”. This refers to the custom by which a widow and her children were taken into the household of a kinsman of her late husband. The tree keeps the record’s wording wherever it is used.</p>
@@ -785,7 +793,7 @@ function tnode(p,parentId){
 }
 let TREE=tnode(ROOT,null);
 const expanded=new Set([TREE.id]);
-const ROW=46, COL=300, GAP=70;
+const ROW=46, COL=300, GAP=70, PR=16, LX=28;
 const reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
 const svg=d3.select("#tree-svg"), zoomg=d3.select("#zoomg"), gLinks=d3.select("#links"), gNodes=d3.select("#nodes");
 const zoom=d3.zoom().scaleExtent([0.25,2.2]).on("zoom",e=>zoomg.attr("transform",e.transform));
@@ -821,8 +829,8 @@ function labelW(d){
 const hasKids=d=>d.data.kids&&d.data.kids.length>0;
 const isOpen=d=>expanded.has(d.data.id);
 function linkPath(s,t){ // s,t: {x: vertical, y: horizontal, w}
-  const x0=s.y+18+s.w+6, y0=s.x, x1=t.y-13, y1=t.x, mx=(x0+x1)/2;
-  return `M${s.y+18+s.w+2},${y0}L${x0},${y0}C${mx},${y0} ${mx},${y1} ${x1},${y1}`;
+  const x0=s.y+LX+s.w+6, y0=s.x, x1=t.y-PR-3, y1=t.x, mx=(x0+x1)/2;
+  return `M${s.y+LX+s.w+2},${y0}L${x0},${y0}C${mx},${y0} ${mx},${y1} ${x1},${y1}`;
 }
 
 function render(animate=true){
@@ -830,7 +838,7 @@ function render(animate=true){
   d3.tree().nodeSize([ROW,COL]).separation((a,b)=>a.parent===b.parent?1:1.25)(root);
   const colw=[];
   root.each(d=>{d.w=labelW(d);colw[d.depth]=Math.max(colw[d.depth]||0,d.w);});
-  const colx=[0];for(let i=1;i<colw.length;i++)colx[i]=colx[i-1]+18+colw[i-1]+(narrow()?46:GAP);
+  const colx=[0];for(let i=1;i<colw.length;i++)colx[i]=colx[i-1]+LX+colw[i-1]+(narrow()?46:GAP);
   root.each(d=>{d.y=colx[d.depth];});
   lastRoot=root;
   const dur=animate&&!reduce?320:0;
@@ -843,25 +851,24 @@ function render(animate=true){
     .attr("transform",from).style("opacity",0)
     .attr("tabindex",0).attr("role","button")
     .style("--bc",d=>bcol(d.data.branch));
-  ent.append("rect").attr("class","hit").attr("x",-18).attr("y",-ROW/2).attr("height",ROW);
+  ent.append("rect").attr("class","hit").attr("x",-PR-4).attr("y",-ROW/2).attr("height",ROW);
   ent.append("circle").attr("class","halo");
-  ent.append("circle").attr("class","dot");
-  ent.append("text").attr("class","count").attr("dy","0.36em");
+  ent.each(function(d){if(d.data.type==="x")d3.select(this).append("circle").attr("class","dot");else drawPic(d3.select(this),d);});
   ent.each(function(d){
     const g=d3.select(this), l=lines(d);
     if(l.cap){
-      g.append("text").attr("class","cap").attr("x",18).attr("y",-6).text(l.cap);
-      g.append("text").attr("class","main").attr("x",18).attr("y",12).text(l.main);
+      g.append("text").attr("class","cap").attr("x",LX).attr("y",-6).text(l.cap);
+      g.append("text").attr("class","main").attr("x",LX).attr("y",12).text(l.main);
     }else{
-      const m=g.append("text").attr("class","main").attr("x",18).attr("y",l.sub?-1:5);
+      const m=g.append("text").attr("class","main").attr("x",d.data.type==="x"?18:LX).attr("y",l.sub?-1:5);
       m.append("tspan").text(l.main);
       if(l.tag) m.append("tspan").attr("class","tag").text(l.tag);
-      if(l.sub) g.append("text").attr("class","sub").attr("x",18).attr("y",15).text(l.sub);
+      if(l.sub) g.append("text").attr("class","sub").attr("x",LX).attr("y",15).text(l.sub);
     }
     const cid=nodeEntityId(d.data),chg=cid&&cloud.changes&&cloud.changes.get(cid);
     if(chg){
       const mw=tw((l.main||"")+(l.tag||""),(d.data.type==="u"?'500 15.5px "Besley",Georgia,serif':(hasKids(d)?'700 15px ':'15px ')+'"Atkinson Hyperlegible","Segoe UI",sans-serif'));
-      const mk=g.append("g").attr("class","mark").attr("transform",`translate(${18+mw+6},${(l.cap?12:l.sub?-1:5)-11}) scale(.5)`);
+      const mk=g.append("g").attr("class","mark").attr("transform",`translate(${LX+mw+6},${(l.cap?12:l.sub?-1:5)-11}) scale(.5)`);
       mk.append("rect").attr("x",-4).attr("y",-4).attr("width",32).attr("height",32);
       mk.append("path").attr("d","M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z");
       const who=getAny(cid);
@@ -871,7 +878,7 @@ function render(animate=true){
   });
   ent.on("click",(e,d)=>{
     if(e.target.closest&&e.target.closest(".mark")){const cid=nodeEntityId(d.data);if(cid){select(cid);showHistory();}return;}
-    const onDot=e.target.classList.contains("dot")||e.target.classList.contains("halo");
+    const onDot=e.target.classList.contains("dot")||e.target.classList.contains("halo")||!!(e.target.closest&&(e.target.closest(".pic")||e.target.closest(".badge")));
     activate(d,onDot);
   }).on("keydown",(e,d)=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();activate(d,false);}});
 
@@ -879,10 +886,15 @@ function render(animate=true){
   all.classed("haskids",hasKids).classed("sel",d=>d.data.id===selected).classed("onpath",d=>pathIds.has(d.data.id))
      .attr("aria-label",d=>{const l=lines(d);return [l.cap,l.main+(l.tag||""),l.sub,hasKids(d)?(isOpen(d)?"open":"closed, "+d.data.desc+" descendants"):""].filter(Boolean).join(", ");})
      .attr("aria-expanded",d=>hasKids(d)?String(isOpen(d)):null);
-  all.select(".hit").attr("width",d=>d.w+44);
-  all.select(".dot").attr("r",d=>hasKids(d)?(isOpen(d)?6:11):d.data.type==="x"?3:5);
-  all.select(".halo").attr("r",d=>hasKids(d)&&!isOpen(d)?15.5:10.5);
-  all.select(".count").text(d=>hasKids(d)&&!isOpen(d)?d.data.desc:"");
+  all.select(".hit").attr("width",d=>d.w+LX+26);
+  all.select(".dot").attr("r",3);
+  all.select(".halo").attr("r",d=>d.data.type==="x"?7:PR+4.5);
+  all.select(".badge").style("display",d=>hasKids(d)?null:"none").each(function(d){
+    if(!hasKids(d))return;
+    const closed=!isOpen(d),txt=closed?String(d.data.desc):"–",w=Math.max(18,8+txt.length*7),b=d3.select(this);
+    b.select("rect").attr("x",-w/2).attr("width",w);b.select("text").text(txt);
+    b.select("title").text(closed?`${d.data.desc} descendant${d.data.desc===1?"":"s"} on record. Select the picture to open this branch.`:"Select the picture to close this branch.");
+  });
   all.transition(t).attr("transform",d=>`translate(${d.y},${d.x})`).style("opacity",1);
 
   const link=gLinks.selectAll("path.link").data(root.links(),d=>d.target.data.id);
@@ -896,6 +908,21 @@ function render(animate=true){
   prevPos=new Map(root.descendants().map(d=>[d.data.id,{x:d.x,y:d.y}]));
 }
 
+function picEntity(n){return n.type==="p"?n.p:n.type==="u"?n.u.spouse:n.type==="r"?n.target:null;}
+function drawPic(g,d){ // photo, or initials until one is added, with the descendant count as a corner badge
+  const e=picEntity(d.data),ph=e&&details(e.id).photo,cid="pc-"+d.data.id.replace(/[^a-z0-9-]/g,"");
+  const p=g.append("g").attr("class","pic");
+  p.append("clipPath").attr("id",cid).append("circle").attr("r",PR);
+  p.append("circle").attr("class","pbg").attr("r",PR);
+  p.append("text").attr("class","pini").attr("dy","0.36em").text(initials(e&&e.name||"?"));
+  if(ph)p.append("image").attr("href",photoUrl(ph.v)).attr("x",-PR).attr("y",-PR).attr("width",2*PR).attr("height",2*PR)
+          .attr("clip-path",`url(#${cid})`).attr("preserveAspectRatio","xMidYMid slice").on("error",function(){this.remove();});
+  p.append("circle").attr("class","pring").attr("r",PR);
+  const b=g.append("g").attr("class","badge").attr("transform",`translate(${PR*.78},${PR*.72})`);
+  b.append("rect").attr("y",-9).attr("height",18).attr("rx",9);
+  b.append("text").attr("class","btxt").attr("dy","0.35em");
+  b.append("title");
+}
 function activate(d,onDot){
   const n=d.data;
   $("#hint").hidden=true;
