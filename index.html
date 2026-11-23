@@ -387,6 +387,44 @@ main{flex:1;min-height:0;position:relative;display:flex}
   .hcbanner{padding:8px 10px 8px 14px;font-size:.88rem}
 }
 @media (max-width:480px){.hc-ev>li{grid-template-columns:1fr}.hc-evchk,.hc-two{grid-template-columns:1fr}}
+/* avatars and photo placeholders */
+.av{position:relative;display:inline-grid;place-items:center;flex:none;width:var(--s);height:var(--s);border-radius:50%;overflow:hidden;
+  background:color-mix(in srgb,var(--bc) 22%,var(--surface));color:color-mix(in srgb,var(--bc) 75%,var(--ink));box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--bc) 45%,transparent);vertical-align:middle}
+.av .ini{font-weight:700;font-size:calc(var(--s) * .38);letter-spacing:.02em}
+.av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.avbtn{border:0;background:none;padding:0;border-radius:50%;cursor:pointer}
+.phbox{display:flex;gap:16px;align-items:center;margin:16px 0 14px;padding:14px;border:1.5px dashed var(--line);border-radius:14px}
+.phbox b{display:block;font-family:var(--display)}
+.phbox p{margin:2px 0 8px!important;color:var(--muted);font-size:.92rem}
+.phpic{position:relative;flex:none;display:grid;place-items:center;width:84px;height:100px;border-radius:12px;background:color-mix(in srgb,var(--bc) 16%,var(--surface));color:color-mix(in srgb,var(--bc) 55%,var(--muted))}
+.phpic svg{width:64px;height:64px;fill:currentColor;opacity:.55}
+.phpic .ini{position:absolute;right:6px;bottom:4px;font-weight:700;font-size:.85rem;color:var(--ink)}
+.mnm{display:flex;align-items:center;gap:8px}
+/* this is me */
+.meline{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:12px 0 0!important}
+.mechip{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:.875rem}
+.mechip::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+/* birthdays */
+.cal{list-style:none;margin:0 0 8px;padding:0;max-width:44rem}
+.cal li{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.cal-day{flex:none;width:7.5rem;font-weight:700;font-variant-numeric:tabular-nums}
+.cal-who{display:flex;flex-direction:column;min-width:0}
+.cal-who .pbtn{padding:2px 6px}
+.cal-what{color:var(--muted);font-size:.92rem;margin-left:0}
+.cal-passed .cal-day{color:var(--muted)}
+.cal-today{padding:6px 16px 8px;margin:0 0 10px;border-radius:14px;background:color-mix(in srgb,var(--hc-gold) 16%,transparent);border:1px solid color-mix(in srgb,var(--hc-gold) 55%,transparent);max-width:44rem}
+#view-calendar h3{font-family:var(--display);font-size:1.2rem;margin:26px 0 4px}
+@media (max-width:520px){.cal-day{width:5.6rem;font-size:.9rem}}
+/* map */
+#map-canvas{height:min(62vh,560px);border-radius:14px;border:1px solid var(--line);background:var(--sunk);margin:12px 0 0}
+.mapdot span{display:grid;place-items:center;width:var(--s);height:var(--s);border-radius:50%;background:#9A2A22;color:#fff;font:700 13px var(--body);border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.mappop ul{list-style:none;margin:8px 0 0;padding:0}
+.mappop li{display:flex;align-items:center;gap:6px;margin:0 0 4px}
+.mappop .pbtn{font:inherit;color:#1B2140}
+.maplist{list-style:none;margin:0;padding:0;max-width:52rem}
+.maplist li{padding:12px 0;border-top:1px solid var(--line)}
+.mapppl{display:flex;flex-wrap:wrap;gap:0 10px;margin-top:4px}
+.leaflet-container{font-family:var(--body)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -415,6 +453,8 @@ main{flex:1;min-height:0;position:relative;display:flex}
       <button role="tab" data-view="tree">Tree</button>
       <button role="tab" data-view="list">Full list</button>
       <button role="tab" data-view="related">How are we related?</button>
+      <button role="tab" data-view="calendar">Birthdays</button>
+      <button role="tab" data-view="map">Map</button>
       <button role="tab" data-view="story">Our story</button>
       <button role="tab" data-view="poster">Poster</button>
       <button role="tab" data-view="gaps">Help fill the gaps</button>
@@ -431,6 +471,7 @@ main{flex:1;min-height:0;position:relative;display:flex}
       <div class="tools">
         <button id="t-open">Open all</button>
         <button id="t-close">Close all</button>
+        <button id="t-me" hidden>Find me</button>
         <button id="t-fit">Fit</button>
         <button id="t-in" class="sq" aria-label="Zoom in">+</button>
         <button id="t-out" class="sq" aria-label="Zoom out">−</button>
@@ -489,6 +530,12 @@ main{flex:1;min-height:0;position:relative;display:flex}
         <div id="gaps-body"></div>
       </div>
     </section>
+
+    <section class="view scroll" id="view-calendar" aria-label="Birthdays and remembrance days"><div class="col prose" id="cal-body"></div></section>
+
+    <section class="view scroll" id="view-map" aria-label="Where the family lives"><div class="col prose" id="map-body" style="max-width:68rem">
+      <h2>Where the family lives</h2><p class="list-lede">Everyone with a location on the tree, grouped by place. Select a circle to see who lives there. <span id="map-count"></span></p>
+      <div id="map-canvas" role="region" aria-label="Map of family locations"></div><div id="map-list"></div></div></section>
 
     <section class="view scroll" id="view-related" aria-label="How are we related?">
       <div class="col prose">
@@ -901,7 +948,7 @@ function computePath(e){
 
 /* ================= selection + panel ================= */
 let view="tree";
-const VIEWS=["homecoming","tree","list","related","story","poster","gaps","manage","contribute"];
+const VIEWS=["homecoming","tree","list","related","calendar","map","story","poster","gaps","manage","contribute"];
 function setView(v,fromHash){
   view=v;
   VIEWS.forEach(x=>{$("#view-"+x).classList.toggle("on",x===v);});
@@ -909,7 +956,10 @@ function setView(v,fromHash){
   if(v==="tree"){requestAnimationFrame(()=>{render(false);if(selected){const e=getAny(selected);reveal(treeIdFor(e));}else if(!fitted){fit(false);fitted=true;}});}
   if(v==="poster")showPoster();
   if(v==="contribute")renderContribute();
-  if(v==="manage")renderManage();
+  if(v==="manage"){if(me()&&!mstate.touched){mstate.filter="mine";}renderManage();}
+  if(v==="calendar")renderCalendar();
+  if(v==="map"){renderMap();geocodeMissing();}
+  if(v==="related"&&me()&&!relSel[0]){document.querySelectorAll("#view-related .pick")[0].setPick(me());renderRelated();}
   if(v==="homecoming"){renderHC();if(!hc.loaded)loadRsvp().then(()=>{if(view==="homecoming")renderHC();});}
   paintBanner();
   if(!fromHash&&!selected)setHash(v==="tree"?"":v);
@@ -1207,7 +1257,8 @@ document.querySelectorAll("#view-related .pick").forEach((box,slot)=>{
 });
 document.addEventListener("click",ev=>{const b=ev.target.closest("#relout [data-go]");if(b)select(b.dataset.go);});
 function relateFrom(id){
-  const e=getAny(id),boxes=document.querySelectorAll("#view-related .pick");
+  const e=getAny(id),boxes=document.querySelectorAll("#view-related .pick"),m=me();
+  if(m&&m.id!==id){boxes[0].setPick(m);boxes[1].setPick(e);selected=null;pathIds=new Set();$("#panel").hidden=true;document.body.classList.remove("panel-open");markList();setView("related");renderRelated();return;}
   boxes[0].setPick(e);relSel[1]=null;boxes[1].querySelector("input").value="";
   selected=null;pathIds=new Set();$("#panel").hidden=true;document.body.classList.remove("panel-open");markList();
   setView("related");renderRelated();boxes[1].querySelector("input").focus();
@@ -1277,7 +1328,9 @@ function renderDetails(id){
   if(d.name&&e.recordName&&e.recordName!==e.name)h+=`<p class="note">Spelled “${esc(e.recordName)}” in the 2026 record.</p>`;
   else if(d.name&&!e.recordName&&!e.added)h+=`<p class="note">Name added since the 2026 record.</p>`;
   if(e.added)h+=`<p class="note">Added to the tree by <span data-names="${e.added.created_by||""}">a family editor</span> on ${when(e.added.created_at)}.</p>`;
+  h+=meBlock(e);
   if(d.photo)h+=`<img class="portrait" src="${photoUrl(d.photo.v)}" alt="Photo of ${esc(e.name||"this person")}">`;
+  else if(cloud.status==="ok")h+=photoPlaceholder(e);
   const rows=(e.sex?`<div><dt>Gender</dt><dd>${SEXWORD[e.sex]}${sexNote(e)?` <span class="mmuted">(${sexNote(e).toLowerCase()})</span>`:""}</dd></div>`:"")+FIELDS.filter(f=>!f.long&&d[f.k]).map(f=>`<div><dt>${f.label}</dt><dd>${esc(d[f.k].v)}</dd></div>`).join("");
   if(rows)h+=`<dl class="facts2">${rows}</dl>`;
   if(d.bio)h+=`<div class="bio">${esc(d.bio.v).split(/\n+/).map(p=>`<p>${p}</p>`).join("")}</div>`;
@@ -1362,7 +1415,7 @@ async function saveDetails(id){
     chk(await sb.from("person_details").upsert(rows,{onConflict:"person_id,field"}));
     if(uploaded&&d.photo&&cloud.isAdmin)sb.storage.from("photos").remove([d.photo.v]);
     await loadDetails();
-    editing=false;posterStale=true;renderDetails(id);
+    editing=false;posterStale=true;renderDetails(id);geocodeMissing();
   }catch(e){box.querySelectorAll("button").forEach(b=>b.disabled=false);estatus(errText(e),true);}
 }
 async function removeField(id,k){ // admin only; the database refuses anyone else
@@ -1383,6 +1436,7 @@ $("#panel").addEventListener("click",async ev=>{
       case "rm":rb.hidden=false;b.hidden=true;break;
       case "rm-cancel":rb.hidden=true;rb.previousElementSibling.hidden=false;break;
       case "rm-now":b.disabled=true;await removeField(id,k);editing=false;renderDetails(id);break;
+      case "me":case "unme":case "unlink-any":b.disabled=true;await claimAction(b.dataset.act,id);break;
       case "rmp":box.querySelector('.rmbox[data-for="person"]').hidden=false;b.hidden=true;break;
       case "rmp-cancel":renderDetails(id);break;
       case "rmp-now":{b.disabled=true;const paths=chk(await sb.rpc("remove_added_person",{pid:id}))||[];
@@ -1432,12 +1486,12 @@ function renderContribute(){
     const rem=cloud.removals.filter(r=>r.status==="pending");
     tab.innerHTML=`Admin${pend.length+rem.length?`<span class="badge">${pend.length+rem.length}</span>`:""}`;
     h=`<h2>Admin</h2>`+signout+`<p>You decide who may add details, and nothing is removed from the tree unless you approve it. You can add and change details yourself in the <a href="#manage">Manage</a> tab or from any person’s panel.</p>`;
-    h+=`<h3>People asking to become editors</h3>`+(pend.length?`<ul class="cards">`+pend.map(r=>`<li><span class="who2">${esc(r.name||"No name given")}</span> <span class="byline">(${esc(r.email||"")}, ${when(r.requested_at)})</span><p class="said">${esc(r.note||"")}</p><div class="row" style="margin:0"><button class="solid small" data-act="approve" data-uid="${r.user_id}">Approve as editor</button><button class="ghost small" data-act="decline" data-uid="${r.user_id}">Decline</button></div></li>`).join("")+`</ul>`:`<p>No one is waiting.</p>`);
+    h+=`<h3>People asking to become editors</h3>`+(pend.length?`<ul class="cards">`+pend.map(r=>`<li><span class="who2">${esc(r.name||"No name given")}</span>${claimOf(r.user_id)?` <span class="byline">says they are</span> ${btn(claimOf(r.user_id))}`:""} <span class="byline">(${esc(r.email||"")}, ${when(r.requested_at)})</span><p class="said">${esc(r.note||"")}</p><div class="row" style="margin:0"><button class="solid small" data-act="approve" data-uid="${r.user_id}">Approve as editor</button><button class="ghost small" data-act="decline" data-uid="${r.user_id}">Decline</button></div></li>`).join("")+`</ul>`:`<p>No one is waiting.</p>`);
     h+=`<h3>Requests to remove something</h3>`+(rem.length?`<ul class="cards">`+rem.map(r=>{const e=getAny(r.person_id),cur=details(r.person_id)[r.field];return `<li><span class="who2">${r.field==="person"?"Remove this person (and anyone added under them):":`Remove the ${esc(FLABEL(r.field))} of`} ${e?`<button class="who" data-go="${e.id}">${esc(e.name||"Name not recorded")}</button>`:"someone no longer in the record"}</span>${cur&&r.field!=="photo"?`<p class="said">Currently: “${esc(cur.v.length>140?cur.v.slice(0,140)+"…":cur.v)}”</p>`:""}<p class="said">Asked by ${esc(cloud.names[r.requested_by]||"an editor")} on ${when(r.created_at)}: ${esc(r.reason||"")}</p><div class="row" style="margin:0"><button class="solid small" data-act="rem-yes" data-rid="${r.id}">Remove it</button><button class="ghost small" data-act="rem-no" data-rid="${r.id}">Keep it</button></div></li>`;}).join("")+`</ul>`:`<p>Nothing is waiting.</p>`);
-    h+=`<h3>Editors</h3>`+(eds.length?`<ul class="cards">`+eds.map(u=>`<li><span class="who2">${esc(u.name||u.email||"Editor")}</span> <span class="byline">${esc(u.email||"")}, since ${when(u.approved_at)}</span><div class="row" style="margin:6px 0 0"><button class="ghost small" data-act="revoke" data-uid="${u.user_id}">Take away editor access</button></div></li>`).join("")+`</ul><p class="byline">Taking away access stops someone adding more. What they already added stays until you remove it.</p>`:`<p>No editors yet.</p>`);
+    h+=`<h3>Editors</h3>`+(eds.length?`<ul class="cards">`+eds.map(u=>`<li><span class="who2">${esc(u.name||u.email||"Editor")}</span>${claimOf(u.user_id)?` ${btn(claimOf(u.user_id))}`:""} <span class="byline">${esc(u.email||"")}, since ${when(u.approved_at)}</span><div class="row" style="margin:6px 0 0"><button class="ghost small" data-act="revoke" data-uid="${u.user_id}">Take away editor access</button></div></li>`).join("")+`</ul><p class="byline">Taking away access stops someone adding more. What they already added stays until you remove it.</p>`:`<p>No editors yet.</p>`);
   }else if(cloud.isEditor){
     const mine=cloud.myRem.slice(0,10);
-    h+=signout+`<p>You are an approved editor. The quickest way to work is the <a href="#manage">Manage</a> tab: find anyone by name, correct names, fill in dates of birth and death and locations, and add children or a wife or husband.</p><p>For photos, name meanings and life stories, open a person in the tree or the list and choose <i>Add details</i>.</p><p>You can add and correct details. To take something away, use <i>Ask the admin to remove</i> under that detail; only the admin can approve a removal.</p>`;
+    h+=signout+`${me()?`<p class="note">You are linked to ${btn(me())} on the tree. <a href="#manage">Update your branch</a></p>`:`<p class="note">Tip: find yourself on the tree and choose <i>This is me</i>. Manage then opens on your own branch.</p>`}<p>You are an approved editor. The quickest way to work is the <a href="#manage">Manage</a> tab: find anyone by name, correct names, fill in dates of birth and death and locations, and add children or a wife or husband.</p><p>For photos, name meanings and life stories, open a person in the tree or the list and choose <i>Add details</i>.</p><p>You can add and correct details. To take something away, use <i>Ask the admin to remove</i> under that detail; only the admin can approve a removal.</p>`;
     if(mine.length)h+=`<h3>Your removal requests</h3><ul class="cards">`+mine.map(r=>{const e=getAny(r.person_id);return `<li>${esc(cap1(FLABEL(r.field)))} of ${esc(e&&e.name||"someone")}: ${r.status==="pending"?"waiting for the admin":r.status==="removed"?"removed":"the admin kept it"}</li>`;}).join("")+`</ul>`;
   }else{
     const q=cloud.myReq;
@@ -1521,8 +1575,12 @@ async function loadUser(session){
     cloud.isAdmin=!!a.data;cloud.isEditor=cloud.isAdmin||!!e.data;
     await Promise.all([loadMine(),loadAdmin()]);
   }
+  await loadClaims();
 }
 function cloudChanged(){
+  paintMe();
+  if(view==="calendar")renderCalendar();
+  if(view==="map")renderMap();
   loadRsvp().then(()=>{if(view==="homecoming")renderHC();});
   posterStale=true;
   $("#tab-manage").hidden=!canEditNow();
@@ -1645,6 +1703,7 @@ function manageOrder(){
 }
 const curVal=(e,k)=>k==="name"?(e.name||""):((details(e.id)[k]||{}).v||"");
 function rowMatches(e){
+  if(mstate.filter==="mine"){const b=myBranch();if(b&&!b.has(e.id))return false;}
   if(mstate.filter==="descent"&&e.kind!=="person")return false;
   if(mstate.filter==="married"&&e.kind!=="spouse")return false;
   if(mstate.filter==="added"&&!e.added)return false;
@@ -1692,12 +1751,13 @@ function renderManage(){
     box.innerHTML=`<h2>Manage</h2>
       <p>Find anyone, correct their name, and add dates and locations right in the table. Use <i>Add child</i> or <i>Add ${"wife or husband"}</i> to put new people on the tree. Open a person for photos, life stories and removal requests.</p>
       <div class="mtools"><label class="msearch"><span>Find a person</span><input id="m-q" type="search" autocomplete="off" spellcheck="false" placeholder="Type any part of a name"></label>
-        <label><span>Show</span><select id="m-f"><option value="all">Everyone</option><option value="descent">Family by descent</option><option value="married">Married into the family</option><option value="added">Added since the 2026 record</option><option value="nodates">No dates yet</option></select></label></div>
+        <label><span>Show</span><select id="m-f"><option value="mine" id="opt-mine">My branch</option><option value="all">Everyone</option><option value="descent">Family by descent</option><option value="married">Married into the family</option><option value="added">Added since the 2026 record</option><option value="nodates">No dates yet</option></select></label></div>
       <p class="byline" id="m-count"></p>
       <div class="mwrap"><table class="mtable"><thead><tr><th>Name</th><th>Gender</th><th>Relationship</th><th>Born</th><th>Died</th><th>Location</th><th>Wife or husband</th><th>Children</th><th></th></tr></thead><tbody id="m-rows"></tbody></table></div>`;
     $("#m-q").addEventListener("input",ev=>{mstate.q=ev.target.value;renderManage();});
-    $("#m-f").addEventListener("change",ev=>{mstate.filter=ev.target.value;renderManage();});
+    $("#m-f").addEventListener("change",ev=>{mstate.filter=ev.target.value;mstate.touched=true;renderManage();});
   }
+  {const o=$("#opt-mine");if(o){o.hidden=!me();o.disabled=!me();if(!me()&&mstate.filter==="mine")mstate.filter="all";}$("#m-f").value=mstate.filter;}
   const shown=rows.slice(0,300);
   $("#m-count").textContent=`${rows.length} ${rows.length===1?"person":"people"}${rows.length>shown.length?`, showing the first ${shown.length}. Search to narrow it down.`:""}`;
   $("#m-rows").innerHTML=shown.map(e=>{
@@ -1707,7 +1767,7 @@ function renderManage(){
     const sexCell=`<td data-label="Gender"><select class="msex" data-k="sex" data-orig="${sx}" aria-label="Gender of ${esc(e.name||"this person")}"><option value="">Not recorded</option><option value="m"${sx==="m"?" selected":""}>Male</option><option value="f"${sx==="f"?" selected":""}>Female</option></select>${sxn?`<span class="mmuted mwas">${sxn}</span>`:""}</td>`;
     const ch=cloud.changes.get(e.id);
     const mark=ch?`<button class="linkish mwas" data-m="hist" title="${esc(changeTitle(ch))}"><svg class="mk" viewBox="0 0 24 24" aria-hidden="true" style="margin:0 4px 0 0">${PEN}</svg>${esc(changeWords(ch))}, ${esc(whenTime(ch.changed_at))}</button>`:"";
-    let tr=`<tr data-id="${e.id}" style="--bc:${bcol(e.branch)}">`+cells[0].replace("</td>",`${was}${mark}</td>`)+sexCell+
+    let tr=`<tr data-id="${e.id}" style="--bc:${bcol(e.branch)}">`+cells[0].replace("<input",`<div class="mnm"><button class="avbtn" data-m="open" title="Open ${esc(e.name||"this person")}">${avatar(e,34)}</button><input`).replace("</td>",`</div>${was}${mark}</td>`)+sexCell+
       `<td data-label="Relationship" class="mrel">${esc(shortRel(e))}</td>`+cells.slice(1).join("")+
       `<td data-label="Wife or husband">${spouseCell(e)}</td><td data-label="Children">${childCell(e)}</td>`+
       `<td class="mact"><button class="solid small" data-m="save" disabled>Save</button><button class="linkish" data-m="open">Open</button><span class="status" data-st></span></td></tr>`;
@@ -1739,7 +1799,7 @@ async function saveRow(tr){
   try{
     chk(await sb.from("person_details").upsert(rows,{onConflict:"person_id,field"}));
     tr.classList.remove("dirty");
-    await loadDetails();renderManage();
+    await loadDetails();renderManage();geocodeMissing();
     const again=$("#m-rows").querySelector(`tr[data-id="${id}"]`);if(again)mst(again,"Saved");
   }catch(err){tr.querySelector('[data-m="save"]').disabled=false;mst(tr,errText(err),true);}
 }
@@ -2232,6 +2292,204 @@ async function qrDownload(kind){
   }catch(e){st.textContent="The picture could not be made in this browser. Try the SVG download instead.";}
 }
 
+/* ================= photos: placeholders and small avatars ================= */
+const initials=n=>{const w=String(n||"").replace(/[()“”"‘’.]/g," ").trim().split(/\s+/).filter(Boolean);if(!w.length)return "?";return (w[0][0]+(w.length>1?w[w.length-1][0]:"")).toUpperCase();};
+const SILHOUETTE=`<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.2" r="4.2"/><path d="M3.5 21c.6-4.6 4.1-7.4 8.5-7.4s7.9 2.8 8.5 7.4z"/></svg>`;
+function avatar(e,size){
+  const ph=e&&details(e.id).photo;
+  return `<span class="av" style="--s:${size||36}px;--bc:${bcol(e?e.branch:0)}" aria-hidden="true"><span class="ini">${esc(initials(e&&e.name))}</span>${ph?`<img src="${photoUrl(ph.v)}" alt="" loading="lazy" onerror="this.remove()">`:""}</span>`;
+}
+function photoPlaceholder(e){
+  return `<div class="phbox"><span class="phpic" style="--bc:${bcol(e.branch)}">${SILHOUETTE}<span class="ini">${esc(initials(e.name))}</span></span>
+    <div><b>No photo yet</b><p>${canEditNow()?`Add a photo of ${esc(e.name||"this person")}. A clear face photo works best.`:`Have a photo of ${esc(e.name||"this person")}? An editor can add it.`}</p>
+    ${canEditNow()?`<button class="ghost small" data-act="edit">Add a photo</button>`:""}</div></div>`;
+}
+
+/* ================= "This is me" ================= */
+async function loadClaims(){
+  cloud.myClaim=null;cloud.claimed=new Set();cloud.claimsAll=[];
+  if(!sb||!cloud.me)return;
+  const [mine,taken]=await Promise.all([sb.from("claims").select("person_id").eq("user_id",cloud.me).maybeSingle(),sb.rpc("claimed_ids")]);
+  cloud.myClaim=mine.data?mine.data.person_id:null;
+  cloud.claimed=new Set((taken.data||[]).map(r=>typeof r==="string"?r:r.claimed_ids||r.person_id));
+  if(cloud.isAdmin)cloud.claimsAll=(await sb.from("claims").select("user_id,person_id")).data||[];
+}
+const me=()=>cloud.myClaim&&getAny(cloud.myClaim);
+const claimOf=uid=>{const c=(cloud.claimsAll||[]).find(x=>x.user_id===uid);return c&&getAny(c.person_id);};
+function meBlock(e){
+  if(!cloud.me||cloud.status!=="ok")return "";
+  if(cloud.myClaim===e.id)return `<p class="meline"><span class="mechip">This is you</span><button class="linkish" data-act="unme">This isn’t me</button></p>`;
+  if(cloud.claimed&&cloud.claimed.has(e.id))return `<p class="byline">Linked to a family member’s account.${cloud.isAdmin?` <button class="linkish" data-act="unlink-any">Unlink</button>`:""}</p>`;
+  const m=me();
+  return `<p class="meline"><button class="ghost small" data-act="me">This is me</button>${m?`<span class="mmuted">Moves your link from ${esc(m.name)}</span>`:`<span class="mmuted">Link your account to your place on the tree</span>`}</p>`;
+}
+async function claimAction(act,id){
+  if(act==="me"){
+    const r=await sb.from("claims").upsert({user_id:cloud.me,person_id:id},{onConflict:"user_id"});
+    if(r.error){if(String(r.error.code)==="23505")throw {message:"Someone else has already linked their account to this person. Ask the admin if that’s a mistake."};throw r.error;}
+  }else if(act==="unme")chk(await sb.from("claims").delete().eq("user_id",cloud.me));
+  else if(act==="unlink-any")chk(await sb.from("claims").delete().eq("person_id",id));
+  await loadClaims();cloudChanged();paintMe();
+}
+function paintMe(){
+  const b=$("#t-me");if(b)b.hidden=!me();
+}
+function myBranch(){
+  const m=me();if(!m)return null;
+  const p=m.kind==="spouse"?m.partner:m,root=p.parent||p,out=new Set();
+  (function walk(x){out.add(x.id);x.unions.forEach(u=>{if(u.spouse)out.add(u.spouse.id);u.children.forEach(c=>{if(c.kind==="person")walk(c);});});})(root);
+  return out;
+}
+
+/* ================= birthdays and remembrance days ================= */
+const MONTHS={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,sept:9,oct:10,nov:11,dec:12};
+function parseDay(s){
+  s=String(s||"").trim().replace(/\s+/g," ");let m,y=null,mo,d;
+  if((m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/))){y=+m[1];mo=+m[2];d=+m[3];}
+  else if((m=s.match(/^(\d{1,2})(?:st|nd|rd|th)?(?: of)? ([A-Za-z]{3,})\.?,?(?: (\d{4}))?$/))){d=+m[1];mo=MONTHS[m[2].slice(0,4).toLowerCase()]||MONTHS[m[2].slice(0,3).toLowerCase()];y=m[3]?+m[3]:null;}
+  else if((m=s.match(/^([A-Za-z]{3,})\.? (\d{1,2})(?:st|nd|rd|th)?,?(?: (\d{4}))?$/))){mo=MONTHS[m[1].slice(0,4).toLowerCase()]||MONTHS[m[1].slice(0,3).toLowerCase()];d=+m[2];y=m[3]?+m[3]:null;}
+  else if((m=s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})$/))){d=+m[1];mo=+m[2];y=+m[3];} // day first, as written in Nigeria
+  else return null;
+  if(!mo||mo<1||mo>12||d<1||d>31)return null;
+  const days=[31,29,31,30,31,30,31,31,30,31,30,31][mo-1];if(d>days)return null;
+  return {y,mo,d};
+}
+function nextOccurrence(p,from){
+  for(let yr=from.getFullYear();yr<=from.getFullYear()+1;yr++){
+    let d=p.d;if(p.mo===2&&d===29&&!(yr%4===0&&(yr%100!==0||yr%400===0)))d=28;
+    const t=new Date(yr,p.mo-1,d);if(t>=from)return t;
+  }
+}
+function calendarItems(){
+  const today=new Date();today.setHours(0,0,0,0);
+  const out=[];let yearOnly=0;
+  [...people.values(),...spouses.values()].forEach(e=>{
+    const d=details(e.id),b=d.born&&parseDay(d.born.v),x=d.died&&parseDay(d.died.v);
+    if(d.died){
+      if(x){const t=nextOccurrence(x,today);out.push({e,kind:"passed",t,years:x.y?t.getFullYear()-x.y:null,src:x});}
+      else yearOnly++;
+    }else if(d.born){
+      if(b){const t=nextOccurrence(b,today);out.push({e,kind:"birthday",t,age:b.y?t.getFullYear()-b.y:null,src:b});}
+      else yearOnly++;
+    }
+  });
+  out.sort((a,b)=>a.t-b.t||a.e.name.localeCompare(b.e.name));
+  return {out,yearOnly,today};
+}
+function calLine(i){
+  const day=i.t.toLocaleDateString(undefined,{weekday:"short",day:"numeric",month:"short"});
+  const what=i.kind==="birthday"
+    ?(i.age!=null?`Turns ${i.age}`:"Birthday")
+    :(i.years!=null&&i.years>0?`Remembering them, ${i.years} year${i.years===1?"":"s"} since they passed`:"Remembering them on the day they passed");
+  return `<li class="cal-${i.kind}"><span class="cal-day">${esc(day)}</span>${avatar(i.e,40)}<span class="cal-who">${btn(i.e)}<span class="cal-what">${i.kind==="birthday"?"🎂 ":"🕊️ "}${esc(what)}</span></span></li>`;
+}
+function renderCalendar(){
+  const box=$("#cal-body");if(!box)return;
+  const {out,yearOnly,today}=calendarItems();
+  const inDays=(t,n)=>(t-today)/864e5<n;
+  const todays=out.filter(i=>+i.t===+today),week=out.filter(i=>+i.t!==+today&&inDays(i.t,8)),later=out.filter(i=>!inDays(i.t,8));
+  const months=new Map();later.forEach(i=>{const k=i.t.toLocaleDateString(undefined,{month:"long",year:"numeric"});if(!months.has(k))months.set(k,[]);months.get(k).push(i);});
+  let h=`<h2>Birthdays and remembrance days</h2><p class="list-lede">Upcoming birthdays of the living, and the days we remember those who have passed, for the next twelve months.</p>`;
+  if(!out.length)h+=`<p class="note">No full dates have been added yet. When an editor enters a date of birth or death with the day and month, such as <i>12 March 1950</i>, the person appears here.</p>`;
+  else{
+    h+=`<div class="row"><button class="ghost small" id="cal-ics">Add them all to my calendar</button></div>`;
+    if(todays.length)h+=`<section class="cal-today"><h3>Today</h3><ul class="cal">${todays.map(calLine).join("")}</ul></section>`;
+    if(week.length)h+=`<h3>This week</h3><ul class="cal">${week.map(calLine).join("")}</ul>`;
+    months.forEach((list,k)=>{h+=`<h3>${esc(k)}</h3><ul class="cal">${list.map(calLine).join("")}</ul>`;});
+  }
+  if(yearOnly)h+=`<p class="byline" style="margin-top:20px!important">${yearOnly} ${yearOnly===1?"person has":"people have"} only a year or a partial date, so they aren’t shown. ${canEditNow()?`Add the day and month in <a href="#manage">Manage</a>.`:""}</p>`;
+  h+=`<p class="byline">Dates are read as day, then month: 03/04/1980 means 3 April. Writing the month as a word avoids any doubt.</p>`;
+  box.innerHTML=h;
+  const b=$("#cal-ics");if(b)b.onclick=()=>{
+    const now=icsStamp(new Date());let s="BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Nwaogwugwu Family//Birthdays//EN\r\nCALSCALE:GREGORIAN\r\nX-WR-CALNAME:Nwaogwugwu family days\r\n";
+    out.forEach(i=>{const d=i.t,ds=`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,"0")}${String(d.getDate()).padStart(2,"0")}`;
+      s+=`BEGIN:VEVENT\r\nUID:${i.kind}-${i.e.id}@nwaogwugwu-family-tree\r\nDTSTAMP:${now}\r\nDTSTART;VALUE=DATE:${ds}\r\nRRULE:FREQ=YEARLY\r\nSUMMARY:${icsText((i.kind==="birthday"?"Birthday: ":"Remembering ")+i.e.name)}\r\nDESCRIPTION:${icsText(SITE+"#"+i.e.id)}\r\nEND:VEVENT\r\n`;});
+    giveFile("nwaogwugwu-family-days.ics",new Blob([s+"END:VCALENDAR\r\n"],{type:"text/calendar"}));
+  };
+}
+$("#cal-body").addEventListener("click",ev=>{const g=ev.target.closest("[data-go]");if(g)select(g.dataset.go);});
+
+/* ================= where the family lives ================= */
+const LEAFLET_JS="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js",LEAFLET_CSS="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css";
+let leafletP=null,lmap=null,llayer=null;
+function loadLeaflet(){
+  if(window.L)return Promise.resolve();
+  if(leafletP)return leafletP;
+  leafletP=new Promise((res,rej)=>{
+    const l=document.createElement("link");l.rel="stylesheet";l.href=LEAFLET_CSS;l.integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H";l.crossOrigin="anonymous";document.head.appendChild(l);
+    const s=document.createElement("script");s.src=LEAFLET_JS;s.integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH";s.crossOrigin="anonymous";
+    s.onload=()=>res();s.onerror=()=>{leafletP=null;rej();};document.head.appendChild(s);
+  });
+  return leafletP;
+}
+const placeKey=s=>fold(s).replace(/\s+/g," ").trim().slice(0,200);
+async function loadPlaces(){if(!sb)return;const r=await sb.from("places").select("key,lat,lon,label,found").limit(5000);cloud.places=new Map((r.data||[]).map(p=>[p.key,p]));}
+function placeGroups(){
+  const g=new Map();
+  [...people.values(),...spouses.values()].forEach(e=>{const p=details(e.id).place;if(!p)return;const k=placeKey(p.v);if(!k)return;if(!g.has(k))g.set(k,{key:k,text:p.v,people:[]});g.get(k).people.push(e);});
+  return [...g.values()].sort((a,b)=>b.people.length-a.people.length);
+}
+let geoBusy=false;
+async function geocodeMissing(){ // editors only; OpenStreetMap asks for no more than one lookup a second
+  if(geoBusy||!canEditNow()||!sb)return;
+  if(!cloud.places)await loadPlaces();
+  const todo=placeGroups().filter(g=>!cloud.places.has(g.key)).slice(0,25);
+  if(!todo.length)return;
+  geoBusy=true;
+  try{
+    for(const g of todo){
+      let row={key:g.key,found:false,lat:null,lon:null,label:null};
+      try{
+        const r=await fetch("https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&accept-language=en&q="+encodeURIComponent(g.text),{headers:{"Accept":"application/json"}});
+        const j=r.ok?await r.json():[];
+        if(j&&j[0])row={key:g.key,found:true,lat:+j[0].lat,lon:+j[0].lon,label:String(j[0].display_name||"").slice(0,300)};
+      }catch(e){continue;}
+      await sb.from("places").upsert(row,{onConflict:"key"});
+      cloud.places.set(g.key,row);
+      if(view==="map")renderMap();
+      await new Promise(r=>setTimeout(r,1100));
+    }
+  }finally{geoBusy=false;}
+}
+async function renderMap(){
+  const box=$("#map-body");if(!box)return;
+  if(!cloud.places){box.querySelector("#map-list").innerHTML=`<p>Loading places…</p>`;await loadPlaces().catch(()=>{});cloud.places=cloud.places||new Map();}
+  const groups=placeGroups(),onMap=groups.filter(g=>{const p=cloud.places.get(g.key);return p&&p.found&&p.lat!=null;}),
+        waiting=groups.filter(g=>!cloud.places.has(g.key)),missing=groups.filter(g=>{const p=cloud.places.get(g.key);return p&&!p.found;});
+  const total=groups.reduce((a,g)=>a+g.people.length,0);
+  $("#map-count").textContent=total?`${total} ${total===1?"person":"people"} in ${groups.length} ${groups.length===1?"place":"places"}`:"";
+  let list="";
+  if(!groups.length)list=`<p class="note">No locations have been added yet. When editors fill in where people live, they appear on this map.</p>`;
+  else list=`<h3>Places</h3><ul class="maplist">`+groups.map(g=>{const p=cloud.places.get(g.key);
+      return `<li><b>${esc(g.text)}</b> <span class="mmuted">${g.people.length} ${g.people.length===1?"person":"people"}${p&&!p.found?", not found on the map":!p?", waiting to be placed":""}</span><div class="mapppl">${g.people.map(e=>btn(e)).join("")}</div></li>`;}).join("")+`</ul>`;
+  if(missing.length&&canEditNow())list+=`<p class="byline">Some locations could not be found. Try writing the town, state and country, for example <i>Aba, Abia State, Nigeria</i>.</p>`;
+  if(waiting.length&&canEditNow())list+=`<p class="byline">Placing ${waiting.length} new ${waiting.length===1?"location":"locations"} on the map…</p>`;
+  box.querySelector("#map-list").innerHTML=list;
+  try{await loadLeaflet();}catch(e){$("#map-canvas").innerHTML=`<p style="padding:16px">The map could not load. Check your connection and try again.</p>`;return;}
+  if(!lmap){
+    lmap=L.map("map-canvas",{scrollWheelZoom:false,worldCopyJump:true}).setView([9.08,7.4],3);
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:18,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(lmap);
+    llayer=L.layerGroup().addTo(lmap);
+    lmap.on("popupopen",ev=>{ev.popup.getElement().addEventListener("click",e2=>{const g=e2.target.closest("[data-go]");if(g){select(g.dataset.go);}});});
+  }
+  setTimeout(()=>lmap.invalidateSize(),50);
+  llayer.clearLayers();
+  const pts=[];
+  const spots=new Map(); // different spellings of one town share a marker
+  onMap.forEach(g=>{const p=cloud.places.get(g.key),k=p.lat.toFixed(2)+","+p.lon.toFixed(2);
+    if(!spots.has(k))spots.set(k,{lat:p.lat,lon:p.lon,texts:[],people:[]});const sp=spots.get(k);sp.texts.push(g.text);sp.people.push(...g.people);});
+  spots.forEach(sp=>{
+    const n=sp.people.length,sz=Math.min(54,26+Math.sqrt(n)*8),label=sp.texts.join(" / ");
+    const icon=L.divIcon({className:"mapdot",html:`<span style="--s:${sz}px">${n}</span>`,iconSize:[sz,sz],iconAnchor:[sz/2,sz/2]});
+    L.marker([sp.lat,sp.lon],{icon,title:`${label}: ${n}`,alt:`${label}, ${n} ${n===1?"person":"people"}`}).addTo(llayer)
+      .bindPopup(`<div class="mappop"><b>${esc(label)}</b><ul>${sp.people.slice(0,30).map(e=>`<li>${avatar(e,28)}${btn(e)}</li>`).join("")}</ul>${n>30?`<p>and ${n-30} more</p>`:""}</div>`,{maxHeight:280});
+    pts.push([sp.lat,sp.lon]);
+  });
+  if(pts.length&&!box.dataset.fitted){lmap.fitBounds(pts,{padding:[40,40],maxZoom:9});box.dataset.fitted="1";}
+  $("#map-body").querySelectorAll("#map-list [data-go]").forEach(b=>b.onclick=()=>select(b.dataset.go));
+}
+
+$("#t-me").addEventListener("click",()=>{const m=me();if(m)select(m.id);});
 /* ================= controls + routing ================= */
 document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>{
   setView(b.dataset.view);
