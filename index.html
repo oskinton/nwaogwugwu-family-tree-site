@@ -1,0 +1,1437 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nwaogwugwu Family Tree</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Besley:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --bg:#F3F3EE; --surface:#FFFFFF; --sunk:#E9E9E2; --ink:#1B2140; --muted:#565C78; --line:#D3D4CC;
+  --accent:#9A2A22; --accent-ink:#FFFFFF; --focus:#3D55A8; --paper:#FBFAF6;
+  --b0:#1B2140; --b1:#A63A2E; --b2:#A26F12; --b3:#44752F; --b4:#3D55A8; --b5:#8A3F86; --b6:#1C7B85;
+  --shadow:0 10px 30px rgba(27,33,64,.16);
+  --display:"Besley",Rockwell,"Roboto Slab",Georgia,serif;
+  --body:"Atkinson Hyperlegible","Segoe UI",system-ui,-apple-system,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#131729; --surface:#1D2239; --sunk:#0E1120; --ink:#ECEBE4; --muted:#A6ABC2; --line:#323958;
+    --accent:#F08D78; --accent-ink:#1A1020; --focus:#9DB0FF; --paper:#F1EFE6;
+    --b0:#ECEBE4; --b1:#F08D78; --b2:#E4B555; --b3:#93C576; --b4:#93A7F5; --b5:#D592D1; --b6:#62C6CF;
+    --shadow:0 10px 30px rgba(0,0,0,.5);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#131729; --surface:#1D2239; --sunk:#0E1120; --ink:#ECEBE4; --muted:#A6ABC2; --line:#323958;
+  --accent:#F08D78; --accent-ink:#1A1020; --focus:#9DB0FF; --paper:#F1EFE6;
+  --b0:#ECEBE4; --b1:#F08D78; --b2:#E4B555; --b3:#93C576; --b4:#93A7F5; --b5:#D592D1; --b6:#62C6CF;
+  --shadow:0 10px 30px rgba(0,0,0,.5);
+}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;-webkit-text-size-adjust:100%}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:4px}
+h1,h2,h3{font-family:var(--display);font-weight:700;line-height:1.15;margin:0}
+img{max-width:100%}
+
+.app{height:100%;display:flex;flex-direction:column;min-height:0}
+
+/* ---------- header ---------- */
+.top{display:grid;grid-template-columns:auto minmax(220px,460px) 1fr;align-items:center;gap:12px 28px;padding:14px 24px 0;border-bottom:1px solid var(--line);background:var(--bg);position:relative;z-index:5}
+.brand{display:flex;align-items:center;gap:14px;min-width:0}
+.brand img{width:62px;height:auto;flex:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,.25))}
+.brand h1{font-size:1.55rem;letter-spacing:-.01em}
+.brand p{margin:2px 0 0;color:var(--muted);font-size:.9rem}
+.search{position:relative}
+.search input{width:100%;height:48px;padding:0 44px 0 44px;border:2px solid var(--ink);border-radius:999px;background:var(--surface);font-size:1rem}
+.search input::-webkit-search-cancel-button,.pick input::-webkit-search-cancel-button{display:none}
+.search input::placeholder{color:var(--muted);opacity:1}
+.search svg.glass{position:absolute;left:15px;top:14px;width:20px;height:20px;pointer-events:none;stroke:var(--ink)}
+.search .clear{position:absolute;right:8px;top:8px;width:32px;height:32px;border:0;border-radius:50%;background:transparent;font-size:1.2rem;line-height:1;color:var(--muted)}
+.results{position:absolute;left:0;right:0;top:54px;max-height:min(60vh,460px);overflow:auto;margin:0;padding:6px;list-style:none;background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);z-index:20}
+.results[hidden]{display:none}
+.results li{display:flex;align-items:baseline;gap:10px;padding:9px 12px;border-radius:10px;cursor:pointer}
+.results li[aria-selected="true"],.results li:hover{background:var(--sunk)}
+.results .dot{flex:none;width:10px;height:10px;border-radius:50%;background:var(--bc,var(--b0));transform:translateY(1px)}
+.results .nm{font-weight:700}
+.results .sub{display:block;color:var(--muted);font-size:.875rem}
+.results .none{cursor:default;color:var(--muted)}
+.results .none:hover{background:none}
+.tabs{grid-column:1/-1;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin:0 -8px}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex:none;border:0;background:none;padding:10px 12px 12px;color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--ink);font-weight:700;border-bottom-color:var(--accent)}
+
+/* ---------- main ---------- */
+main{flex:1;min-height:0;position:relative;display:flex}
+.view{flex:1;min-width:0;min-height:0;display:none}
+.view.on{display:block}
+.scroll{overflow-y:auto;padding:28px 24px 80px}
+.col{max-width:44rem;margin-inline:auto}
+#view-list .col{margin-inline:0}
+@media (min-width:900px){ body.panel-open .scroll{padding-right:420px} }
+
+/* tree */
+#view-tree{position:relative;overflow:hidden}
+#tree-svg{width:100%;height:100%;display:block;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+#tree-svg:active{cursor:grabbing}
+.link{fill:none;stroke:var(--bc,var(--b0));stroke-width:1.6;opacity:.5}
+.link.onpath{opacity:1;stroke-width:3.2}
+.node{cursor:pointer;outline:none}
+.node text{font-family:var(--body);fill:var(--ink);paint-order:stroke;stroke:var(--bg);stroke-width:5px;stroke-linejoin:round}
+.node .main{font-size:15px}
+.node.haskids .main{font-weight:700}
+.node .sub,.node .cap{font-size:12.5px;fill:var(--muted)}
+.node .tag{font-style:italic;font-weight:400;fill:var(--muted)}
+.node.u .main{font-family:var(--display);font-weight:500;font-size:15.5px}
+.node.x .main,.node.r .main{font-style:italic;font-weight:400}
+.node .dot{fill:var(--bg);stroke:var(--bc,var(--b0));stroke-width:2}
+.node.haskids .dot{fill:var(--bc,var(--b0))}
+.node .count{font-size:11px;font-weight:700;fill:var(--bg);stroke:none;text-anchor:middle;pointer-events:none}
+.node.r .dot{stroke-dasharray:2.5 2.5}
+.node.sel .main{fill:var(--accent)}
+.node.sel .halo{opacity:1}
+.node .halo{fill:none;stroke:var(--accent);stroke-width:2.5;opacity:0}
+.node .hit{fill:transparent;stroke:none}
+.node:focus-visible{outline:none}
+.node:focus-visible .halo{opacity:1;stroke:var(--focus)}
+.tools{position:absolute;left:16px;bottom:16px;display:flex;flex-wrap:wrap;gap:8px;max-width:calc(100% - 32px)}
+.tools button{height:40px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.tools button.sq{width:40px;padding:0;font-size:1.2rem;line-height:1}
+.hint{position:absolute;left:16px;top:12px;margin:0;max-width:min(30rem,calc(100% - 32px));color:var(--muted);font-size:.9rem;pointer-events:none}
+
+/* list */
+.list-root{margin:0 0 6px;font-family:var(--display);font-size:1.5rem}
+.list-lede{margin:0 0 22px;color:var(--muted)}
+.branch{margin:0 0 26px;border-left:4px solid var(--bc);padding-left:16px}
+.branch>h3{font-size:1.15rem;font-weight:500}
+.branch>h3 small{display:block;font-family:var(--body);font-size:.875rem;color:var(--muted);font-weight:400;margin-bottom:2px}
+.kids{list-style:none;margin:6px 0 0;padding:0}
+.kids .kids{margin:0 0 4px 9px;padding-left:16px;border-left:1.5px solid color-mix(in srgb,var(--bc) 45%,transparent)}
+.kids li{margin:0}
+.pbtn{display:inline-block;border:0;background:none;padding:5px 6px;margin-left:-6px;border-radius:8px;text-align:left}
+.pbtn:hover{background:var(--sunk)}
+.pbtn b{font-weight:700}
+.pbtn .meta{color:var(--muted);font-size:.875rem}
+.pbtn.cur b{color:var(--accent)}
+.ulabel{display:block;margin:6px 0 0;color:var(--muted);font-size:.875rem;font-style:italic}
+.ph{display:inline-block;padding:5px 0;color:var(--muted);font-style:italic}
+
+/* story + gaps */
+.prose h2{font-size:2rem;margin-bottom:14px}
+.prose h3{font-size:1.25rem;margin:34px 0 8px}
+.prose p{margin:0 0 14px;max-width:38rem}
+.prose figure{margin:22px 0 26px}
+.prose figure img{display:block;width:100%;max-width:34rem;border-radius:6px;background:var(--paper);border:1px solid var(--line)}
+.prose figcaption{margin-top:10px;color:var(--muted);font-size:.9rem;max-width:34rem}
+.prose details{max-width:38rem;margin:0 0 18px;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:12px 16px}
+.prose summary{cursor:pointer;font-weight:700}
+.prose details p{margin:12px 0 0}
+.bigcrest{display:block;width:210px;height:auto;margin:0 0 18px;filter:drop-shadow(0 6px 14px rgba(0,0,0,.3))}
+@media (min-width:700px){.bigcrest{float:right;margin:0 0 18px 32px}}
+.facts{display:flex;flex-wrap:wrap;gap:8px 28px;margin:4px 0 22px;padding:0;list-style:none}
+.facts li{font-size:.95rem;color:var(--muted)}
+.facts b{font-family:var(--display);font-size:1.6rem;color:var(--ink);margin-right:6px}
+.key{list-style:none;padding:0;margin:0 0 14px;max-width:38rem}
+.key li{display:flex;gap:12px;align-items:center;margin:0 0 8px}
+.key svg{flex:none}
+.gaps{list-style:none;margin:0 0 10px;padding:0;max-width:40rem}
+.gaps li{padding:12px 0;border-top:1px solid var(--line)}
+.who{border:0;background:none;padding:0;font-weight:700;color:var(--accent);text-decoration:underline;text-underline-offset:3px;text-align:left}
+
+/* panel */
+#panel{position:absolute;top:0;right:0;bottom:0;width:400px;max-width:100%;background:var(--surface);border-left:1px solid var(--line);box-shadow:var(--shadow);overflow-y:auto;padding:22px 24px 40px;z-index:4}
+#panel[hidden]{display:none}
+#panel .x{position:sticky;top:0;float:right;width:40px;height:40px;margin:-8px -10px 0 8px;border:1px solid var(--line);border-radius:50%;background:var(--surface);font-size:1.3rem;line-height:1}
+#panel h2{font-size:1.6rem;overflow-wrap:anywhere}
+#panel .rel{margin:8px 0 0;color:var(--muted)}
+#panel .chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0;padding:0;list-style:none}
+#panel .chips li{padding:4px 12px;border-radius:999px;font-size:.875rem;background:var(--sunk)}
+#panel .chips li.br{background:none;border:1.5px solid var(--bc);}
+#panel h3{font-family:var(--body);font-size:.95rem;font-weight:700;margin:24px 0 8px;color:var(--muted)}
+#panel p{margin:0 0 8px}
+.descent{list-style:none;margin:0;padding:0}
+.descent li{position:relative;padding:0 0 0 22px}
+.descent li::before{content:"";position:absolute;left:5px;top:16px;width:9px;height:9px;border-radius:50%;background:var(--bc,var(--b0))}
+.descent li:not(:last-child)::after{content:"";position:absolute;left:9px;top:25px;bottom:-16px;width:1.5px;background:var(--line)}
+.descent .via{display:block;color:var(--muted);font-size:.85rem;margin:-4px 0 4px}
+.names{display:flex;flex-wrap:wrap;gap:2px 4px;list-style:none;margin:0;padding:0}
+.names.stack{display:block}
+.note{padding:10px 14px;border-radius:10px;background:var(--sunk);font-size:.925rem}
+.go{margin-top:22px;height:44px;padding:0 20px;border:0;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-weight:700}
+
+@media (max-width:899px){
+  .top{grid-template-columns:1fr;gap:10px;padding:12px 16px 0}
+  .brand img{width:46px}
+  .brand h1{font-size:1.25rem}
+  .brand p{font-size:.8rem}
+  .scroll{padding:22px 16px 80px}
+  #panel{top:auto;left:0;width:auto;max-height:56%;border-left:0;border-top:1px solid var(--line);border-radius:18px 18px 0 0;padding:18px 18px calc(28px + env(safe-area-inset-bottom,0px))}
+  .hint{font-size:.85rem}
+  .tools{left:12px;bottom:12px}
+  .prose h2{font-size:1.6rem}
+}
+
+/* ---------- related, poster, contribute, details ---------- */
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:40rem;margin:18px 0 22px}
+.pick{position:relative}
+.pick label,.field label{display:block;font-weight:700;font-size:.9rem;margin:0 0 6px}
+.pick input,.field input,.field textarea{width:100%;min-height:46px;padding:10px 14px;border:1.5px solid var(--muted);border-radius:12px;background:var(--surface)}
+.field textarea{min-height:130px;resize:vertical;line-height:1.45}
+.pick .results{top:calc(100% + 6px)}
+.relbig{font-family:var(--display);font-size:1.5rem;line-height:1.3;margin:0 0 10px!important;max-width:40rem!important}
+.relbig b{color:var(--accent)}
+.twolines{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:40rem;margin:18px 0}
+.twolines h3{font-family:var(--body);font-size:.9rem;color:var(--muted);margin:0 0 8px}
+.posterbox{border:1px solid var(--line);border-radius:10px;background:#FBFAF6;overflow:auto;max-height:70vh;margin:16px 0}
+.posterbox svg{display:block;min-width:1400px;width:100%;height:auto}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0}
+.ghost,.solid{min-height:42px;padding:0 18px;border-radius:999px;font-weight:700}
+.ghost{border:1.5px solid var(--ink);background:transparent}
+.solid{border:0;background:var(--accent);color:var(--accent-ink)}
+.ghost.small,.solid.small{min-height:34px;padding:0 12px;font-size:.875rem}
+.ghost[disabled],.solid[disabled]{opacity:.5;cursor:default}
+.linkish{border:0;background:none;padding:0;color:var(--accent);text-decoration:underline;text-underline-offset:3px;font-size:.875rem}
+.field{margin:0 0 14px}
+.field .hintline{color:var(--muted);font-size:.85rem;margin:4px 0 0}
+.rmbox{margin:8px 0 0;padding:10px 12px;border-radius:10px;background:var(--sunk);font-size:.9rem}
+.rmbox input{margin:6px 0 8px}
+.status{min-height:1.4em;color:var(--muted);font-size:.9rem;margin:8px 0 0}
+.status.bad{color:var(--accent)}
+#pdetails{margin-top:16px}
+.portrait{display:block;width:100%;max-height:340px;object-fit:cover;border-radius:12px;margin:0 0 14px;background:var(--sunk)}
+.facts2{margin:0 0 10px}
+.facts2 div{display:flex;gap:10px;padding:5px 0;border-bottom:1px solid var(--line)}
+.facts2 dt{flex:none;width:9.5rem;color:var(--muted);font-size:.9rem}
+.facts2 dd{margin:0;overflow-wrap:anywhere}
+.bio p{margin:0 0 10px}
+.byline{color:var(--muted);font-size:.85rem;margin:8px 0 12px!important}
+.cards{list-style:none;margin:0 0 8px;padding:0;max-width:40rem}
+.cards li{padding:14px 0;border-top:1px solid var(--line)}
+.cards .who2{font-weight:700}
+.cards .said{color:var(--muted);margin:2px 0 8px;overflow-wrap:anywhere}
+.badge{display:inline-block;min-width:20px;padding:0 6px;margin-left:6px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-size:.75rem;font-weight:700;line-height:20px;text-align:center}
+.go.alt{background:transparent;color:var(--ink);border:1.5px solid var(--ink);margin-left:8px}
+@media (max-width:600px){.pair,.twolines{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <img src="img/crest.webp" alt="Nwaogwugwu family crest" width="454" height="520">
+      <div>
+        <h1>Nwaogwugwu family tree</h1>
+        <p>The descendants of Ukomadu Nwaogwugu. Updated September 14, 2026.</p>
+      </div>
+    </div>
+    <div class="search">
+      <svg class="glass" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>
+      <input id="q" type="search" autocomplete="off" spellcheck="false" placeholder="Find a family member by name" aria-label="Find a family member by name" role="combobox" aria-expanded="false" aria-controls="results" aria-autocomplete="list">
+      <button class="clear" id="qclear" aria-label="Clear search" hidden>×</button>
+      <ul class="results" id="results" role="listbox" hidden></ul>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Views">
+      <button role="tab" data-view="tree">Tree</button>
+      <button role="tab" data-view="list">Full list</button>
+      <button role="tab" data-view="related">How are we related?</button>
+      <button role="tab" data-view="story">Our story</button>
+      <button role="tab" data-view="poster">Poster</button>
+      <button role="tab" data-view="gaps">Help fill the gaps</button>
+      <button role="tab" data-view="contribute">Contribute</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="view" id="view-tree" aria-label="Family tree">
+      <svg id="tree-svg" role="group" aria-label="Family tree diagram"><g id="zoomg"><g id="links"></g><g id="nodes"></g></g></svg>
+      <p class="hint" id="hint">Select a filled circle to open a branch, or a name to see that person. Drag to move around; pinch or scroll to zoom.</p>
+      <div class="tools">
+        <button id="t-open">Open all</button>
+        <button id="t-close">Close all</button>
+        <button id="t-fit">Fit</button>
+        <button id="t-in" class="sq" aria-label="Zoom in">+</button>
+        <button id="t-out" class="sq" aria-label="Zoom out">−</button>
+      </div>
+    </section>
+
+    <section class="view scroll" id="view-list" aria-label="Full list"><div class="col" id="list-body"></div></section>
+
+    <section class="view scroll" id="view-story" aria-label="Our story">
+      <div class="col prose">
+        <img class="bigcrest" id="bigcrest" alt="" width="454" height="520">
+        <h2>Our story</h2>
+        <ul class="facts" id="facts"></ul>
+        <p>This family tree began as a typed booklet, <i>Our Family Tree</i>, put together after the Nigerian–Biafran war of 1967–1970 so that the family’s history would not be lost a second time. It was brought up to date for Homecoming 2026, and this page carries that update.</p>
+        <p>The tree here starts with Ukomadu Nwaogwugu, his six wives and their twenty-three children, and follows each line down to the youngest generation on record.</p>
+
+        <figure>
+          <img src="img/cover.webp" alt="Cover of the original booklet: a drawing of a fruit tree titled Our Family Tree, with the names Agbaghgba, Egbu, Nwagbaghoso, Akoma, Njoku, Ubani, Oturubi and Mba written among the branches." width="771" height="737" loading="lazy">
+          <figcaption>The cover of the original booklet. It names Agbaghgba as “our patriach” and draws lines from him to Egbu, and from Egbu to Nwagbaghoso, Akoma, Njoku and Ubani. Oturubi and Mba are joined on a second limb.</figcaption>
+        </figure>
+
+        <h3>Why it was written down</h3>
+        <p>The opening page explains that the story was told in part by Mr. Isaiah Nwauharia, described as a historian by the family’s own standards, who received it from his father Nwauharia Nwaoko and his uncles Eze and Onwunali Nwaogwugwu. The war had shown how quickly records and elders could be lost, and the compilers wanted something permanent for the generations to come.</p>
+        <figure>
+          <img src="img/about.webp" alt="Scan of the typewritten opening page, headed About Our Family Tree." width="902" height="769" loading="lazy">
+          <figcaption>The opening page of the original booklet. The right-hand edge of the scan is cut off in places.</figcaption>
+        </figure>
+        <details>
+          <summary>Read the opening page as typed</summary>
+          <p>1. This narrative or collection is about our family tree whose Patriach is Agbighgba.</p>
+          <p>It is told in part by Mr. Isaiah Nwauharia a member of the family, who is by our native standards a historian. This narrative has been passed to him from the following elders of the family Nwauharia Nwaoko, his father and Eze and Onwunali Nwaogwugwu his uncles.</p>
+          <p>We can no longer leave the story of our family tree to fate, but must document permanently what is left now, as events like the recent BIAFRAN/NIGERIAN war 1966/70, demonstrated the loss of innumerable records through fright and flight for safety and the death of elders of the family which dealth an irreparable blow to accurate collection of our birth dates, that were passed by them to the sons and daughters of this family.</p>
+          <p>2. We believe that we owe our sons and daughters the stories of their backgrounds and therefore must leave for our sons and the generations to come a permanent documentation of our family tree – the importance of which cannot be over stated.</p>
+          <p>Our geatest difficulty in this maider collection however, has been in obtaining accurate date of birth, (DOB).</p>
+          <p>What we have attempted to do is a humble beginning. It is hoped that this collection should be reviewed revised and reprinted to up date the family tree from time to time.</p>
+        </details>
+
+        <h3>How to read the tree</h3>
+        <ul class="key">
+          <li><svg width="26" height="26" aria-hidden="true"><circle cx="13" cy="13" r="11" fill="var(--b2)"/><text x="13" y="17" text-anchor="middle" font-size="11" font-weight="700" fill="var(--bg)">12</text></svg><span>A filled circle with a number is a closed branch. The number is how many descendants are recorded beneath it. Select it to open.</span></li>
+          <li><svg width="26" height="26" aria-hidden="true"><circle cx="13" cy="13" r="6" fill="var(--b2)"/></svg><span>A small filled circle is an open branch. Select it to close.</span></li>
+          <li><svg width="26" height="26" aria-hidden="true"><circle cx="13" cy="13" r="5" fill="var(--bg)" stroke="var(--b2)" stroke-width="2"/></svg><span>A hollow circle is someone with no children on record yet.</span></li>
+          <li><svg width="26" height="26" aria-hidden="true"><circle cx="13" cy="13" r="5" fill="var(--bg)" stroke="var(--b3)" stroke-width="2" stroke-dasharray="2.5 2.5"/></svg><span>A dashed circle is a person who appears in two places in the record. Selecting it takes you to their main entry.</span></li>
+        </ul>
+        <p>Each of Ukomadu’s six wives starts a branch with its own colour, and that colour follows her descendants all the way down.</p>
+        <p>The record marks some marriages and children as “through inheritance”. This refers to the custom by which a widow and her children were taken into the household of a kinsman of her late husband. The tree keeps the record’s wording wherever it is used.</p>
+        <p>Names are spelled as they appear in the record. If a spelling looks wrong, or someone is missing, see <i>Help fill the gaps</i>.</p>
+      </div>
+    </section>
+
+    <section class="view scroll" id="view-gaps" aria-label="Help fill the gaps">
+      <div class="col prose">
+        <h2>Help fill the gaps</h2>
+        <p>The people who typed the first booklet hoped it would be “reviewed revised and reprinted” from time to time. These are the places where today’s record is incomplete or unclear. If you know an answer, sign in under <i>Contribute</i> and add it, or pass it to whoever keeps the family tree.</p>
+        <div id="gaps-body"></div>
+      </div>
+    </section>
+
+    <section class="view scroll" id="view-related" aria-label="How are we related?">
+      <div class="col prose">
+        <h2>How are we related?</h2>
+        <p>Choose any two people in the record to see how they are related and who their closest shared ancestor is.</p>
+        <div class="pair">
+          <div class="pick"><label for="ra">First person</label><input id="ra" type="search" autocomplete="off" spellcheck="false" placeholder="Type a name"><ul class="results" hidden></ul></div>
+          <div class="pick"><label for="rb">Second person</label><input id="rb" type="search" autocomplete="off" spellcheck="false" placeholder="Type a name"><ul class="results" hidden></ul></div>
+        </div>
+        <div id="relout" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="view scroll" id="view-poster" aria-label="Poster">
+      <div class="col prose" style="max-width:72rem">
+        <h2>Poster</h2>
+        <p>The whole tree on one sheet, for printing. Ukomadu sits in the middle; the branch of his 2nd wife runs to the right and the other five to the left. Birth and death years appear once editors have added them.</p>
+        <div class="row" id="poster-actions">
+          <button class="solid" id="dl-svg">Download for a print shop (SVG)</button>
+          <button class="ghost" id="dl-png">Download as a picture (PNG)</button>
+        </div>
+        <p class="status" id="poster-status" aria-live="polite"></p>
+        <div class="posterbox" id="poster-box"></div>
+      </div>
+    </section>
+
+    <section class="view scroll" id="view-contribute" aria-label="Contribute">
+      <div class="col prose" id="contribute-body"></div>
+    </section>
+
+    <aside id="panel" aria-label="Person details" hidden></aside>
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" integrity="sha384-0w2KAL2YHP6wKOkUDzkCDGgVvfmHnj02DHeQ6XcHOgTfFsGyonKOpShMH1x6nk9o" crossorigin="anonymous"></script>
+<script>
+"use strict";
+/* ================= the record ================= */
+const P=(n,s,o)=>Object.assign({n,s},o||{});
+const DATA=P("Ukomadu Nwaogwugu","m",{aka:"Nwaogwugwu",u:[
+ {ord:1,sp:"(Ikodia) Nwahuzi",from:"Akpa Mba",cnt:3,c:[
+  P("Enwereji Ukomadu","m",{u:[
+   {ord:1,sp:"Mary Owuala",from:"Ohanze Oboala",cnt:2,c:[
+    P("Nwanganga Enwereji","m",{u:[{sp:"Ezinne Keziah Amalaha",from:"Ihie Ayaba",cnt:4,c:[P("Kelechi"),P("Nnebuihe"),P("Obioma"),P("Chinedu")]}]}),
+    P("Nn??enta",null,{q:"Two letters of this name are marked as unreadable in the record."})
+   ]},
+   {ord:2,sp:"Lucy Nwaoru",from:"Akpa Mba Ato",cnt:5,c:[P("Okezia"),P("Nwaojikpe"),P("Ochiobi"),P("Iheonunakwu"),P("Nmandinaubi")]},
+   {ord:3,sp:"Nwaojikpegh Abel",from:"Ntighauzo",cnt:5,c:[P("Onwghara"),P("Nwaeke"),P("Ugwunwanyi"),P("Ndidi"),P("Nwanyieze")]},
+   {ord:4,sp:"Iweahaghogo Onumegbu",from:"Ntighauzo",inh:true,cnt:3,sameAs:"sp-iweahagho-onumegbu",
+     note:"She was first the 3rd wife of Ukomadu Nwaogwugu, where her name is spelled Iweahagho.",
+     c:[{ref:"onyenweaku-ukomadu"},{ref:"nwaezinma-ukomadu"}]}
+  ]}),
+  P("Nwaka Ukomadu"),
+  P("Nwanyibuka Ukomadu")
+ ]},
+ {ord:2,sp:"Nwantura Okpokoronu",from:"Ntighauzo",cnt:6,c:[
+  P("Nwaerigwara Ukomadu"),
+  P("David Ahukanna Ukomadu","m",{u:[
+   {ord:1,sp:"Helen Orianu Iheanacho Ori",cnt:8,c:[
+    P("Bernard Enyinnaya Ahukanna","m",{u:[
+     {ord:1,sp:"Juliana Obioma Ogbonna",cnt:3,c:[
+      P("Iheanyi Ezechimere Ahukanna","m",{u:[{sp:"Chioma Nwaohuocha",c:[P("Love Obioma Ahukanna","f"),P("Jacob Chimaroke Ahukanna")]}]}),
+      P("Ndubisi Madabuchi Ahukanna","m"),
+      P("Chidinma Onyinyechi Ahukanna","f")
+     ]},
+     {ord:2,sp:"Oluchi Adaku Ebere",inh:true,cnt:1,c:[P("Ezeuku Nwanganga","m",{t:"stepson"})]}
+    ]}),
+    P("Adanma Woru","f",{u:[{sp:"Monday Woru",cnt:7,c:[
+      P("Chimezie","m",{u:[{c:[{ph:"3 sons, names not yet recorded",k:3}]}]}),
+      P("Oluchi Woru","f",{u:[{sp:"Kingsley",spq:"Only his first name is recorded.",c:[]}]}),
+      P("Chinweoke Woru","m"),P("Chiezue Woru","m"),P("Hafuruchi Woru","f"),P("Chika Woru","m"),P("Uchechi Woru","f")
+    ]}]}),
+    P("Veronica Uchechi Wosu-Ezi","f",{u:[{sp:"Nwuju Wosu Ezi",cnt:3,c:[
+      P("Travis Ezi","m",{t:"inherited son"}),
+      P("Chioma Wosu-Ezi","f",{u:[{sp:"Damario Thomas",c:[P("Deion Uchechukwu Ezi Thomas","m"),P("Chikamso Uchechi Ezi Thomas","f")]}]}),
+      P("Chigozirim Wosu-Ezi","m",{t:"adopted son"})
+    ]}]}),
+    P("Peace Nkechinyere Adi","f",{u:[{cnt:8,c:[
+      P("Goodluck Adi","m"),P("Chioma Adi","f"),P("Hope Ngozi Adi","f"),P("Okwuchi Adi","f"),P("Chinasa Adi","f"),P("Chiebere Adi","f"),P("Chibuihe Goodnews Adi","f"),P("Fine Chinwemmeri Adi","f")
+    ]}]}),
+    P("Ephraim Okebugwu Ahukanna","m",{u:[{sp:"Amarachi Peace Nwaejike",cnt:3,c:[
+      P("Ngozi Ahukanna","f",{u:[
+        {ord:1,sp:"Chukwundi Alozie",cnt:1,note:"The record lists one child for Ngozi without saying which marriage. Abigail is placed here because she carries the Alozie name.",c:[P("Abigail Alozie","f")]},
+        {ord:2,sp:null,spq:"His name is still to be added to the record.",c:[]}
+      ]}),
+      P("Obinna Ahukanna","m",{u:[{sp:"Chinwe Joy Chibunna",cnt:1,c:[P("Chimnonyerem Kira Ahukanna","f")]}]}),
+      P("Ucheoma Ahukanna","f",{u:[{sp:"Godswill Figo",c:[]}]})
+    ]}]}),
+    P("Blessing Nneoma Akwarandu","f",{u:[{sp:"Akwarandu",spq:"Only the surname Akwarandu is recorded, and it is not certain the record means it as her husband’s name.",cnt:1,c:[
+      P("Chibuike Akwarandu","m",{u:[{sp:"Chidinma",spq:"Only her first name is recorded.",cnt:2,c:[P("Olannaya Akwarandu","f"),P("Naetochukwu Akwarandu","m")]}]})
+    ]}]}),
+    P("Okeoma Davidson Ahukanna","m",{u:[{sp:"Salomy Ogechi",cnt:3,c:[P("Chigozirim Ahukanna","m"),P("Ezinma Ahukanna","f")]}]}),
+    P("Kelechi Ahukanna","m",{u:[{sp:"Nnedinma Ekpendu",cnt:4,c:[P("Chimdia Ahukanna","f"),P("Chinedum Ahukanna","m"),P("Chidozirim Ahukanna","m"),P("Ezechimerem Ahukanna","m")]}]})
+   ]},
+   {ord:2,sp:"Comfort",spq:"Only her first name is recorded.",cnt:8,c:[P("Amaku")]},
+   {ord:3,sp:"Mercy",spq:"Only her first name is recorded.",cnt:7,c:[
+    P("Kingsley Chike","m"),P("Uloaku","f"),P("Ocheze","f"),P("Rachel Izuchi","f"),P("Chiekezie","m"),
+    P("Uloaku","f",{q:"The name Uloaku appears twice among Mercy’s children. This may be a second daughter of the same name, or a repeat."})
+   ]}
+  ]}),
+  P("Nwakwa Ukomadu"),
+  P("Nwaezego Sunday Ukomadu","m",{u:[{sp:"Felecia Oluchi",spq:"Her maiden name is still to be added to the record.",cnt:3,c:[
+    P("Ugoeze Ukomadu","f",{u:[{c:[P("Chidiebube Nwaeze Ukomadu")]}]}),
+    P("Uzoma Ukomadu","m",{u:[{sp:"Aurora Muhuza",cnt:7,c:[P("Leo Ukomadu","m"),P("Ada Ukomadu","f")]}]}),
+    P("Chinyere Richardson","f",{u:[{sp:"Sandious Richardson",c:[]}]})
+  ]}]}),
+  P("Ulowandi Ukomadu","f"),
+  P("Rosaline Nwantita Ukomadu","f",{q:"The record calls Rosaline the 7th child of Nwantura Okpokoronu, but lists six children for that marriage.",u:[{sp:"Marcus Nwanguma Adindu",cnt:1,c:[
+    P("Amadi Adindu","m",{u:[{sp:"Mrs Amadi Adindu",spq:"Her own name is still to be added to the record.",c:[P("Splendora Adindu","f"),P("Amadia Adindu","f")]}]})
+  ]}]})
+ ]},
+ {ord:3,sp:"Iweahagho Onumegbu",from:"Ntighauzo",cnt:7,
+  note:"The record notes that the first five children of this marriage were by Ukomadu, and the last two by his son Enwereji through inheritance.",c:[
+  P("Nwaogwugwu Ukomadu"),P("Amurunwanyi Ukomadu"),P("Nwaugo Ukomadu"),P("Chijioke Ukomadu"),P("Nduagu Ukomadu"),
+  P("Onyenweaku Ukomadu",null,{by:"enwereji-ukomadu"}),
+  P("Nwaezinma Ukomadu",null,{by:"enwereji-ukomadu"})
+ ]},
+ {ord:4,sp:"Ufoaku Madugba",from:"Umuokenye",inh:true,cnt:3,c:[
+  P("Ikonnaya Ukomadu"),
+  P("Zach Omeonu Ukomadu","m",{u:[{sp:"Chidirim Mercy Ekpemu",from:"Ayaba Ubi",cnt:6,c:[
+    P("Nnenna Obia","f",{u:[{sp:"Godson Obia",c:[P("Ifeanyi Obia"),P("Chinyere"),P("Uzo Obia"),P("Chidi Obia")]}]}),
+    P("Uloma Dike","f",{u:[{sp:"Okechukwu Dike",c:[
+      P("Chiemela Dike","m",{u:[{sp:"Beryl",spq:"Only her first name is recorded.",c:[P("Chimez"),P("Chinny")]}]}),
+      P("Chinwenmeri Dike"),
+      P("Chido Dike",null,{u:[{c:[
+        P("Chido",null,{q:"Chido Dike’s two children are listed as Chido and Chiemela, the same names as Chido and a sibling. Worth confirming."}),
+        P("Chiemela")
+      ]}]})
+    ]}]}),
+    P("Mgbechi Ukomadu",null,{u:[{c:[P("Chijioke"),P("Nneoma"),P("Chioma"),P("Chibueze")]}]}),
+    P("Chinweike Ukomadu","m",{u:[{sp:"Emily Oken",c:[P("Obioma Ukomadu","m"),P("Amara Ukomadu","f")]}]}),
+    P("Uchechi Nwankwoala","f",{aka:"Nwankwaola",u:[{sp:"Alwell Nwankwoala",c:[P("Kelechi Nwankwoala","m"),P("Ogechi Nwankwoala","f"),P("Chidinma Nwankwoala","f")]}]}),
+    P("Onyekachi Ukomadu","m",{aka:"Onyenkachi",q:"The record spells this name both Onyenkachi and Onyekachi.",u:[{sp:"Angela Azumara",c:[P("Victor Ukomadu","m"),P("Cheryll Ukomadu","f"),P("Nanichi Ukomadu","f")]}]})
+  ]}]}),
+  P("Aloozu Ukomadu")
+ ]},
+ {ord:5,sp:"Nwaeke Ikuoka",from:"Obete Nchina",inh:true,cnt:3,c:[P("Ehilegbu Ukomadu"),P("Ojiugo Ukomadu"),P("Onwudinaulo Ukomadu")]},
+ {ord:6,sp:"Akwaoma Nwandiko",from:"Oberete Ibeme",cnt:1,c:[P("Chinyere Ukomadu")]}
+]});
+const INHERITED_FROM=10; // the record marks Ukomadu's 10th to 23rd children as "inherited"
+
+/* ================= index ================= */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fold=s=>String(s).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+const slug=s=>fold(s).replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");
+const ordinal=n=>{const s=["th","st","nd","rd"],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);};
+const show=n=>n.replace("??","…");
+const people=new Map(), spouses=new Map(), used=new Map();
+const uid=base=>{const k=(used.get(base)||0)+1;used.set(base,k);return k===1?base:base+"-"+k;};
+let rootOrd=0;
+
+function index(raw,parent,union,gen,branch){
+  const p={kind:"person",id:uid(slug(raw.n)||"person"),name:show(raw.n),sex:raw.s||null,tag:raw.t||null,q:raw.q||null,aka:raw.aka||"",by:raw.by||null,
+           parent,union,gen,branch,unions:[],desc:0};
+  people.set(p.id,p);
+  if(gen===2){p.ordRoot=++rootOrd;p.ordMother=union.children.length+1;}
+  (raw.u||[]).forEach((ru,i)=>{
+    const u={of:p,i,ord:ru.ord||null,inh:!!ru.inh,cnt:ru.cnt||null,note:ru.note||null,sameAs:ru.sameAs||null,children:[],spouse:null,
+             branch:gen===1?i+1:branch};
+    if(ru.sp||ru.spq||ru.sp===null&&"sp" in ru){
+      u.spouse={kind:"spouse",id:uid("sp-"+(slug(ru.sp||"")||"unnamed")),name:ru.sp||null,from:ru.from||null,q:ru.spq||null,union:u,partner:p,branch:u.branch};
+      spouses.set(u.spouse.id,u.spouse);
+    }
+    p.unions.push(u);
+    ru.c.forEach(rc=>{
+      if(rc.ref) u.children.push({kind:"ref",ref:rc.ref});
+      else if(rc.ph) u.children.push({kind:"ph",label:rc.ph,k:rc.k});
+      else u.children.push(index(rc,p,u,gen+1,u.branch));
+    });
+  });
+  return p;
+}
+const ROOT=index(DATA,null,null,1,0);
+const kidsOf=u=>u.children.filter(c=>c.kind==="person");
+(function count(p){let n=0;p.unions.forEach(u=>u.children.forEach(c=>{if(c.kind==="person")n+=1+count(c);else if(c.kind==="ph")n+=c.k;}));p.desc=n;return n;})(ROOT);
+const role=(p)=>p.sex==="f"?"husband":p.sex==="m"?"wife":"spouse";
+const childWord=p=>p.tag||(p.sex==="f"?"daughter":p.sex==="m"?"son":"child");
+const bcol=b=>`var(--b${b||0})`;
+const spName=sp=>sp&&sp.name?sp.name:"name not recorded";
+const cap1=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const getAny=id=>people.get(id)||spouses.get(id);
+
+function unionLabel(u){ // "2nd wife" / "husband"
+  const r=role(u.of);return (u.ord&&u.of.unions.length>1?ordinal(u.ord)+" ":"")+r+(u.inh?", through inheritance":"");
+}
+function parentsText(p){
+  if(!p.parent) return "";
+  const sp=p.union.spouse, f=p.parent.name;
+  return sp&&sp.name?`${f} and ${sp.name}`:f;
+}
+function shortRel(e){
+  if(e.kind==="spouse") return `${cap1(role(e.partner))} of ${e.partner.name}`;
+  if(!e.parent) return "Founder of this tree";
+  return `${cap1(childWord(e))} of ${parentsText(e)}`;
+}
+
+/* ================= tree model ================= */
+const tparent=new Map();
+function tnode(p,parentId){
+  const n={type:"p",id:p.id,p,branch:p.gen===1?0:p.branch};
+  tparent.set(n.id,parentId);
+  const mk=(c,pid,u)=>{
+    if(c.kind==="person") return tnode(c,pid);
+    const id=pid+"--"+(c.kind==="ref"?"ref-"+c.ref:"more");
+    tparent.set(id,pid);
+    return c.kind==="ref"?{type:"r",id,target:people.get(c.ref),branch:u.branch}:{type:"x",id,label:c.label,branch:u.branch};
+  };
+  if(p.unions.length>1){
+    n.kids=p.unions.map(u=>{
+      const un={type:"u",id:p.id+"--m"+(u.i+1),u,branch:u.branch};
+      tparent.set(un.id,n.id);
+      u.tid=un.id;
+      un.kids=u.children.map(c=>mk(c,un.id,u));
+      un.desc=u.children.reduce((a,c)=>a+(c.kind==="person"?1+c.desc:c.kind==="ph"?c.k:0),0);
+      return un;
+    });
+  }else if(p.unions.length===1){
+    const u=p.unions[0];u.tid=n.id;
+    n.kids=u.children.map(c=>mk(c,n.id,u));
+  }else n.kids=[];
+  n.desc=p.desc;
+  return n;
+}
+const TREE=tnode(ROOT,null);
+const expanded=new Set([TREE.id]);
+const ROW=46, COL=300, GAP=70;
+const reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
+const svg=d3.select("#tree-svg"), zoomg=d3.select("#zoomg"), gLinks=d3.select("#links"), gNodes=d3.select("#nodes");
+const zoom=d3.zoom().scaleExtent([0.25,2.2]).on("zoom",e=>zoomg.attr("transform",e.transform));
+svg.call(zoom).on("dblclick.zoom",null);
+const MINFIT=0.55;
+let selected=null, pathIds=new Set(), lastRoot=null, prevPos=new Map();
+
+const mctx=document.createElement("canvas").getContext("2d");
+const wcache=new Map();
+function tw(text,font){mctx.font=font;return mctx.measureText(text).width;}
+function lines(d){
+  const n=d.data;
+  if(n.type==="p"){
+    const p=n.p,u=p.unions.length===1?p.unions[0]:null;
+    return {main:p.name,tag:p.tag?" "+p.tag:"",sub:u&&u.spouse?`${role(p)}: ${spName(u.spouse)}`:""};
+  }
+  if(n.type==="u") return {cap:unionLabel(n.u),main:spName(n.u.spouse)+(n.u.spouse&&n.u.spouse.from&&!narrow()?" of "+n.u.spouse.from:"")};
+  if(n.type==="r") return {main:n.target.name,sub:"also shown with Ukomadu’s 3rd wife"};
+  return {main:n.label};
+}
+function labelW(d){
+  const id=d.data.id;if(wcache.has(id))return wcache.get(id);
+  const l=lines(d);
+  const w=Math.max(tw((l.main||"")+(l.tag||""),'700 15.5px "Atkinson Hyperlegible","Segoe UI",sans-serif'),tw(l.sub||l.cap||"",'12.5px "Atkinson Hyperlegible","Segoe UI",sans-serif'));
+  wcache.set(id,w);return w;
+}
+const hasKids=d=>d.data.kids&&d.data.kids.length>0;
+const isOpen=d=>expanded.has(d.data.id);
+function linkPath(s,t){ // s,t: {x: vertical, y: horizontal, w}
+  const x0=s.y+18+s.w+6, y0=s.x, x1=t.y-13, y1=t.x, mx=(x0+x1)/2;
+  return `M${s.y+18+s.w+2},${y0}L${x0},${y0}C${mx},${y0} ${mx},${y1} ${x1},${y1}`;
+}
+
+function render(animate=true){
+  const root=d3.hierarchy(TREE,n=>expanded.has(n.id)?n.kids:null);
+  d3.tree().nodeSize([ROW,COL]).separation((a,b)=>a.parent===b.parent?1:1.25)(root);
+  const colw=[];
+  root.each(d=>{d.w=labelW(d);colw[d.depth]=Math.max(colw[d.depth]||0,d.w);});
+  const colx=[0];for(let i=1;i<colw.length;i++)colx[i]=colx[i-1]+18+colw[i-1]+(narrow()?46:GAP);
+  root.each(d=>{d.y=colx[d.depth];});
+  lastRoot=root;
+  const dur=animate&&!reduce?320:0;
+  const t=d3.transition().duration(dur).ease(d3.easeCubicOut);
+  const from=d=>{let a=d.parent;while(a&&!prevPos.has(a.data.id))a=a.parent;const p=a?prevPos.get(a.data.id):{x:d.x,y:d.y};return `translate(${p.y},${p.x})`;};
+
+  const node=gNodes.selectAll("g.node").data(root.descendants(),d=>d.data.id);
+  node.exit().remove();
+  const ent=node.enter().append("g").attr("class",d=>"node "+d.data.type)
+    .attr("transform",from).style("opacity",0)
+    .attr("tabindex",0).attr("role","button")
+    .style("--bc",d=>bcol(d.data.branch));
+  ent.append("rect").attr("class","hit").attr("x",-18).attr("y",-ROW/2).attr("height",ROW);
+  ent.append("circle").attr("class","halo");
+  ent.append("circle").attr("class","dot");
+  ent.append("text").attr("class","count").attr("dy","0.36em");
+  ent.each(function(d){
+    const g=d3.select(this), l=lines(d);
+    if(l.cap){
+      g.append("text").attr("class","cap").attr("x",18).attr("y",-6).text(l.cap);
+      g.append("text").attr("class","main").attr("x",18).attr("y",12).text(l.main);
+    }else{
+      const m=g.append("text").attr("class","main").attr("x",18).attr("y",l.sub?-1:5);
+      m.append("tspan").text(l.main);
+      if(l.tag) m.append("tspan").attr("class","tag").text(l.tag);
+      if(l.sub) g.append("text").attr("class","sub").attr("x",18).attr("y",15).text(l.sub);
+    }
+    g.append("title").text(l.main);
+  });
+  ent.on("click",(e,d)=>{
+    const onDot=e.target.classList.contains("dot")||e.target.classList.contains("halo");
+    activate(d,onDot);
+  }).on("keydown",(e,d)=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();activate(d,false);}});
+
+  const all=ent.merge(node);
+  all.classed("haskids",hasKids).classed("sel",d=>d.data.id===selected).classed("onpath",d=>pathIds.has(d.data.id))
+     .attr("aria-label",d=>{const l=lines(d);return [l.cap,l.main+(l.tag||""),l.sub,hasKids(d)?(isOpen(d)?"open":"closed, "+d.data.desc+" descendants"):""].filter(Boolean).join(", ");})
+     .attr("aria-expanded",d=>hasKids(d)?String(isOpen(d)):null);
+  all.select(".hit").attr("width",d=>d.w+44);
+  all.select(".dot").attr("r",d=>hasKids(d)?(isOpen(d)?6:11):d.data.type==="x"?3:5);
+  all.select(".halo").attr("r",d=>hasKids(d)&&!isOpen(d)?15.5:10.5);
+  all.select(".count").text(d=>hasKids(d)&&!isOpen(d)?d.data.desc:"");
+  all.transition(t).attr("transform",d=>`translate(${d.y},${d.x})`).style("opacity",1);
+
+  const link=gLinks.selectAll("path.link").data(root.links(),d=>d.target.data.id);
+  link.exit().remove();
+  const lent=link.enter().append("path").attr("class","link").style("opacity",0)
+      .style("--bc",d=>bcol(d.target.data.branch)).attr("d",d=>linkPath(d.source,d.target));
+  lent.transition().delay(dur*0.6).duration(dur?200:0).style("opacity",null);
+  link.transition(t).attr("d",d=>linkPath(d.source,d.target));
+  lent.merge(link).classed("onpath",d=>pathIds.has(d.target.data.id)&&pathIds.has(d.source.data.id));
+
+  prevPos=new Map(root.descendants().map(d=>[d.data.id,{x:d.x,y:d.y}]));
+}
+
+function activate(d,onDot){
+  const n=d.data;
+  $("#hint").hidden=true;
+  if(n.type==="r"){select(n.target.id);return;}
+  if(n.type==="x")return;
+  if(onDot&&hasKids(d)){
+    if(expanded.has(n.id))expanded.delete(n.id);else expanded.add(n.id);
+    render();
+    if(expanded.has(n.id))reveal(n.id);
+    return;
+  }
+  if(n.type==="u"){
+    if(n.u.spouse)select(n.u.spouse.id);
+    else{expanded.add(n.id);render();reveal(n.id);}
+    return;
+  }
+  select(n.id);
+}
+function size(){const r=$("#view-tree").getBoundingClientRect();return {w:r.width,h:r.height};}
+const narrow=()=>matchMedia("(max-width:899px)").matches;
+function freeArea(){ // area of the tree view not covered by the panel
+  const {w,h}=size(), open=!$("#panel").hidden;
+  if(!open) return {w,h};
+  return narrow()?{w,h:h*0.42}:{w:w-400,h};
+}
+function moveTo(tr,animate=true){
+  (animate&&!reduce?svg.transition().duration(450):svg).call(zoom.transform,tr);
+}
+function fit(animate=true){
+  if(!lastRoot)return;
+  const ds=lastRoot.descendants(), a=freeArea();
+  const x0=Math.min(d3.min(ds,d=>d.x)-ROW,-175), x1=Math.max(d3.max(ds,d=>d.x)+ROW,60), y0=narrow()?-14:-30, y1=d3.max(ds,d=>d.y+d.w)+(narrow()?44:60);
+  let k=Math.min(1.15,a.w/(y1-y0),a.h/(x1-x0));
+  if(k<MINFIT){ // too much to show legibly: start from the founder instead
+    k=MINFIT;moveTo(d3.zoomIdentity.translate(24-y0*k,a.h/2).scale(k),animate);return;
+  }
+  moveTo(d3.zoomIdentity.translate((a.w-(y1-y0)*k)/2-y0*k,(a.h-(x1-x0)*k)/2-x0*k).scale(k),animate);
+}
+function nodeById(id){return lastRoot&&lastRoot.descendants().find(d=>d.data.id===id);}
+function reveal(id,forceCentre){ // keep node and its open children in view
+  const d=nodeById(id);if(!d)return;
+  const a=freeArea(), cur=d3.zoomTransform(svg.node());
+  let k=Math.max(cur.k,narrow()?0.8:0.9);k=Math.min(k,1.2);
+  const kids=d.children||[];
+  const cx=kids.length?(d.y+kids[0].y+Math.max(...kids.map(c=>c.w)))/2+20:d.y+d.w/2+9;
+  const cy=d.x;
+  const span=kids.length?(kids[kids.length-1].x-kids[0].x+ROW*2):ROW;
+  if(span*k>a.h) k=Math.max(0.5,a.h/span);
+  let tx=a.w*(kids.length?0.5:0.6)-cx*k;
+  if(d.y*k+tx<20) tx=20-d.y*k;
+  moveTo(d3.zoomIdentity.translate(tx,a.h/2-cy*k).scale(k));
+}
+function expandTo(tid){let a=tparent.get(tid);while(a){expanded.add(a);a=tparent.get(a);}}
+function treeIdFor(e){ // tree node that represents a person or spouse
+  if(e.kind==="person")return e.id;
+  return e.union.tid;
+}
+function computePath(e){
+  pathIds=new Set();
+  if(!e)return;
+  let id=treeIdFor(e);
+  while(id){pathIds.add(id);id=tparent.get(id);}
+}
+
+/* ================= selection + panel ================= */
+let view="tree";
+const VIEWS=["tree","list","related","story","poster","gaps","contribute"];
+function setView(v,fromHash){
+  view=v;
+  VIEWS.forEach(x=>{$("#view-"+x).classList.toggle("on",x===v);});
+  document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.view===v)));
+  if(v==="tree"){requestAnimationFrame(()=>{render(false);if(selected){const e=getAny(selected);reveal(treeIdFor(e));}else if(!fitted){fit(false);fitted=true;}});}
+  if(v==="poster")showPoster();
+  if(v==="contribute")renderContribute();
+  if(!fromHash&&!selected)setHash(v==="tree"?"":v);
+}
+let fitted=false;
+function setHash(h){
+  const cur=location.hash.replace(/^#/,"");
+  if(cur===h)return;
+  if(h)location.hash=h;else history.replaceState(null,"",location.pathname+location.search);
+}
+function select(id,opts={}){
+  const e=getAny(id);if(!e)return;
+  selected=id;
+  computePath(e);
+  const tid=treeIdFor(e);
+  expandTo(tid);
+  if(e.kind==="person"&&e.unions.length&&e.desc<=14)expanded.add(tid),e.unions.forEach(u=>expanded.add(u.tid));
+  openPanel(e);
+  if(view==="tree"){render();reveal(tid);}
+  markList();
+  if(!opts.fromHash)setHash(id);
+}
+function closePanel(){
+  selected=null;pathIds=new Set();
+  $("#panel").hidden=true;document.body.classList.remove("panel-open");
+  if(view==="tree")render(false);
+  markList();
+  setHash(view==="tree"?"":view);
+}
+const btn=(e,extra)=>`<button class="pbtn" data-go="${e.id}"><b>${esc(e.name||"Name not recorded")}</b>${extra?` <span class="meta">${esc(extra)}</span>`:""}</button>`;
+function mismatch(u){
+  if(!u.cnt)return "";
+  const named=kidsOf(u).length+u.children.filter(c=>c.kind==="ref").length;
+  if(named===u.cnt)return "";
+  return named<u.cnt?`The record says ${u.cnt} children from this marriage; ${named} ${named===1?"is":"are"} named so far.`
+                    :`The record says ${u.cnt} ${u.cnt===1?"child":"children"} from this marriage, but ${named} names are listed.`;
+}
+function childList(u){
+  if(!u.children.length)return `<p class="ph">No children on record.</p>`;
+  return `<ul class="names stack">`+u.children.map(c=>
+    c.kind==="person"?`<li>${btn(c,c.tag||"")}</li>`:
+    c.kind==="ref"?`<li>${btn(people.get(c.ref),"also shown with Ukomadu’s 3rd wife")}</li>`:
+    `<li><span class="ph">${esc(cap1(c.label))}</span></li>`).join("")+`</ul>`;
+}
+function openPanel(e){
+  editing=false;
+  const el=$("#panel");let h=`<button class="x" aria-label="Close details">×</button>`;
+  const col=bcol(e.branch);
+  if(e.kind==="person"){
+    const p=e;
+    h+=`<h2>${esc(p.name)}</h2><p class="rel">${esc(shortRel(p))}</p>`;
+    h+=`<ul class="chips"><li>${p.gen===1?"First generation":ordinal(p.gen)+" generation"}</li>`;
+    if(p.branch){const w=ROOT.unions[p.branch-1];h+=`<li class="br" style="--bc:${col}">Branch of ${esc(w.spouse.name)}, ${ordinal(w.ord)} wife</li>`;}
+    if(p.desc)h+=`<li>${p.desc} descendant${p.desc===1?"":"s"} on record</li>`;
+    h+=`</ul>`;
+    const notes=[];
+    if(p.ordRoot){notes.push(`${ordinal(p.ordRoot)} of Ukomadu’s 23 children, and ${ordinal(p.ordMother)} child of ${p.union.spouse.name}.`+(p.ordRoot>=INHERITED_FROM?` The record marks this child as “inherited”.`:""));}
+    if(p.by)notes.push(`The record says this child was fathered by ${people.get(p.by).name}, Ukomadu’s first son, through inheritance, and counts them among Ukomadu’s children.`);
+    if(p.q)notes.push(p.q);
+    if(p.gen===1)notes.push("Six wives and 23 children are recorded. Each wife’s line has its own colour in the tree.");
+    if(notes.length)h+=notes.map(n=>`<p class="note" style="margin-top:14px">${esc(n)}</p>`).join("");
+    if(p.parent){
+      const chain=[];let a=p;while(a){chain.unshift(a);a=a.parent;}
+      h+=`<h3>Line of descent</h3><ol class="descent">`+chain.map((c,i)=>{
+        const nx=chain[i+1], via=nx&&nx.union.spouse&&nx.union.spouse.name?`<span class="via">with ${esc(nx.union.spouse.name)}</span>`:"";
+        return `<li style="--bc:${bcol(c.gen===1?0:c.branch)}">${c===p?`<span class="pbtn cur"><b>${esc(c.name)}</b></span>`:btn(c)}${via}</li>`;}).join("")+`</ol>`;
+    }
+    p.unions.forEach(u=>{
+      const has=u.spouse||u.children.length;
+      if(!has)return;
+      h+=`<h3>${u.spouse?cap1(unionLabel(u)):"Children"}</h3>`;
+      if(u.spouse)h+=`<p>${btn(u.spouse,u.spouse.from?"of "+u.spouse.from:"")}</p>`;
+      h+=childList(u);
+      const mm=mismatch(u);if(mm)h+=`<p class="note">${esc(mm)}</p>`;
+      if(u.note)h+=`<p class="note">${esc(u.note)}</p>`;
+    });
+    if(p.parent){
+      const sib=kidsOf(p.union).filter(s=>s!==p);
+      if(sib.length)h+=`<h3>Brothers and sisters from the same marriage</h3><ul class="names">`+sib.map(s=>`<li>${btn(s)}</li>`).join("")+`</ul>`;
+    }
+  }else{
+    const s=e,u=s.union;
+    h+=`<h2>${esc(s.name||"Name not recorded")}</h2><p class="rel">${esc(cap1(unionLabel(u)))} of ${esc(s.partner.name)}${s.from?". From "+esc(s.from):""}.</p>`;
+    h+=`<ul class="chips"><li>Married into the family</li>`;
+    if(s.branch){const w=ROOT.unions[s.branch-1];if(w.spouse!==s)h+=`<li class="br" style="--bc:${col}">Branch of ${esc(w.spouse.name)}, ${ordinal(w.ord)} wife</li>`;}
+    h+=`</ul>`;
+    if(s.q)h+=`<p class="note" style="margin-top:14px">${esc(s.q)}</p>`;
+    if(u.note)h+=`<p class="note" style="margin-top:14px">${esc(u.note)}</p>`;
+    if(u.sameAs&&spouses.get(u.sameAs))h+=`<p style="margin-top:12px">${btn(spouses.get(u.sameAs),"her entry as Ukomadu’s wife")}</p>`;
+    h+=`<h3>${cap1(role(s.partner)==="wife"?"husband":role(s.partner)==="husband"?"wife":"spouse")}</h3><p>${btn(s.partner)}</p>`;
+    h+=`<h3>Children</h3>`+childList(u);
+    const mm=mismatch(u);if(mm)h+=`<p class="note">${esc(mm)}</p>`;
+  }
+  h=h.replace("</ul>",`</ul><div id="pdetails"></div>`);
+  h+=`<div>`+(view!=="tree"?`<button class="go" data-tree="1">Show in the tree</button>`:"")+`<button class="go alt" data-rel="1"${view==="tree"?' style="margin-left:0"':""}>How are we related?</button></div>`;
+  el.innerHTML=h;el.hidden=false;el.scrollTop=0;document.body.classList.add("panel-open");
+  renderDetails(e.id);
+}
+$("#panel").addEventListener("click",ev=>{
+  const b=ev.target.closest("button");if(!b)return;
+  if(b.classList.contains("x"))closePanel();
+  else if(b.dataset.go)select(b.dataset.go);
+  else if(b.dataset.tree){setView("tree");openPanel(getAny(selected));}
+  else if(b.dataset.rel)relateFrom(selected);
+});
+
+/* ================= list view ================= */
+function listPerson(p){
+  const single=p.unions.length===1?p.unions[0]:null;
+  const meta=[p.tag,single&&single.spouse?`${role(p)}: ${spName(single.spouse)}`:""].filter(Boolean).join(", ");
+  let h=`<li>${btn(p,meta)}`;
+  if(single&&single.children.length)h+=listKids(single);
+  else if(p.unions.length>1)h+=`<ul class="kids">`+p.unions.map(u=>`<li><span class="ulabel">${esc(cap1(unionLabel(u)))}: ${u.spouse?`<button class="pbtn" data-go="${u.spouse.id}">${esc(spName(u.spouse))}${u.spouse.from?" of "+esc(u.spouse.from):""}</button>`:""}</span>${u.children.length?listKids(u):""}</li>`).join("")+`</ul>`;
+  return h+`</li>`;
+}
+function listKids(u){
+  return `<ul class="kids">`+u.children.map(c=>c.kind==="person"?listPerson(c):c.kind==="ref"?`<li>${btn(people.get(c.ref),"also shown with Ukomadu’s 3rd wife")}</li>`:`<li><span class="ph">${esc(cap1(c.label))}</span></li>`).join("")+`</ul>`;
+}
+function renderList(){
+  let h=`<h2 class="list-root"><button class="pbtn" data-go="${ROOT.id}"><b>${esc(ROOT.name)}</b></button></h2><p class="list-lede">Everyone on record, branch by branch. Select any name for details.</p>`;
+  ROOT.unions.forEach(u=>{
+    const n=kidsOf(u).length;
+    h+=`<section class="branch" style="--bc:${bcol(u.branch)}"><h3><small>${esc(cap1(unionLabel(u)))}, ${n} ${n===1?"child":"children"}</small><button class="pbtn" data-go="${u.spouse.id}">${esc(u.spouse.name)} of ${esc(u.spouse.from)}</button></h3>${listKids(u)}</section>`;
+  });
+  $("#list-body").innerHTML=h;
+}
+function markList(){
+  document.querySelectorAll("#list-body .pbtn.cur").forEach(b=>b.classList.remove("cur"));
+  if(selected){const b=document.querySelector(`#list-body .pbtn[data-go="${selected}"]`);if(b)b.classList.add("cur");}
+}
+document.addEventListener("click",ev=>{
+  const b=ev.target.closest("#list-body [data-go], #gaps-body [data-go]");
+  if(b)select(b.dataset.go);
+});
+
+/* ================= gaps + facts ================= */
+function renderGaps(){
+  const items=[];
+  const who=e=>`<button class="who" data-go="${e.id}">${esc(e.name||"Name not recorded")}</button>`;
+  people.forEach(p=>{
+    p.unions.forEach(u=>{
+      const mm=mismatch(u);
+      if(mm)items.push(`${who(p)}${u.spouse&&u.spouse.name?` and ${esc(u.spouse.name)}`:""}. ${esc(mm)}`);
+      if(u.spouse&&u.spouse.q)items.push(`${who(u.spouse)}, ${esc(role(p))} of ${esc(p.name)}. ${esc(u.spouse.q)}`);
+      if(!u.spouse&&u.children.length)items.push(`${who(p)}. ${p.sex==="f"?"Her husband":p.sex==="m"?"His wife":"The other parent"} is not named in the record.`);
+      u.children.forEach(c=>{if(c.kind==="ph")items.push(`${who(p)}. ${esc(cap1(c.label))}.`);});
+    });
+    if(p.q)items.push(`${who(p)}. ${esc(p.q)}`);
+  });
+  const bare=[...people.values()].filter(p=>p.gen===2&&!p.unions.length);
+  let h=`<ul class="gaps">`+items.map(i=>`<li>${i}</li>`).join("")+`</ul>`;
+  h+=`<h3>Children of Ukomadu with nothing recorded beyond a name</h3><p>${bare.length} of the 23 children have no marriage or descendants on record yet:</p><ul class="names" style="margin-bottom:14px">`+bare.map(p=>`<li>${btn(p)}</li>`).join("")+`</ul>`;
+  h+=`<h3>Wider questions</h3><ul class="gaps">
+  <li>No dates of birth are recorded for anyone. The first booklet called this its greatest difficulty.</li>
+  <li>The founder’s name is written Ukomadu Nwaogwugu in the record, while the family name is written Nwaogwugwu elsewhere. Which spelling should the tree use?</li>
+  <li>The original cover names Agbaghgba as patriarch, with Egbu, Nwagbaghoso, Akoma, Njoku, Ubani, Oturubi and Mba. The record does not yet say how Ukomadu descends from them.</li>
+  <li>${who(spouses.get("sp-iweahagho-onumegbu"))} is spelled Iweahagho as Ukomadu’s wife and Iweahaghogo as Enwereji’s. Which is right?</li>
+  </ul>`;
+  $("#gaps-body").innerHTML=h;
+}
+function renderFacts(){
+  const gens=Math.max(...[...people.values()].map(p=>p.gen));
+  const named=[...spouses.values()].filter(s=>s.name&&!s.union.sameAs).length;
+  $("#facts").innerHTML=`<li><b>${people.size}</b>family members by descent</li><li><b>${named}</b>husbands and wives</li><li><b>${gens}</b>generations</li>`;
+}
+
+/* ================= search ================= */
+const entries=[...people.values(),...[...spouses.values()].filter(s=>s.name)].map(e=>({e,toks:fold(e.name+" "+(e.aka||"")).split(/[^a-z0-9]+/).filter(Boolean)}));
+function lev(a,b){ // edit distance, small strings
+  const m=a.length,n=b.length;if(Math.abs(m-n)>2)return 3;
+  let prev=Array.from({length:n+1},(_,i)=>i);
+  for(let i=1;i<=m;i++){const cur=[i];for(let j=1;j<=n;j++)cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1));prev=cur;}
+  return prev[n];
+}
+function search(q){
+  const qs=fold(q).split(/[^a-z0-9]+/).filter(Boolean);if(!qs.length)return [];
+  const out=[];
+  for(const en of entries){
+    let score=0,ok=true;
+    for(const t of qs){
+      let best=0;
+      for(const h of en.toks){
+        if(h===t)best=Math.max(best,4);
+        else if(h.startsWith(t))best=Math.max(best,3);
+        else if(t.length>=3&&h.includes(t))best=Math.max(best,2);
+        else if(t.length>=4){const d=Math.min(lev(t,h),lev(t,h.slice(0,t.length)));if(d<=(t.length>=7?2:1))best=Math.max(best,1);}
+      }
+      if(!best){ok=false;break;}
+      score+=best;
+    }
+    if(ok)out.push({en,score});
+  }
+  out.sort((a,b)=>b.score-a.score||(a.en.e.gen||9)-(b.en.e.gen||9)||a.en.e.name.localeCompare(b.en.e.name));
+  return out.slice(0,40).map(o=>o.en.e);
+}
+const qEl=$("#q"), rEl=$("#results");let rIdx=-1,rItems=[];
+function showResults(){
+  const q=qEl.value.trim();$("#qclear").hidden=!qEl.value;
+  if(!q){rEl.hidden=true;qEl.setAttribute("aria-expanded","false");return;}
+  rItems=search(q);rIdx=rItems.length?0:-1;
+  rEl.innerHTML=rItems.length?rItems.map((e,i)=>`<li role="option" id="r${i}" data-i="${i}" aria-selected="${i===0}"><span class="dot" style="--bc:${bcol(e.branch)}"></span><span><span class="nm">${esc(e.name)}</span><span class="sub">${esc(shortRel(e))}</span></span></li>`).join("")
+    :`<li class="none">No one by that name is on record yet. Try part of the name, or a different spelling.</li>`;
+  rEl.hidden=false;qEl.setAttribute("aria-expanded","true");
+}
+function pick(i){const e=rItems[i];if(!e)return;rEl.hidden=true;qEl.setAttribute("aria-expanded","false");qEl.blur();$("#hint").hidden=true;select(e.id);}
+qEl.addEventListener("input",showResults);
+qEl.addEventListener("focus",showResults);
+qEl.addEventListener("keydown",ev=>{
+  if(ev.key==="ArrowDown"||ev.key==="ArrowUp"){
+    if(rEl.hidden||!rItems.length)return;ev.preventDefault();
+    rIdx=(rIdx+(ev.key==="ArrowDown"?1:-1)+rItems.length)%rItems.length;
+    rEl.querySelectorAll("li").forEach((li,i)=>li.setAttribute("aria-selected",String(i===rIdx)));
+    const cur=rEl.querySelector(`#r${rIdx}`);cur.scrollIntoView({block:"nearest"});qEl.setAttribute("aria-activedescendant","r"+rIdx);
+  }else if(ev.key==="Enter"){ev.preventDefault();if(rIdx>=0)pick(rIdx);}
+  else if(ev.key==="Escape"){rEl.hidden=true;}
+});
+rEl.addEventListener("mousedown",ev=>ev.preventDefault());
+rEl.addEventListener("click",ev=>{const li=ev.target.closest("li[data-i]");if(li)pick(+li.dataset.i);});
+$("#qclear").addEventListener("click",()=>{qEl.value="";showResults();qEl.focus();});
+document.addEventListener("click",ev=>{if(!ev.target.closest(".search"))rEl.hidden=true;});
+
+/* ================= how are we related ================= */
+function lineage(p){const c=[];while(p){c.unshift(p);p=p.parent;}return c;}
+function relate(a,b){
+  const ca=lineage(a),cb=lineage(b);let i=0;
+  while(i<ca.length&&i<cb.length&&ca[i]===cb[i])i++;
+  const ua=ca[i]?ca[i].union:null,ub=cb[i]?cb[i].union:null;
+  return {lca:ca[i-1],da:ca.length-i,db:cb.length-i,ua,ub,half:!!(ua&&ub&&ua!==ub),ca:ca.slice(i-1),cb:cb.slice(i-1)};
+}
+function kinTerm(da,db,sex,half){ // what the person da steps below the shared ancestor is to the one db steps below
+  const g=(m,f,n)=>sex==="m"?m:sex==="f"?f:n;
+  const greats=n=>n<=0?"":n<=2?"great-".repeat(n):`${n}-times-great-`;
+  const h=half?"half-":"";
+  if(da===0)return db===1?g("father","mother","parent"):greats(db-2)+g("grandfather","grandmother","grandparent");
+  if(db===0)return da===1?g("son","daughter","child"):greats(da-2)+g("grandson","granddaughter","grandchild");
+  if(da===1&&db===1)return h+g("brother","sister","brother or sister");
+  if(da===1)return h+greats(db-2)+g("uncle","aunt","uncle or aunt");
+  if(db===1)return h+greats(da-2)+g("nephew","niece","nephew or niece");
+  const deg=Math.min(da,db)-1,rem=Math.abs(da-db);
+  return h+ordinal(deg)+" cousin"+(rem===0?"":rem===1?" once removed":rem===2?" twice removed":` ${rem} times removed`);
+}
+const relSel=[null,null];
+function renderRelated(){
+  const out=$("#relout"),[A,B]=relSel.map(id=>id&&getAny(id));
+  if(!A||!B){out.innerHTML="";return;}
+  if(A===B){out.innerHTML=`<p>That is the same person twice. Choose someone else for one of the two.</p>`;return;}
+  const pa=A.kind==="spouse"?A.partner:A,pb=B.kind==="spouse"?B.partner:B;
+  let h="";
+  const wed=s=>`<p>${esc(s.name)} is the ${esc(role(s.partner))} of ${esc(s.partner.name)}.</p>`;
+  if(pa===pb){
+    if(A.kind==="spouse"&&B.kind==="spouse")h+=`<p class="relbig">${esc(A.name)} and ${esc(B.name)} were both married to <b>${esc(pa.name)}</b>.</p>`;
+    else{const s=A.kind==="spouse"?A:B;h+=`<p class="relbig">${esc(s.name)} is the <b>${esc(role(s.partner))}</b> of ${esc(s.partner.name)}.</p>`;}
+    out.innerHTML=h;return;
+  }
+  const par=(S,P)=>S.kind==="spouse"&&P.kind==="person"&&P.union&&P.union.spouse===S;
+  if(par(A,B)||par(B,A)){
+    const S=par(A,B)?A:B,P=S===A?B:A,w=role(S.partner)==="wife"?"mother":role(S.partner)==="husband"?"father":"parent";
+    out.innerHTML=`<p class="relbig">${esc(S.name)} is ${esc(P.name)}’s <b>${w}</b>.</p><p>${esc(P.name)} is the ${esc(childWord(P))} of ${esc(parentsText(P))}.</p>`;return;
+  }
+  const r=relate(pa,pb),t1=kinTerm(r.da,r.db,pa.sex,r.half),t2=kinTerm(r.db,r.da,pb.sex,r.half);
+  if(A.kind==="spouse")h+=wed(A);
+  if(B.kind==="spouse")h+=wed(B);
+  h+=`<p class="relbig">${esc(pa.name)} is ${esc(pb.name)}’s <b>${esc(t1)}</b>.</p>`;
+  h+=`<p>Looking the other way, ${esc(pb.name)} is ${esc(pa.name)}’s ${esc(t2)}.</p>`;
+  if(r.da&&r.db)h+=`<p>Their closest shared ancestor is ${btn(r.lca)}</p>`;
+  if(r.half&&r.ua.spouse&&r.ub.spouse&&r.ua.spouse.name&&r.ub.spouse.name)
+    h+=`<p class="note">They come from different marriages of ${esc(r.lca.name)}: one line through ${esc(r.ua.spouse.name)}, the other through ${esc(r.ub.spouse.name)}. That is why the relationship is a “half” one.</p>`;
+  if([...r.ca,...r.cb].some(p=>p.by))h+=`<p class="note">One of these lines passes through a child the record says was fathered by Enwereji Ukomadu through inheritance but counted among Ukomadu’s children. This answer follows the record’s placement.</p>`;
+  const line=(c,title)=>`<div><h3>${esc(title)}</h3><ol class="descent">`+c.map(p=>`<li style="--bc:${bcol(p.gen===1?0:p.branch)}">${btn(p)}</li>`).join("")+`</ol></div>`;
+  h+=`<div class="twolines">${line(r.ca,"Line to "+pa.name)}${line(r.cb,"Line to "+pb.name)}</div>`;
+  out.innerHTML=h;
+}
+document.querySelectorAll("#view-related .pick").forEach((box,slot)=>{
+  const inp=box.querySelector("input"),ul=box.querySelector("ul");let items=[];
+  const close=()=>{ul.hidden=true;};
+  const open=()=>{
+    const q=inp.value.trim();if(!q){close();return;}
+    items=search(q).slice(0,20);
+    ul.innerHTML=items.length?items.map((e,i)=>`<li data-i="${i}"><span class="dot" style="--bc:${bcol(e.branch)}"></span><span><span class="nm">${esc(e.name)}</span><span class="sub">${esc(shortRel(e))}</span></span></li>`).join("")
+      :`<li class="none">No one by that name is on record yet.</li>`;
+    ul.hidden=false;
+  };
+  const choose=e=>{relSel[slot]=e.id;inp.value=e.name;close();renderRelated();};
+  inp.addEventListener("input",()=>{relSel[slot]=null;renderRelated();open();});
+  inp.addEventListener("keydown",ev=>{if(ev.key==="Enter"&&items.length&&!ul.hidden){ev.preventDefault();choose(items[0]);}else if(ev.key==="Escape")close();});
+  ul.addEventListener("mousedown",ev=>ev.preventDefault());
+  ul.addEventListener("click",ev=>{const li=ev.target.closest("li[data-i]");if(li)choose(items[+li.dataset.i]);});
+  inp.addEventListener("blur",()=>setTimeout(close,150));
+  box.setPick=e=>{relSel[slot]=e.id;inp.value=e.name;};
+});
+document.addEventListener("click",ev=>{const b=ev.target.closest("#relout [data-go]");if(b)select(b.dataset.go);});
+function relateFrom(id){
+  const e=getAny(id),boxes=document.querySelectorAll("#view-related .pick");
+  boxes[0].setPick(e);relSel[1]=null;boxes[1].querySelector("input").value="";
+  selected=null;pathIds=new Set();$("#panel").hidden=true;document.body.classList.remove("panel-open");markList();
+  setView("related");renderRelated();boxes[1].querySelector("input").focus();
+}
+
+/* ================= shared store: Supabase sign-in, details, editors, admin ================= */
+const SB_URL="https://vdujpeaxcbcwnnyvhboa.supabase.co";
+const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkdWpwZWF4Y2Jjd25ueXZoYm9hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUzOTMyNTgsImV4cCI6MjExMDk2OTI1OH0.POZdBz3hgkZC6p4VsykFDJDE-4r4Al5MYFIsuFHvNSU";
+const FIELDS=[
+  {k:"born",label:"Born",ph:"A year, a date, or “about 1950”",max:80},
+  {k:"died",label:"Died",ph:"Leave empty if living",max:80},
+  {k:"place",label:"Home",ph:"Town, city or country",max:120},
+  {k:"meaning",label:"Meaning of the name",ph:"What the name means",max:240},
+  {k:"bio",label:"Life story",ph:"Work, family, memories",max:4000,long:true}
+];
+const FLABEL=k=>k==="photo"?"photo":(FIELDS.find(f=>f.k===k)||{label:k}).label.toLowerCase();
+const PHOTO_RE=/^[0-9a-f-]{36}\/[A-Za-z0-9._-]{1,100}$/;
+const photoUrl=p=>`${SB_URL}/storage/v1/object/public/photos/${p}`;
+const sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,flowType:"implicit"}}):null;
+const cloud={status:sb?"loading":"none",me:null,email:"",isAdmin:false,isEditor:false,
+  data:new Map(),names:{},myReq:undefined,myRem:[],people:[],removals:[],google:false,sent:""};
+let editing=false, posterStale=true;
+const canEditNow=()=>cloud.status==="ok"&&!!cloud.me&&cloud.isEditor;
+const errText=e=>{
+  const c=e&&(e.code||e.statusCode||e.status),m=String(e&&e.message||"");
+  if(c==="42501"||/row-level security|permission denied|admin only/i.test(m))return "Your account is not allowed to do that. Ask the admin to check your editor access.";
+  if(c==="23514")return "That entry is too long or not allowed. Shorten it and try again.";
+  if(c==="bad_image")return "That file could not be read as a photo. Try a JPEG or PNG.";
+  if(c==413||/size|too large/i.test(m))return "That photo is too large. Try a smaller one.";
+  if(/rate limit/i.test(m))return "Too many emails were sent recently. Wait a few minutes and try again.";
+  if(/fetch|network/i.test(m))return "The family record cannot be reached. Check your connection and try again.";
+  return "That did not save: "+(m||"unknown problem")+".";
+};
+const chk=r=>{if(r&&r.error)throw r.error;return r?r.data:null;};
+function details(id){
+  const f=cloud.data.get(id)||{},out={};
+  for(const k in f){if(k!=="photo"||PHOTO_RE.test(f[k].v))out[k]=f[k];}
+  return out;
+}
+async function loadDetails(){
+  const rows=chk(await sb.from("person_details").select("person_id,field,value,updated_by,updated_at").limit(5000));
+  const m=new Map(),ids=new Set();
+  rows.forEach(r=>{if(!m.has(r.person_id))m.set(r.person_id,{});m.get(r.person_id)[r.field]={v:r.value,t:r.updated_at,by:r.updated_by};if(r.updated_by)ids.add(r.updated_by);});
+  cloud.data=m;
+  if(ids.size){const ps=chk(await sb.from("profiles").select("id,name").in("id",[...ids]));(ps||[]).forEach(p=>{if(p.name)cloud.names[p.id]=p.name;});}
+}
+function fillNames(root){
+  root.querySelectorAll("[data-names]").forEach(s=>{
+    const names=s.dataset.names.split(",").filter(Boolean).map(id=>cloud.names[id]||"").filter(Boolean);
+    if(names.length)s.textContent=names.join(", ");
+  });
+}
+function renderDetails(id){
+  const box=$("#pdetails");if(!box||selected!==id||editing)return;
+  const e=getAny(id),d=details(id);let h="";
+  if(d.photo)h+=`<img class="portrait" src="${photoUrl(d.photo.v)}" alt="Photo of ${esc(e.name||"this person")}">`;
+  const rows=FIELDS.filter(f=>!f.long&&d[f.k]).map(f=>`<div><dt>${f.label}</dt><dd>${esc(d[f.k].v)}</dd></div>`).join("");
+  if(rows)h+=`<dl class="facts2">${rows}</dl>`;
+  if(d.bio)h+=`<div class="bio">${esc(d.bio.v).split(/\n+/).map(p=>`<p>${p}</p>`).join("")}</div>`;
+  const by=[...new Set(Object.values(d).map(x=>x.by).filter(Boolean))];
+  if(by.length)h+=`<p class="byline">Details added by <span data-names="${by.join(",")}">family editors</span>.</p>`;
+  if(canEditNow())h+=`<button class="ghost small" data-act="edit">${Object.keys(d).length?"Add or change details":"Add details"}</button>`;
+  else if(cloud.status==="ok"&&!Object.keys(d).length)h+=`<p class="byline">Know something about ${esc(e.name||"this person")}? <button class="linkish" data-act="join">Help add details</button></p>`;
+  box.innerHTML=h;
+  const img=box.querySelector(".portrait");if(img)img.addEventListener("error",()=>{img.hidden=true;});
+  fillNames(box);
+}
+function renderEditForm(id){
+  const box=$("#pdetails"),d=details(id),own=cloud.isAdmin;editing=true;
+  const pend=k=>cloud.myRem.some(r=>r.person_id===id&&r.field===k&&r.status==="pending");
+  const rm=k=>!d[k]?"":pend(k)?`<p class="hintline">You have asked the admin to remove this.</p>`
+    :`<button class="linkish" data-act="rm" data-k="${k}">${own?"Remove":"Ask the admin to remove"}</button>
+      <div class="rmbox" data-for="${k}" hidden>${own
+        ?`Remove the ${FLABEL(k)} for good? This cannot be undone.<div class="row" style="margin:8px 0 0"><button class="solid small" data-act="rm-now" data-k="${k}">Yes, remove</button><button class="ghost small" data-act="rm-cancel" data-k="${k}">Keep</button></div>`
+        :`<label>Why should the ${FLABEL(k)} be removed?<input name="why-${k}" maxlength="300"></label><div class="row" style="margin:0"><button class="solid small" data-act="rm-ask" data-k="${k}">Send to the admin</button><button class="ghost small" data-act="rm-cancel" data-k="${k}">Cancel</button></div>`}</div>`;
+  let h=`<h3 style="margin-top:6px">Details for ${esc(getAny(id).name||"this person")}</h3>`;
+  h+=`<div class="field"><label for="f-photo">Photo</label>`;
+  if(d.photo)h+=`<img class="portrait" src="${photoUrl(d.photo.v)}" alt="" style="max-height:160px">`;
+  if(d.photo&&!own)h+=`<p class="hintline">Only the admin can replace a photo.</p>`;
+  else h+=`<input id="f-photo" name="photo" type="file" accept="image/*">`;
+  h+=rm("photo")+`</div>`;
+  FIELDS.forEach(f=>{
+    const v=d[f.k]?d[f.k].v:"";
+    h+=`<div class="field"><label for="f-${f.k}">${f.label}</label>`+(f.long
+      ?`<textarea id="f-${f.k}" name="${f.k}" maxlength="${f.max}" placeholder="${esc(f.ph)}">${esc(v)}</textarea>`
+      :`<input id="f-${f.k}" name="${f.k}" maxlength="${f.max}" placeholder="${esc(f.ph)}" value="${esc(v)}">`)+rm(f.k)+`</div>`;
+  });
+  h+=`<div class="row"><button class="solid" data-act="save">Save details</button><button class="ghost" data-act="cancel">Cancel</button></div><p class="status" id="estatus" aria-live="polite"></p>`;
+  box.innerHTML=h;
+}
+const estatus=(t,bad)=>{const s=$("#estatus");if(s){s.textContent=t;s.classList.toggle("bad",!!bad);}};
+function shrink(file){ // downscale to a JPEG no wider or taller than 1200px
+  return new Promise((res,rej)=>{
+    const fr=new FileReader();
+    fr.onerror=()=>rej({code:"bad_image"});
+    fr.onload=()=>{const im=new Image();im.onerror=()=>rej({code:"bad_image"});
+      im.onload=()=>{const k=Math.min(1,1200/Math.max(im.width,im.height)),c=document.createElement("canvas");
+        c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);
+        c.toBlob(b=>b?res(b):rej({code:"bad_image"}),"image/jpeg",0.86);};
+      im.src=fr.result;};
+    fr.readAsDataURL(file);
+  });
+}
+const newName=()=>(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2))+".jpg";
+async function saveDetails(id){
+  const box=$("#pdetails"),d=details(id),rows=[];let blocked=false;
+  FIELDS.forEach(f=>{
+    const v=box.querySelector(`[name="${f.k}"]`).value.trim().slice(0,f.max),cur=d[f.k]?d[f.k].v:"";
+    if(v===cur)return;if(!v){blocked=true;return;}
+    rows.push({person_id:id,field:f.k,value:v});
+  });
+  const fi=box.querySelector('[name="photo"]'),file=fi&&fi.files[0];
+  if(!file&&!rows.length){estatus(blocked?"To take a detail away, use the remove link under it.":"Nothing has changed yet.",blocked);return;}
+  box.querySelectorAll("button").forEach(b=>b.disabled=true);
+  let uploaded=null;
+  try{
+    if(file){
+      estatus("Uploading the photo…");
+      uploaded=`${cloud.me}/${newName()}`;
+      chk(await sb.storage.from("photos").upload(uploaded,await shrink(file),{contentType:"image/jpeg",upsert:false}));
+      rows.push({person_id:id,field:"photo",value:uploaded});
+    }
+    estatus("Saving…");
+    chk(await sb.from("person_details").upsert(rows,{onConflict:"person_id,field"}));
+    if(uploaded&&d.photo&&cloud.isAdmin)sb.storage.from("photos").remove([d.photo.v]);
+    await loadDetails();
+    editing=false;posterStale=true;renderDetails(id);
+  }catch(e){box.querySelectorAll("button").forEach(b=>b.disabled=false);estatus(errText(e),true);}
+}
+async function removeField(id,k){ // admin only; the database refuses anyone else
+  const old=details(id)[k];
+  chk(await sb.from("person_details").delete().eq("person_id",id).eq("field",k));
+  if(k==="photo"&&old)await sb.storage.from("photos").remove([old.v]);
+  await loadDetails();posterStale=true;
+}
+$("#panel").addEventListener("click",async ev=>{
+  const b=ev.target.closest("[data-act]");if(!b||!selected)return;
+  const id=selected,k=b.dataset.k,box=$("#pdetails"),rb=k&&box.querySelector(`.rmbox[data-for="${k}"]`);
+  try{
+    switch(b.dataset.act){
+      case "edit":renderEditForm(id);break;
+      case "join":relateClose();setView("contribute");break;
+      case "cancel":editing=false;renderDetails(id);break;
+      case "save":await saveDetails(id);break;
+      case "rm":rb.hidden=false;b.hidden=true;break;
+      case "rm-cancel":rb.hidden=true;rb.previousElementSibling.hidden=false;break;
+      case "rm-now":b.disabled=true;await removeField(id,k);editing=false;renderDetails(id);break;
+      case "rm-ask":{const why=box.querySelector(`[name="why-${k}"]`).value.trim();
+        if(!why){estatus("Say briefly why it should be removed.",true);break;}
+        b.disabled=true;
+        chk(await sb.from("removal_requests").insert({person_id:id,field:k,reason:why.slice(0,300)}));
+        await loadMine();rb.innerHTML="Sent. The admin will decide.";break;}
+    }
+  }catch(e){b.disabled=false;estatus(errText(e),true);}
+});
+function relateClose(){selected=null;pathIds=new Set();$("#panel").hidden=true;document.body.classList.remove("panel-open");markList();}
+
+/* ---- contribute + admin view ---- */
+const when=t=>t?new Date(t).toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"}):"";
+const signInBlock=()=>{
+  if(cloud.authError&&!cloud.sent)return `<p class="note">${esc(cloud.authError)}</p>`+signInForm();
+  if(cloud.sent)return `<p class="note">We sent a sign-in link to <b>${esc(cloud.sent)}</b>. Open it on this device to finish signing in. If it has not arrived in a few minutes, look in your spam or junk folder.</p><p><button class="linkish" data-act="again">Use a different email address</button></p>`;
+  return signInForm();
+};
+const signInForm=()=>{
+  return `<div style="max-width:30rem">
+    ${cloud.google?`<button class="solid" data-act="google" style="width:100%;margin:4px 0 16px">Continue with Google</button><p class="byline" style="text-align:center;margin:-6px 0 12px!important">or</p>`:""}
+    <div class="field"><label for="si-email">Your email address</label><input id="si-email" type="email" autocomplete="email" inputmode="email" maxlength="200"></div>
+    <button class="${cloud.google?"ghost":"solid"}" data-act="email">Email me a sign-in link</button>
+    <p class="hintline" style="margin-top:10px">No password needed. We only use your email to sign you in.</p>
+    <p class="status" id="cstatus" aria-live="polite"></p></div>`;
+};
+function renderContribute(){
+  const el=$("#contribute-body");if(el.contains(document.activeElement)&&/INPUT|TEXTAREA/.test(document.activeElement.tagName))return;
+  const tab=document.querySelector('.tabs [data-view="contribute"]');
+  let h=`<h2>Contribute</h2>`;
+  const signout=`<p class="byline">Signed in as ${esc(cloud.email||"you")}. <button class="linkish" data-act="signout">Sign out</button></p>`;
+  if(cloud.status==="loading")h+=`<p>Connecting to the family record…</p>`;
+  else if(cloud.status==="none")h+=`<p>The family record cannot be reached right now, so details cannot be added. The tree itself still works. Try again later.</p>`;
+  else if(!cloud.me){
+    h+=`<p>Everyone can browse the tree. Family members can also help by adding photos, dates of birth and death, homes, name meanings and life stories.</p><p>Sign in first. Then ask the admin for editor access, and once you are approved you will see an <i>Add details</i> button on every person.</p>`+signInBlock();
+  }else if(cloud.isAdmin){
+    const pend=cloud.people.filter(p=>p.status==="pending");
+    const eds=cloud.people.filter(p=>p.is_editor);
+    const rem=cloud.removals.filter(r=>r.status==="pending");
+    tab.innerHTML=`Admin${pend.length+rem.length?`<span class="badge">${pend.length+rem.length}</span>`:""}`;
+    h=`<h2>Admin</h2>`+signout+`<p>You decide who may add details, and nothing is removed from the tree unless you approve it. You can add and change details yourself from any person’s panel.</p>`;
+    h+=`<h3>People asking to become editors</h3>`+(pend.length?`<ul class="cards">`+pend.map(r=>`<li><span class="who2">${esc(r.name||"No name given")}</span> <span class="byline">(${esc(r.email||"")}, ${when(r.requested_at)})</span><p class="said">${esc(r.note||"")}</p><div class="row" style="margin:0"><button class="solid small" data-act="approve" data-uid="${r.user_id}">Approve as editor</button><button class="ghost small" data-act="decline" data-uid="${r.user_id}">Decline</button></div></li>`).join("")+`</ul>`:`<p>No one is waiting.</p>`);
+    h+=`<h3>Requests to remove something</h3>`+(rem.length?`<ul class="cards">`+rem.map(r=>{const e=getAny(r.person_id),cur=details(r.person_id)[r.field];return `<li><span class="who2">Remove the ${esc(FLABEL(r.field))} of ${e?`<button class="who" data-go="${e.id}">${esc(e.name||"Name not recorded")}</button>`:"someone no longer in the record"}</span>${cur&&r.field!=="photo"?`<p class="said">Currently: “${esc(cur.v.length>140?cur.v.slice(0,140)+"…":cur.v)}”</p>`:""}<p class="said">Asked by ${esc(cloud.names[r.requested_by]||"an editor")} on ${when(r.created_at)}: ${esc(r.reason||"")}</p><div class="row" style="margin:0"><button class="solid small" data-act="rem-yes" data-rid="${r.id}">Remove it</button><button class="ghost small" data-act="rem-no" data-rid="${r.id}">Keep it</button></div></li>`;}).join("")+`</ul>`:`<p>Nothing is waiting.</p>`);
+    h+=`<h3>Editors</h3>`+(eds.length?`<ul class="cards">`+eds.map(u=>`<li><span class="who2">${esc(u.name||u.email||"Editor")}</span> <span class="byline">${esc(u.email||"")}, since ${when(u.approved_at)}</span><div class="row" style="margin:6px 0 0"><button class="ghost small" data-act="revoke" data-uid="${u.user_id}">Take away editor access</button></div></li>`).join("")+`</ul><p class="byline">Taking away access stops someone adding more. What they already added stays until you remove it.</p>`:`<p>No editors yet.</p>`);
+  }else if(cloud.isEditor){
+    const mine=cloud.myRem.slice(0,10);
+    h+=signout+`<p>You are an approved editor. Open any person in the tree or the full list and choose <i>Add details</i> to add a photo, dates, a home, the meaning of their name or their story.</p><p>You can add and correct details. To take something away, use <i>Ask the admin to remove</i> under that detail; only the admin can approve a removal.</p>`;
+    if(mine.length)h+=`<h3>Your removal requests</h3><ul class="cards">`+mine.map(r=>{const e=getAny(r.person_id);return `<li>${esc(cap1(FLABEL(r.field)))} of ${esc(e&&e.name||"someone")}: ${r.status==="pending"?"waiting for the admin":r.status==="removed"?"removed":"the admin kept it"}</li>`;}).join("")+`</ul>`;
+  }else{
+    const q=cloud.myReq;
+    h+=signout;
+    if(q&&q.status==="pending")h+=`<p>Your request to become an editor was sent on ${when(q.created_at)}. The admin has not answered yet.</p>`;
+    else{
+      if(q&&q.status==="declined")h+=`<p class="note">The admin declined your earlier request. You can send another if something has changed.</p>`;
+      if(q&&q.status==="revoked")h+=`<p class="note">Your editor access was taken away by the admin. You can ask again.</p>`;
+      h+=`<p>Tell the admin who you are. Once you are approved you will see an <i>Add details</i> button on every person.</p>
+      <div style="max-width:30rem"><div class="field"><label for="rq-name">Your name</label><input id="rq-name" maxlength="80" autocomplete="name"></div>
+      <div class="field"><label for="rq-note">How are you related to the family?</label><textarea id="rq-note" maxlength="400" placeholder="For example: I am a granddaughter of David Ahukanna Ukomadu"></textarea></div>
+      <button class="solid" data-act="request">Ask to become an editor</button><p class="status" id="cstatus" aria-live="polite"></p></div>`;
+    }
+  }
+  if(!cloud.isAdmin&&tab)tab.textContent="Contribute";
+  el.innerHTML=h;fillNames(el);
+}
+const cstatus=(t,bad)=>{const s=$("#cstatus");if(s){s.textContent=t;s.classList.toggle("bad",!!bad);}};
+const here=()=>location.origin+location.pathname;
+$("#contribute-body").addEventListener("click",async ev=>{
+  const g=ev.target.closest("[data-go]");if(g){select(g.dataset.go);return;}
+  const b=ev.target.closest("[data-act]");if(!b)return;
+  const uid=b.dataset.uid,rid=b.dataset.rid?+b.dataset.rid:null;
+  b.disabled=true;
+  try{
+    switch(b.dataset.act){
+      case "email":{
+        const em=$("#si-email").value.trim();
+        if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){b.disabled=false;cstatus("Enter your email address, for example name@example.com.",true);return;}
+        cstatus("Sending…");
+        try{sessionStorage.setItem("ft-after-signin","1");}catch(e){}
+        chk(await sb.auth.signInWithOtp({email:em,options:{emailRedirectTo:here(),shouldCreateUser:true}}));
+        cloud.sent=em;renderContribute();return;}
+      case "again":cloud.sent="";renderContribute();return;
+      case "google":
+        try{sessionStorage.setItem("ft-after-signin","1");}catch(e){}
+        chk(await sb.auth.signInWithOAuth({provider:"google",options:{redirectTo:here()}}));return;
+      case "signout":await sb.auth.signOut();return;
+      case "request":{
+        const name=$("#rq-name").value.trim(),note=$("#rq-note").value.trim();
+        if(!name||!note){b.disabled=false;cstatus("Please fill in both boxes so the admin knows who you are.",true);return;}
+        cstatus("Sending…");
+        chk(await sb.from("editor_requests").upsert({user_id:cloud.me,name:name.slice(0,80),note:note.slice(0,400),status:"pending",decided_at:null,created_at:new Date().toISOString()},{onConflict:"user_id"}));
+        await loadMine();break;}
+      case "approve":chk(await sb.rpc("approve_editor",{uid}));await loadAdmin();break;
+      case "decline":chk(await sb.rpc("decline_editor",{uid}));await loadAdmin();break;
+      case "revoke":chk(await sb.rpc("revoke_editor",{uid}));await loadAdmin();break;
+      case "rem-yes":case "rem-no":{
+        const r=cloud.removals.find(x=>x.id===rid);
+        const old=chk(await sb.rpc("decide_removal",{req:rid,approve:b.dataset.act==="rem-yes"}));
+        if(old&&r&&r.field==="photo"&&PHOTO_RE.test(old))await sb.storage.from("photos").remove([old]);
+        await loadDetails();await loadAdmin();posterStale=true;break;}
+    }
+  }catch(e){b.disabled=false;const m=errText(e);if($("#cstatus"))cstatus(m,true);else alertLine(m);}
+  renderContribute();
+});
+function alertLine(m){const p=document.createElement("p");p.className="status bad";p.textContent=m;$("#contribute-body").prepend(p);}
+
+async function loadMine(){
+  if(!cloud.me)return;
+  const [rq,rm]=await Promise.all([
+    sb.from("editor_requests").select("*").eq("user_id",cloud.me).maybeSingle(),
+    sb.from("removal_requests").select("*").eq("requested_by",cloud.me).order("created_at",{ascending:false}).limit(40)]);
+  cloud.myReq=rq.data||null;cloud.myRem=rm.data||[];
+}
+async function loadAdmin(){
+  if(!cloud.isAdmin)return;
+  const [pp,rr]=await Promise.all([sb.rpc("admin_people"),sb.from("removal_requests").select("*").order("created_at").limit(500)]);
+  cloud.people=pp.data||[];cloud.removals=rr.data||[];
+  const ids=[...new Set(cloud.removals.map(r=>r.requested_by))].filter(i=>!cloud.names[i]);
+  if(ids.length){const ps=(await sb.from("profiles").select("id,name").in("id",ids)).data||[];ps.forEach(p=>{if(p.name)cloud.names[p.id]=p.name;});}
+  cloud.people.forEach(p=>{if(p.name&&!cloud.names[p.user_id])cloud.names[p.user_id]=p.name;});
+}
+async function loadUser(session){
+  cloud.me=session?session.user.id:null;cloud.email=session?(session.user.email||""):"";
+  cloud.isAdmin=cloud.isEditor=false;cloud.myReq=undefined;cloud.myRem=[];cloud.people=[];cloud.removals=[];
+  if(cloud.me){
+    const [a,e]=await Promise.all([
+      sb.from("admins").select("user_id").eq("user_id",cloud.me).maybeSingle(),
+      sb.from("editors").select("user_id").eq("user_id",cloud.me).maybeSingle()]);
+    cloud.isAdmin=!!a.data;cloud.isEditor=cloud.isAdmin||!!e.data;
+    await Promise.all([loadMine(),loadAdmin()]);
+  }
+}
+function cloudChanged(){
+  posterStale=true;
+  if(selected&&!$("#panel").hidden&&!editing)renderDetails(selected);
+  renderContribute();
+  if(view==="poster")showPoster();
+}
+let lastRefresh=Date.now();
+document.addEventListener("visibilitychange",async()=>{ // pick up approvals and others' changes when someone returns to the page
+  if(document.visibilityState!=="visible"||!sb||cloud.status!=="ok"||editing||Date.now()-lastRefresh<20000)return;
+  lastRefresh=Date.now();
+  try{const {data}=await sb.auth.getSession();await loadUser(data&&data.session);await loadDetails();cloudChanged();}catch(e){}
+});
+async function initCloud(){
+  const hp=new URLSearchParams(location.hash.replace(/^#/,""));
+  if(hp.get("error")||hp.get("error_description")){
+    cloud.authError=hp.get("error_code")==="otp_expired"?"That sign-in link has expired or was already used. Ask for a new one below."
+      :"Signing in did not work ("+(hp.get("error_description")||"unknown problem").replace(/\+/g," ")+"). Try again below.";
+    history.replaceState(null,"",location.pathname+location.search);setView("contribute");
+  }
+  if(!sb){renderContribute();return;}
+  fetch(`${SB_URL}/auth/v1/settings`,{headers:{apikey:SB_KEY}}).then(r=>r.json()).then(s=>{cloud.google=!!(s&&s.external&&s.external.google);if(!cloud.me)renderContribute();}).catch(()=>{});
+  const slow=setTimeout(()=>{if(cloud.status==="loading"){cloud.status="none";renderContribute();}},12000);
+  let first=true;
+  sb.auth.onAuthStateChange((event,session)=>{
+    setTimeout(async()=>{ // run outside the auth callback, as supabase-js advises
+      try{
+        await loadUser(session);
+        if(first){first=false;await loadDetails();}
+        clearTimeout(slow);cloud.status="ok";
+      }catch(e){clearTimeout(slow);cloud.status="none";}
+      let after=false;try{after=sessionStorage.getItem("ft-after-signin")==="1";}catch(e){}
+      if(session&&/access_token=/.test(location.hash))history.replaceState(null,"",location.pathname+location.search);
+      if(session)cloud.authError="";
+      if(session&&after&&event==="SIGNED_IN"){try{sessionStorage.removeItem("ft-after-signin");}catch(e){}cloud.sent="";relateClose();setView("contribute");setHash("contribute");}
+      if(!session)cloud.sent=cloud.sent||"";
+      cloudChanged();
+    },0);
+  });
+}
+
+
+/* ================= poster ================= */
+let posterCache=null,CREST_DATA=null;
+fetch("img/crest.webp").then(r=>r.blob()).then(b=>{const fr=new FileReader();fr.onload=()=>{CREST_DATA=fr.result;posterStale=true;if(view==="poster")showPoster();};fr.readAsDataURL(b);}).catch(()=>{});
+function buildPoster(){
+  const INK="#1B2140",MUT="#5A607A",PAPER="#FBFAF6",BC=["#1B2140","#A63A2E","#A26F12","#44752F","#3D55A8","#8A3F86","#1C7B85"];
+  const F="Helvetica,Arial,sans-serif",SERIF="Georgia,'Times New Roman',serif",FS=14,L=31,GAPX=36;
+  const x=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const yrs=id=>{const d=details(id),b=d.born&&d.born.v,e=d.died&&d.died.v;return b&&e?` (${b} – ${e})`:b?` (b. ${b})`:e?` (d. ${e})`:"";};
+  const label=n=>{
+    if(n.type==="p"){const p=n.p,u=p.unions.length===1?p.unions[0]:null;return p.name+(p.tag?` (${p.tag})`:"")+yrs(p.id)+(u&&u.spouse?`, m. ${spName(u.spouse)}`:"");}
+    if(n.type==="u")return `${cap1(unionLabel(n.u))}: ${spName(n.u.spouse)}${n.u.spouse&&n.u.spouse.from?" of "+n.u.spouse.from:""}`;
+    if(n.type==="r")return n.target.name+" (see Ukomadu’s 3rd wife)";
+    return cap1(n.label);
+  };
+  const rootName=ROOT.name+yrs(ROOT.id),rootW=tw(rootName,`bold 20px ${SERIF}`),G=Math.max(rootW/2,70)+34;
+  const side=(unions,s)=>{
+    const root=d3.hierarchy({type:"root",kids:unions},n=>n.kids);
+    d3.tree().nodeSize([L,1]).separation((a,b)=>a.parent===b.parent?1:1.5)(root);
+    const cw=[0];
+    root.each(d=>{if(!d.depth)return;d.t=label(d.data);d.bold=!!(d.data.kids&&d.data.kids.length);d.w=tw(d.t,`${d.bold?"bold ":""}${FS}px ${F}`);cw[d.depth]=Math.max(cw[d.depth]||0,d.w);});
+    const cx=[0,0];for(let i=2;i<cw.length;i++)cx[i]=cx[i-1]+10+cw[i-1]+GAPX;
+    let out="";
+    root.each(d=>{
+      if(!d.depth)return;
+      d.px=s*(G+cx[d.depth]);
+      const c=BC[d.data.branch||0],p=d.parent;
+      const sx=p.depth?p.px+s*(10+p.w+5):s*(rootW/2+10),sy=p.depth?p.x:0,ex=d.px-s*6,mx=(sx+ex)/2;
+      out+=`<path d="M${sx.toFixed(1)},${sy}C${mx.toFixed(1)},${sy} ${mx.toFixed(1)},${d.x} ${ex.toFixed(1)},${d.x}" fill="none" stroke="${c}" stroke-width="1.1" opacity=".6"/>`;
+      out+=`<circle cx="${d.px.toFixed(1)}" cy="${d.x}" r="3.2" fill="${d.bold?c:PAPER}" stroke="${c}" stroke-width="1.3"/>`;
+      out+=`<text x="${(d.px+s*10).toFixed(1)}" y="${d.x+4.5}" text-anchor="${s>0?"start":"end"}" font-family="${F}" font-size="${FS}"${d.bold?' font-weight="bold"':""}${d.data.type==="u"||d.data.type==="r"||d.data.type==="x"?' font-style="italic"':""} fill="${INK}">${x(d.t)}</text>`;
+    });
+    const ds=root.descendants().filter(d=>d.depth);
+    return {out,width:G+cx[cw.length-1]+10+cw[cw.length-1],min:d3.min(ds,d=>d.x),max:d3.max(ds,d=>d.x)};
+  };
+  const R=side(TREE.kids.filter(k=>k.u.branch===2),1),Lf=side(TREE.kids.filter(k=>k.u.branch!==2),-1);
+  const PAD=70,HEAD=190,FOOT=80;
+  const top=Math.min(R.min,Lf.min,-175)-L,bot=Math.max(R.max,Lf.max,40)+L;
+  const x0=-Lf.width-PAD,W=Lf.width+R.width+PAD*2,y0=top-HEAD,H=bot-top+HEAD+FOOT,mid=x0+W/2;
+  let s=`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="${x0.toFixed(0)} ${y0.toFixed(0)} ${W.toFixed(0)} ${H.toFixed(0)}" width="${W.toFixed(0)}" height="${H.toFixed(0)}">`;
+  s+=`<rect x="${x0.toFixed(0)}" y="${y0.toFixed(0)}" width="${W.toFixed(0)}" height="${H.toFixed(0)}" fill="${PAPER}"/>`;
+  s+=`<text x="${mid}" y="${y0+92}" text-anchor="middle" font-family="${SERIF}" font-size="64" font-weight="bold" fill="${INK}">Nwaogwugwu Family Tree</text>`;
+  s+=`<text x="${mid}" y="${y0+134}" text-anchor="middle" font-family="${F}" font-size="20" fill="${MUT}">The descendants of Ukomadu Nwaogwugu. Record updated September 14, 2026.</text>`;
+  s+=Lf.out+R.out;
+  const crest=CREST_DATA||$(".brand img").src;
+  s+=`<image href="${crest}" xlink:href="${crest}" x="-66" y="-172" width="132" height="151"/>`;
+  s+=`<text x="0" y="7" text-anchor="middle" font-family="${SERIF}" font-size="20" font-weight="bold" fill="${INK}">${x(rootName)}</text>`;
+  let lx=x0+PAD;const ly=y0+H-34;
+  ROOT.unions.forEach(u=>{const t=`${ordinal(u.ord)} wife: ${u.spouse.name}`;
+    s+=`<circle cx="${lx}" cy="${ly-4}" r="6" fill="${BC[u.branch]}"/><text x="${lx+12}" y="${ly}" font-family="${F}" font-size="13" fill="${INK}">${x(t)}</text>`;
+    lx+=12+tw(t,`13px ${F}`)+30;});
+  s+=`<text x="${x0+W-PAD}" y="${ly}" text-anchor="end" font-family="${F}" font-size="13" fill="${MUT}">m. = married. Names are spelled as in the family record.</text>`;
+  return {svg:s+`</svg>`,w:W,h:H};
+}
+function showPoster(){
+  if(!posterStale&&posterCache)return;
+  posterCache=buildPoster();posterStale=false;
+  $("#poster-box").innerHTML=posterCache.svg;
+}
+const pstatus=t=>{$("#poster-status").textContent=t;};
+function giveFile(name,blob){
+  const u=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);
+}
+async function savePoster(kind){
+  showPoster();
+  try{
+    if(kind==="svg"){giveFile("nwaogwugwu-family-tree-poster.svg",new Blob([posterCache.svg],{type:"image/svg+xml"}));pstatus("");return;}
+    pstatus("Preparing the picture…");
+    const im=new Image();
+    await new Promise((res,rej)=>{im.onload=res;im.onerror=rej;im.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(posterCache.svg);});
+    const k=Math.min(2,6000/posterCache.w),c=document.createElement("canvas");
+    c.width=Math.round(posterCache.w*k);c.height=Math.round(posterCache.h*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);
+    const blob=await new Promise(res=>c.toBlob(res,"image/png"));
+    if(!blob)throw new Error("png");
+    giveFile("nwaogwugwu-family-tree-poster.png",blob);pstatus("");
+  }catch(e){pstatus("The picture could not be made in this browser. Try the SVG download instead.");}
+}
+$("#dl-svg").onclick=()=>savePoster("svg");
+$("#dl-png").onclick=()=>savePoster("png");
+
+/* ================= controls + routing ================= */
+document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>{
+  setView(b.dataset.view);
+  if(selected){setHash(selected);openPanel(getAny(selected));}
+}));
+function allIds(n,acc){if(n.kids&&n.kids.length){acc.push(n.id);n.kids.forEach(k=>allIds(k,acc));}return acc;}
+$("#t-open").onclick=()=>{allIds(TREE,[]).forEach(id=>expanded.add(id));render();$("#hint").hidden=true;if(selected)reveal(treeIdFor(getAny(selected)));else fit();};
+$("#t-close").onclick=()=>{expanded.clear();expanded.add(TREE.id);if(selected)expandTo(treeIdFor(getAny(selected)));render();setTimeout(()=>fit(),reduce?0:340);};
+$("#t-fit").onclick=()=>fit();
+$("#t-in").onclick=()=>svg.transition().duration(reduce?0:200).call(zoom.scaleBy,1.3);
+$("#t-out").onclick=()=>svg.transition().duration(reduce?0:200).call(zoom.scaleBy,1/1.3);
+document.addEventListener("keydown",ev=>{if(ev.key==="Escape"&&!$("#panel").hidden&&document.activeElement!==qEl)closePanel();});
+
+function route(initial){
+  const h=decodeURIComponent(location.hash.replace(/^#/,""));
+  if(/(^|&)(access_token|refresh_token|error|error_code|error_description)=/.test(h)){if(initial)setView("tree",true);return;}
+  if(VIEWS.includes(h)){if(selected){selected=null;pathIds=new Set();$("#panel").hidden=true;document.body.classList.remove("panel-open");markList();}setView(h,true);}
+  else if(getAny(h)){if(initial)setView("tree",true);if(selected!==h)select(h,{fromHash:true});}
+  else if(initial||!h){if(selected&&!h){selected=null;pathIds=new Set();$("#panel").hidden=true;document.body.classList.remove("panel-open");markList();}setView(initial?"tree":view,true);}
+}
+renderList();renderGaps();renderFacts();
+$("#bigcrest").src=$(".brand img").src;
+zoomg.insert("image","#links").attr("href",$(".brand img").src).attr("x",8).attr("y",-162).attr("width",118).attr("height",135).attr("aria-hidden","true").style("pointer-events","none");
+route(true);
+renderContribute();initCloud();
+addEventListener("hashchange",()=>route(false));
+let wasNarrow=narrow();
+addEventListener("resize",()=>{if(narrow()!==wasNarrow){wasNarrow=narrow();wcache.clear();gNodes.selectAll("*").remove();gLinks.selectAll("*").remove();prevPos=new Map();if(view==="tree")render(false);}if(view==="tree"&&!selected)fit(false);});
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{wcache.clear();gNodes.selectAll("*").remove();gLinks.selectAll("*").remove();prevPos=new Map();if(view==="tree"){render(false);if(!selected)fit(false);}});
+</script>
+</body>
+</html>
