@@ -142,6 +142,12 @@ main{flex:1;min-height:0;position:relative;display:flex}
 .tools{position:absolute;left:16px;bottom:16px;display:flex;flex-wrap:wrap;gap:8px;max-width:calc(100% - 32px)}
 .tools button{height:40px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface);box-shadow:0 2px 8px rgba(0,0,0,.08)}
 .tools button.sq{width:40px;padding:0;font-size:1.2rem;line-height:1}
+.tools button.sz{width:auto;padding:0 12px;font-size:1rem;font-weight:700}
+.tools button.sz[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tree-big .node .main{font-size:16.5px}
+.tree-big .node .sub,.tree-big .node .cap{font-size:13.5px}
+.tree-big .node.u .main{font-size:17px}
+.tree-big .node text.pini{font-size:14px}
 .hint{position:absolute;left:16px;top:12px;margin:0;max-width:min(30rem,calc(100% - 32px));color:var(--muted);font-size:.9rem;pointer-events:none;background:color-mix(in srgb,var(--bg) 88%,transparent);padding:4px 8px;border-radius:8px}
 
 /* list */
@@ -217,6 +223,10 @@ main{flex:1;min-height:0;position:relative;display:flex}
   #panel{top:auto;left:0;width:auto;max-height:56%;border-left:0;border-top:1px solid var(--line);border-radius:18px 18px 0 0;padding:18px 18px calc(28px + env(safe-area-inset-bottom,0px))}
   .hint{font-size:.85rem}
   .tools{left:12px;bottom:12px}
+  .tools{gap:6px;max-width:calc(100% - 24px)}
+  .tools button{height:38px;padding:0 10px;font-size:.95rem}
+  .tools button.sq{width:38px}
+  .tools button.sz{width:auto;padding:0 10px}
   .prose h2{font-size:1.6rem}
 }
 
@@ -448,6 +458,7 @@ main{flex:1;min-height:0;position:relative;display:flex}
 .clinks{margin:8px 0 0}.clinks summary{cursor:pointer;color:var(--muted)}
 @media (max-width:560px){.famfields,.famrow .row{margin-left:0!important}.famfields input{width:100%}.famfields label{flex:1 1 100%}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (max-width:380px){.tools{gap:5px}.tools button{padding:0 8px;font-size:.9rem}.tools button.sq{width:34px}.tools button.sz{padding:0 8px}}
 </style>
 </head>
 <body>
@@ -495,6 +506,7 @@ main{flex:1;min-height:0;position:relative;display:flex}
         <button id="t-close">Close all</button>
         <button id="t-me" hidden>Find me</button>
         <button id="t-fit">Fit</button>
+        <button id="t-size" class="sq sz" aria-pressed="false">A+</button>
         <button id="t-in" class="sq" aria-label="Zoom in">+</button>
         <button id="t-out" class="sq" aria-label="Zoom out">−</button>
       </div>
@@ -793,7 +805,19 @@ function tnode(p,parentId){
 }
 let TREE=tnode(ROOT,null);
 const expanded=new Set([TREE.id]);
-const ROW=46, COL=300, GAP=70, PR=16, LX=28;
+/* two sizes: "big" (default on computers) and "small" (default on phones); a viewer's choice is remembered on their device */
+let ROW,COL,GAP,PR,LX,FS,big;
+const SZ={small:{ROW:46,COL:300,GAP:70,PR:16,LX:28,FS:{main:15,u:15.5,sub:12.5,y1:-1,y2:15,y0:5,cy:-6,cy2:12,bs:1}},
+          big:{ROW:56,COL:320,GAP:76,PR:20,LX:34,FS:{main:16.5,u:17,sub:13.5,y1:-2,y2:17,y0:6,cy:-7,cy2:13,bs:1.12}}};
+function sizePref(){try{return localStorage.getItem("ft-tree-size");}catch(e){return null;}}
+function applySize(){
+  const pref=sizePref();big=pref?pref==="big":!matchMedia("(max-width:899px)").matches;
+  ({ROW,COL,GAP,PR,LX,FS}=SZ[big?"big":"small"]);
+  document.documentElement.classList.toggle("tree-big",big);
+  const b=document.getElementById("t-size");if(b){b.setAttribute("aria-pressed",String(big));b.textContent=big?"A−":"A+";
+    b.setAttribute("aria-label",big?"Smaller names and pictures":"Bigger names and pictures");b.title=b.getAttribute("aria-label");}
+}
+applySize();
 const reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
 const svg=d3.select("#tree-svg"), zoomg=d3.select("#zoomg"), gLinks=d3.select("#links"), gNodes=d3.select("#nodes");
 const zoom=d3.zoom().scaleExtent([0.25,2.2]).on("zoom",e=>zoomg.attr("transform",e.transform));
@@ -823,7 +847,7 @@ function nodeEntityId(n){ // whose change a node's mark stands for
 function labelW(d){
   const id=d.data.id;if(wcache.has(id))return wcache.get(id);
   const l=lines(d);
-  const w=Math.max(tw((l.main||"")+(l.tag||""),'700 15.5px "Atkinson Hyperlegible","Segoe UI",sans-serif'),tw(l.sub||l.cap||"",'12.5px "Atkinson Hyperlegible","Segoe UI",sans-serif'));
+  const w=Math.max(tw((l.main||"")+(l.tag||""),`700 ${FS.u}px "Atkinson Hyperlegible","Segoe UI",sans-serif`),tw(l.sub||l.cap||"",`${FS.sub}px "Atkinson Hyperlegible","Segoe UI",sans-serif`));
   wcache.set(id,w+(cloud.changes&&cloud.changes.get(nodeEntityId(d.data))?24:0));return wcache.get(id);
 }
 const hasKids=d=>d.data.kids&&d.data.kids.length>0;
@@ -857,18 +881,18 @@ function render(animate=true){
   ent.each(function(d){
     const g=d3.select(this), l=lines(d);
     if(l.cap){
-      g.append("text").attr("class","cap").attr("x",LX).attr("y",-6).text(l.cap);
-      g.append("text").attr("class","main").attr("x",LX).attr("y",12).text(l.main);
+      g.append("text").attr("class","cap").attr("x",LX).attr("y",FS.cy).text(l.cap);
+      g.append("text").attr("class","main").attr("x",LX).attr("y",FS.cy2).text(l.main);
     }else{
-      const m=g.append("text").attr("class","main").attr("x",d.data.type==="x"?18:LX).attr("y",l.sub?-1:5);
+      const m=g.append("text").attr("class","main").attr("x",d.data.type==="x"?18:LX).attr("y",l.sub?FS.y1:FS.y0);
       m.append("tspan").text(l.main);
       if(l.tag) m.append("tspan").attr("class","tag").text(l.tag);
-      if(l.sub) g.append("text").attr("class","sub").attr("x",LX).attr("y",15).text(l.sub);
+      if(l.sub) g.append("text").attr("class","sub").attr("x",LX).attr("y",FS.y2).text(l.sub);
     }
     const cid=nodeEntityId(d.data),chg=cid&&cloud.changes&&cloud.changes.get(cid);
     if(chg){
-      const mw=tw((l.main||"")+(l.tag||""),(d.data.type==="u"?'500 15.5px "Besley",Georgia,serif':(hasKids(d)?'700 15px ':'15px ')+'"Atkinson Hyperlegible","Segoe UI",sans-serif'));
-      const mk=g.append("g").attr("class","mark").attr("transform",`translate(${LX+mw+6},${(l.cap?12:l.sub?-1:5)-11}) scale(.5)`);
+      const mw=tw((l.main||"")+(l.tag||""),(d.data.type==="u"?`500 ${FS.u}px "Besley",Georgia,serif`:(hasKids(d)?`700 ${FS.main}px `:`${FS.main}px `)+'"Atkinson Hyperlegible","Segoe UI",sans-serif'));
+      const mk=g.append("g").attr("class","mark").attr("transform",`translate(${LX+mw+6},${(l.cap?FS.cy2:l.sub?FS.y1:FS.y0)-11}) scale(.5)`);
       mk.append("rect").attr("x",-4).attr("y",-4).attr("width",32).attr("height",32);
       mk.append("path").attr("d","M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z");
       const who=getAny(cid);
@@ -918,7 +942,7 @@ function drawPic(g,d){ // photo, or initials until one is added, with the descen
   if(ph)p.append("image").attr("href",photoUrl(ph.v)).attr("x",-PR).attr("y",-PR).attr("width",2*PR).attr("height",2*PR)
           .attr("clip-path",`url(#${cid})`).attr("preserveAspectRatio","xMidYMid slice").on("error",function(){this.remove();});
   p.append("circle").attr("class","pring").attr("r",PR);
-  const b=g.append("g").attr("class","badge").attr("transform",`translate(${PR*.78},${PR*.72})`);
+  const b=g.append("g").attr("class","badge").attr("transform",`translate(${PR*.78},${PR*.72}) scale(${FS.bs})`);
   b.append("rect").attr("y",-9).attr("height",18).attr("rx",9);
   b.append("text").attr("class","btxt").attr("dy","0.35em");
   b.append("title");
@@ -2672,6 +2696,9 @@ function allIds(n,acc){if(n.kids&&n.kids.length){acc.push(n.id);n.kids.forEach(k
 $("#t-open").onclick=()=>{allIds(TREE,[]).forEach(id=>expanded.add(id));render();$("#hint").hidden=true;if(selected)reveal(treeIdFor(getAny(selected)));else fit();};
 $("#t-close").onclick=()=>{expanded.clear();expanded.add(TREE.id);if(selected)expandTo(treeIdFor(getAny(selected)));render();setTimeout(()=>fit(),reduce?0:340);};
 $("#t-fit").onclick=()=>fit();
+function redrawTree(){wcache.clear();gNodes.selectAll("*").remove();gLinks.selectAll("*").remove();prevPos=new Map();if(view==="tree"){render(false);if(selected)reveal(treeIdFor(getAny(selected)));else fit(false);}}
+$("#t-size").onclick=()=>{try{localStorage.setItem("ft-tree-size",big?"small":"big");}catch(e){}applySize();redrawTree();};
+applySize();
 $("#t-in").onclick=()=>svg.transition().duration(reduce?0:200).call(zoom.scaleBy,1.3);
 $("#t-out").onclick=()=>svg.transition().duration(reduce?0:200).call(zoom.scaleBy,1/1.3);
 document.addEventListener("keydown",ev=>{if(ev.key==="Escape"&&!$("#panel").hidden&&document.activeElement!==qEl)closePanel();});
@@ -2690,7 +2717,7 @@ route(true);
 renderContribute();initCloud();
 addEventListener("hashchange",()=>route(false));
 let wasNarrow=narrow();
-addEventListener("resize",()=>{if(narrow()!==wasNarrow){wasNarrow=narrow();wcache.clear();gNodes.selectAll("*").remove();gLinks.selectAll("*").remove();prevPos=new Map();if(view==="tree")render(false);}if(view==="tree"&&!selected)fit(false);});
+addEventListener("resize",()=>{if(narrow()!==wasNarrow){wasNarrow=narrow();applySize();wcache.clear();gNodes.selectAll("*").remove();gLinks.selectAll("*").remove();prevPos=new Map();if(view==="tree")render(false);}if(view==="tree"&&!selected)fit(false);});
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{wcache.clear();gNodes.selectAll("*").remove();gLinks.selectAll("*").remove();prevPos=new Map();if(view==="tree"){render(false);if(!selected)fit(false);}});
 </script>
 </body>
