@@ -224,6 +224,36 @@ main{flex:1;min-height:0;position:relative;display:flex}
 .badge{display:inline-block;min-width:20px;padding:0 6px;margin-left:6px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-size:.75rem;font-weight:700;line-height:20px;text-align:center}
 .go.alt{background:transparent;color:var(--ink);border:1.5px solid var(--ink);margin-left:8px}
 @media (max-width:600px){.pair,.twolines{grid-template-columns:1fr}}
+/* manage table */
+.mtools{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:end;margin:16px 0 6px}
+.mtools label span{display:block;font-weight:700;font-size:.9rem;margin:0 0 6px}
+.mtools input,.mtools select,.madd input,.madd select{min-height:44px;padding:8px 12px;border:1.5px solid var(--muted);border-radius:10px;background:var(--surface);color:var(--ink)}
+.msearch{flex:1 1 320px;max-width:34rem}.msearch input{width:100%}
+.mwrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface);margin:8px 0 0}
+.mtable{width:100%;border-collapse:collapse;font-size:.95rem}
+.mtable th{position:sticky;top:0;z-index:1;background:var(--sunk);text-align:left;font-size:.85rem;padding:10px 8px;white-space:nowrap}
+.mtable td{padding:6px 8px;border-top:1px solid var(--line);vertical-align:top}
+.mtable tr[data-id] td:first-child{border-left:4px solid var(--bc)}
+.mtable td input{width:100%;min-width:7.5rem;min-height:38px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.mtable td:first-child input{min-width:13rem;font-weight:700}
+.mtable td input:focus{border-color:var(--focus)}
+.mtable tr.dirty td{background:color-mix(in srgb,var(--b2) 10%,transparent)}
+.mrel{color:var(--muted);font-size:.875rem;min-width:11rem}
+.mmuted{color:var(--muted);font-size:.85rem}
+.mline{display:block;line-height:1.3;margin:0 0 6px;min-width:10rem}
+.mwas{display:block;margin-top:3px}
+.mact{white-space:nowrap}.mact .linkish{margin-left:8px}.mact .status{display:block;max-width:14rem;white-space:normal;margin:4px 0 0}
+.madd{padding:12px 6px;border-left:4px solid var(--accent)}
+.mgrid{display:flex;flex-wrap:wrap;gap:10px 16px;margin:10px 0 0}.mgrid label{display:block;font-weight:700;font-size:.85rem}.mgrid input,.mgrid select{display:block;margin-top:4px;min-width:12rem}
+@media (max-width:760px){
+  .mtable thead{display:none}
+  .mtable,.mtable tbody,.mtable tr,.mtable td{display:block;width:100%}
+  .mtable tr[data-id]{border-top:6px solid var(--sunk);border-left:4px solid var(--bc);padding:6px 0}
+  .mtable tr[data-id] td:first-child{border-left:0}
+  .mtable td{border-top:0;padding:4px 10px}
+  .mtable td[data-label]::before{content:attr(data-label);display:block;font-size:.8rem;font-weight:700;color:var(--muted)}
+  .mtable td input,.mtable td:first-child input{min-width:0}
+}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -250,6 +280,7 @@ main{flex:1;min-height:0;position:relative;display:flex}
       <button role="tab" data-view="story">Our story</button>
       <button role="tab" data-view="poster">Poster</button>
       <button role="tab" data-view="gaps">Help fill the gaps</button>
+      <button role="tab" data-view="manage" id="tab-manage" hidden>Manage</button>
       <button role="tab" data-view="contribute">Contribute</button>
     </nav>
   </header>
@@ -342,6 +373,10 @@ main{flex:1;min-height:0;position:relative;display:flex}
         <p class="status" id="poster-status" aria-live="polite"></p>
         <div class="posterbox" id="poster-box"></div>
       </div>
+    </section>
+
+    <section class="view scroll" id="view-manage" aria-label="Manage">
+      <div class="col prose" id="manage-body" style="max-width:none"></div>
     </section>
 
     <section class="view scroll" id="view-contribute" aria-label="Contribute">
@@ -494,7 +529,8 @@ function index(raw,parent,union,gen,branch){
 }
 const ROOT=index(DATA,null,null,1,0);
 const kidsOf=u=>u.children.filter(c=>c.kind==="person");
-(function count(p){let n=0;p.unions.forEach(u=>u.children.forEach(c=>{if(c.kind==="person")n+=1+count(c);else if(c.kind==="ph")n+=c.k;}));p.desc=n;return n;})(ROOT);
+function countDesc(p){let n=0;p.unions.forEach(u=>u.children.forEach(c=>{if(c.kind==="person")n+=1+countDesc(c);else if(c.kind==="ph")n+=c.k;}));p.desc=n;return n;}
+countDesc(ROOT);
 const role=(p)=>p.sex==="f"?"husband":p.sex==="m"?"wife":"spouse";
 const childWord=p=>p.tag||(p.sex==="f"?"daughter":p.sex==="m"?"son":"child");
 const bcol=b=>`var(--b${b||0})`;
@@ -543,7 +579,7 @@ function tnode(p,parentId){
   n.desc=p.desc;
   return n;
 }
-const TREE=tnode(ROOT,null);
+let TREE=tnode(ROOT,null);
 const expanded=new Set([TREE.id]);
 const ROW=46, COL=300, GAP=70;
 const reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
@@ -706,7 +742,7 @@ function computePath(e){
 
 /* ================= selection + panel ================= */
 let view="tree";
-const VIEWS=["tree","list","related","story","poster","gaps","contribute"];
+const VIEWS=["tree","list","related","story","poster","gaps","manage","contribute"];
 function setView(v,fromHash){
   view=v;
   VIEWS.forEach(x=>{$("#view-"+x).classList.toggle("on",x===v);});
@@ -714,6 +750,7 @@ function setView(v,fromHash){
   if(v==="tree"){requestAnimationFrame(()=>{render(false);if(selected){const e=getAny(selected);reveal(treeIdFor(e));}else if(!fitted){fit(false);fitted=true;}});}
   if(v==="poster")showPoster();
   if(v==="contribute")renderContribute();
+  if(v==="manage")renderManage();
   if(!fromHash&&!selected)setHash(v==="tree"?"":v);
 }
 let fitted=false;
@@ -879,7 +916,8 @@ function renderFacts(){
 }
 
 /* ================= search ================= */
-const entries=[...people.values(),...[...spouses.values()].filter(s=>s.name)].map(e=>({e,toks:fold(e.name+" "+(e.aka||"")).split(/[^a-z0-9]+/).filter(Boolean)}));
+const buildEntries=()=>[...people.values(),...[...spouses.values()].filter(s=>s.name)].map(e=>({e,toks:fold(e.name+" "+(e.aka||"")+" "+(e.recordName||"")).split(/[^a-z0-9]+/).filter(Boolean)}));
+let entries=buildEntries();
 function lev(a,b){ // edit distance, small strings
   const m=a.length,n=b.length;if(Math.abs(m-n)>2)return 3;
   let prev=Array.from({length:n+1},(_,i)=>i);
@@ -1016,11 +1054,11 @@ const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZ
 const FIELDS=[
   {k:"born",label:"Born",ph:"A year, a date, or “about 1950”",max:80},
   {k:"died",label:"Died",ph:"Leave empty if living",max:80},
-  {k:"place",label:"Home",ph:"Town, city or country",max:120},
+  {k:"place",label:"Location",ph:"Town, city or country",max:120},
   {k:"meaning",label:"Meaning of the name",ph:"What the name means",max:240},
   {k:"bio",label:"Life story",ph:"Work, family, memories",max:4000,long:true}
 ];
-const FLABEL=k=>k==="photo"?"photo":(FIELDS.find(f=>f.k===k)||{label:k}).label.toLowerCase();
+const FLABEL=k=>k==="photo"?"photo":k==="name"?"name correction":k==="person"?"entry":(FIELDS.find(f=>f.k===k)||{label:k}).label.toLowerCase();
 const PHOTO_RE=/^[0-9a-f-]{36}\/[A-Za-z0-9._-]{1,100}$/;
 const photoUrl=p=>`${SB_URL}/storage/v1/object/public/photos/${p}`;
 const sb=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true,flowType:"implicit"}}):null;
@@ -1049,7 +1087,11 @@ async function loadDetails(){
   const m=new Map(),ids=new Set();
   rows.forEach(r=>{if(!m.has(r.person_id))m.set(r.person_id,{});m.get(r.person_id)[r.field]={v:r.value,t:r.updated_at,by:r.updated_by};if(r.updated_by)ids.add(r.updated_by);});
   cloud.data=m;
+  const added=chk(await sb.from("added_people").select("id,kind,parent_id,other_parent,name,sex,created_by,created_at").order("created_at").limit(5000))||[];
+  added.forEach(r=>{if(r.created_by)ids.add(r.created_by);});
+  cloud.added=added;
   if(ids.size){const ps=chk(await sb.from("profiles").select("id,name").in("id",[...ids]));(ps||[]).forEach(p=>{if(p.name)cloud.names[p.id]=p.name;});}
+  applyCloud();
 }
 function fillNames(root){
   root.querySelectorAll("[data-names]").forEach(s=>{
@@ -1060,6 +1102,9 @@ function fillNames(root){
 function renderDetails(id){
   const box=$("#pdetails");if(!box||selected!==id||editing)return;
   const e=getAny(id),d=details(id);let h="";
+  if(d.name&&e.recordName&&e.recordName!==e.name)h+=`<p class="note">Spelled “${esc(e.recordName)}” in the 2026 record.</p>`;
+  else if(d.name&&!e.recordName&&!e.added)h+=`<p class="note">Name added since the 2026 record.</p>`;
+  if(e.added)h+=`<p class="note">Added to the tree by <span data-names="${e.added.created_by||""}">a family editor</span> on ${when(e.added.created_at)}.</p>`;
   if(d.photo)h+=`<img class="portrait" src="${photoUrl(d.photo.v)}" alt="Photo of ${esc(e.name||"this person")}">`;
   const rows=FIELDS.filter(f=>!f.long&&d[f.k]).map(f=>`<div><dt>${f.label}</dt><dd>${esc(d[f.k].v)}</dd></div>`).join("");
   if(rows)h+=`<dl class="facts2">${rows}</dl>`;
@@ -1067,6 +1112,13 @@ function renderDetails(id){
   const by=[...new Set(Object.values(d).map(x=>x.by).filter(Boolean))];
   if(by.length)h+=`<p class="byline">Details added by <span data-names="${by.join(",")}">family editors</span>.</p>`;
   if(canEditNow())h+=`<button class="ghost small" data-act="edit">${Object.keys(d).length?"Add or change details":"Add details"}</button>`;
+  if(canEditNow()&&e.added){
+    const asked=cloud.myRem.some(r=>r.person_id===id&&r.field==="person"&&r.status==="pending");
+    h+=`<div style="margin-top:14px">`+(cloud.isAdmin
+      ?`<button class="linkish" data-act="rmp">Remove this person from the tree</button><div class="rmbox" data-for="person" hidden>Remove ${esc(e.name)} and anyone added under them, with their details? This cannot be undone.<div class="row" style="margin:8px 0 0"><button class="solid small" data-act="rmp-now">Yes, remove</button><button class="ghost small" data-act="rmp-cancel">Keep</button></div></div>`
+      :asked?`<p class="hintline">You have asked the admin to remove this person.</p>`
+      :`<button class="linkish" data-act="rmp">Ask the admin to remove this person</button><div class="rmbox" data-for="person" hidden><label>Why should ${esc(e.name)} be removed?<input name="why-person" maxlength="300"></label><div class="row" style="margin:0"><button class="solid small" data-act="rmp-ask">Send to the admin</button><button class="ghost small" data-act="rmp-cancel">Cancel</button></div></div>`)+`<p class="status" id="pstatus2" aria-live="polite"></p></div>`;
+  }
   else if(cloud.status==="ok"&&!Object.keys(d).length)h+=`<p class="byline">Know something about ${esc(e.name||"this person")}? <button class="linkish" data-act="join">Help add details</button></p>`;
   box.innerHTML=h;
   const img=box.querySelector(".portrait");if(img)img.addEventListener("error",()=>{img.hidden=true;});
@@ -1080,7 +1132,9 @@ function renderEditForm(id){
       <div class="rmbox" data-for="${k}" hidden>${own
         ?`Remove the ${FLABEL(k)} for good? This cannot be undone.<div class="row" style="margin:8px 0 0"><button class="solid small" data-act="rm-now" data-k="${k}">Yes, remove</button><button class="ghost small" data-act="rm-cancel" data-k="${k}">Keep</button></div>`
         :`<label>Why should the ${FLABEL(k)} be removed?<input name="why-${k}" maxlength="300"></label><div class="row" style="margin:0"><button class="solid small" data-act="rm-ask" data-k="${k}">Send to the admin</button><button class="ghost small" data-act="rm-cancel" data-k="${k}">Cancel</button></div>`}</div>`;
-  let h=`<h3 style="margin-top:6px">Details for ${esc(getAny(id).name||"this person")}</h3>`;
+  const ent=getAny(id);
+  let h=`<h3 style="margin-top:6px">Details for ${esc(ent.name||"this person")}</h3>`;
+  h+=`<div class="field"><label for="f-name">Name</label><input id="f-name" name="name" maxlength="120" value="${esc(ent.name||"")}" placeholder="Name not recorded">`+(ent.recordName&&ent.recordName!==ent.name?`<p class="hintline">Spelled “${esc(ent.recordName)}” in the 2026 record.</p>`:"")+rm("name")+`</div>`;
   h+=`<div class="field"><label for="f-photo">Photo</label>`;
   if(d.photo)h+=`<img class="portrait" src="${photoUrl(d.photo.v)}" alt="" style="max-height:160px">`;
   if(d.photo&&!own)h+=`<p class="hintline">Only the admin can replace a photo.</p>`;
@@ -1111,6 +1165,8 @@ function shrink(file){ // downscale to a JPEG no wider or taller than 1200px
 const newName=()=>(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2))+".jpg";
 async function saveDetails(id){
   const box=$("#pdetails"),d=details(id),rows=[];let blocked=false;
+  const ent=getAny(id),nv=box.querySelector('[name="name"]').value.trim().slice(0,120);
+  if(nv!==(ent.name||"")){if(!nv)blocked=true;else rows.push({person_id:id,field:"name",value:nv});}
   FIELDS.forEach(f=>{
     const v=box.querySelector(`[name="${f.k}"]`).value.trim().slice(0,f.max),cur=d[f.k]?d[f.k].v:"";
     if(v===cur)return;if(!v){blocked=true;return;}
@@ -1152,6 +1208,15 @@ $("#panel").addEventListener("click",async ev=>{
       case "rm":rb.hidden=false;b.hidden=true;break;
       case "rm-cancel":rb.hidden=true;rb.previousElementSibling.hidden=false;break;
       case "rm-now":b.disabled=true;await removeField(id,k);editing=false;renderDetails(id);break;
+      case "rmp":box.querySelector('.rmbox[data-for="person"]').hidden=false;b.hidden=true;break;
+      case "rmp-cancel":renderDetails(id);break;
+      case "rmp-now":{b.disabled=true;const paths=chk(await sb.rpc("remove_added_person",{pid:id}))||[];
+        const ph=paths.filter(p=>PHOTO_RE.test(p));if(ph.length)await sb.storage.from("photos").remove(ph);
+        closePanel();await loadDetails();if(view==="manage")renderManage();break;}
+      case "rmp-ask":{const why=box.querySelector('[name="why-person"]').value.trim();
+        if(!why){const s=$("#pstatus2");if(s){s.textContent="Say briefly why this person should be removed.";s.classList.add("bad");}break;}
+        b.disabled=true;chk(await sb.from("removal_requests").insert({person_id:id,field:"person",reason:why.slice(0,300)}));
+        await loadMine();renderDetails(id);break;}
       case "rm-ask":{const why=box.querySelector(`[name="why-${k}"]`).value.trim();
         if(!why){estatus("Say briefly why it should be removed.",true);break;}
         b.disabled=true;
@@ -1191,13 +1256,13 @@ function renderContribute(){
     const eds=cloud.people.filter(p=>p.is_editor);
     const rem=cloud.removals.filter(r=>r.status==="pending");
     tab.innerHTML=`Admin${pend.length+rem.length?`<span class="badge">${pend.length+rem.length}</span>`:""}`;
-    h=`<h2>Admin</h2>`+signout+`<p>You decide who may add details, and nothing is removed from the tree unless you approve it. You can add and change details yourself from any person’s panel.</p>`;
+    h=`<h2>Admin</h2>`+signout+`<p>You decide who may add details, and nothing is removed from the tree unless you approve it. You can add and change details yourself in the <a href="#manage">Manage</a> tab or from any person’s panel.</p>`;
     h+=`<h3>People asking to become editors</h3>`+(pend.length?`<ul class="cards">`+pend.map(r=>`<li><span class="who2">${esc(r.name||"No name given")}</span> <span class="byline">(${esc(r.email||"")}, ${when(r.requested_at)})</span><p class="said">${esc(r.note||"")}</p><div class="row" style="margin:0"><button class="solid small" data-act="approve" data-uid="${r.user_id}">Approve as editor</button><button class="ghost small" data-act="decline" data-uid="${r.user_id}">Decline</button></div></li>`).join("")+`</ul>`:`<p>No one is waiting.</p>`);
-    h+=`<h3>Requests to remove something</h3>`+(rem.length?`<ul class="cards">`+rem.map(r=>{const e=getAny(r.person_id),cur=details(r.person_id)[r.field];return `<li><span class="who2">Remove the ${esc(FLABEL(r.field))} of ${e?`<button class="who" data-go="${e.id}">${esc(e.name||"Name not recorded")}</button>`:"someone no longer in the record"}</span>${cur&&r.field!=="photo"?`<p class="said">Currently: “${esc(cur.v.length>140?cur.v.slice(0,140)+"…":cur.v)}”</p>`:""}<p class="said">Asked by ${esc(cloud.names[r.requested_by]||"an editor")} on ${when(r.created_at)}: ${esc(r.reason||"")}</p><div class="row" style="margin:0"><button class="solid small" data-act="rem-yes" data-rid="${r.id}">Remove it</button><button class="ghost small" data-act="rem-no" data-rid="${r.id}">Keep it</button></div></li>`;}).join("")+`</ul>`:`<p>Nothing is waiting.</p>`);
+    h+=`<h3>Requests to remove something</h3>`+(rem.length?`<ul class="cards">`+rem.map(r=>{const e=getAny(r.person_id),cur=details(r.person_id)[r.field];return `<li><span class="who2">${r.field==="person"?"Remove this person (and anyone added under them):":`Remove the ${esc(FLABEL(r.field))} of`} ${e?`<button class="who" data-go="${e.id}">${esc(e.name||"Name not recorded")}</button>`:"someone no longer in the record"}</span>${cur&&r.field!=="photo"?`<p class="said">Currently: “${esc(cur.v.length>140?cur.v.slice(0,140)+"…":cur.v)}”</p>`:""}<p class="said">Asked by ${esc(cloud.names[r.requested_by]||"an editor")} on ${when(r.created_at)}: ${esc(r.reason||"")}</p><div class="row" style="margin:0"><button class="solid small" data-act="rem-yes" data-rid="${r.id}">Remove it</button><button class="ghost small" data-act="rem-no" data-rid="${r.id}">Keep it</button></div></li>`;}).join("")+`</ul>`:`<p>Nothing is waiting.</p>`);
     h+=`<h3>Editors</h3>`+(eds.length?`<ul class="cards">`+eds.map(u=>`<li><span class="who2">${esc(u.name||u.email||"Editor")}</span> <span class="byline">${esc(u.email||"")}, since ${when(u.approved_at)}</span><div class="row" style="margin:6px 0 0"><button class="ghost small" data-act="revoke" data-uid="${u.user_id}">Take away editor access</button></div></li>`).join("")+`</ul><p class="byline">Taking away access stops someone adding more. What they already added stays until you remove it.</p>`:`<p>No editors yet.</p>`);
   }else if(cloud.isEditor){
     const mine=cloud.myRem.slice(0,10);
-    h+=signout+`<p>You are an approved editor. Open any person in the tree or the full list and choose <i>Add details</i> to add a photo, dates, a home, the meaning of their name or their story.</p><p>You can add and correct details. To take something away, use <i>Ask the admin to remove</i> under that detail; only the admin can approve a removal.</p>`;
+    h+=signout+`<p>You are an approved editor. The quickest way to work is the <a href="#manage">Manage</a> tab: find anyone by name, correct names, fill in dates of birth and death and locations, and add children or a wife or husband.</p><p>For photos, name meanings and life stories, open a person in the tree or the list and choose <i>Add details</i>.</p><p>You can add and correct details. To take something away, use <i>Ask the admin to remove</i> under that detail; only the admin can approve a removal.</p>`;
     if(mine.length)h+=`<h3>Your removal requests</h3><ul class="cards">`+mine.map(r=>{const e=getAny(r.person_id);return `<li>${esc(cap1(FLABEL(r.field)))} of ${esc(e&&e.name||"someone")}: ${r.status==="pending"?"waiting for the admin":r.status==="removed"?"removed":"the admin kept it"}</li>`;}).join("")+`</ul>`;
   }else{
     const q=cloud.myReq;
@@ -1248,7 +1313,7 @@ $("#contribute-body").addEventListener("click",async ev=>{
       case "rem-yes":case "rem-no":{
         const r=cloud.removals.find(x=>x.id===rid);
         const old=chk(await sb.rpc("decide_removal",{req:rid,approve:b.dataset.act==="rem-yes"}));
-        if(old&&r&&r.field==="photo"&&PHOTO_RE.test(old))await sb.storage.from("photos").remove([old]);
+        if(old&&r&&(r.field==="photo"||r.field==="person")){const ph=String(old).split(",").filter(p=>PHOTO_RE.test(p));if(ph.length)await sb.storage.from("photos").remove(ph);}
         await loadDetails();await loadAdmin();posterStale=true;break;}
     }
   }catch(e){b.disabled=false;const m=errText(e);if($("#cstatus"))cstatus(m,true);else alertLine(m);}
@@ -1284,6 +1349,8 @@ async function loadUser(session){
 }
 function cloudChanged(){
   posterStale=true;
+  $("#tab-manage").hidden=!canEditNow();
+  if(view==="manage"&&!$("#manage-body").contains(document.activeElement))renderManage();
   if(selected&&!$("#panel").hidden&&!editing)renderDetails(selected);
   renderContribute();
   if(view==="poster")showPoster();
@@ -1322,6 +1389,218 @@ async function initCloud(){
   });
 }
 
+
+/* ================= additions from the shared record: name corrections, new children and spouses ================= */
+let undoAdded=[];
+const ADDED_RE=/^n-[a-z0-9]{6,24}$/;
+const newPersonId=()=>"n-"+Array.from(crypto.getRandomValues(new Uint8Array(10)),b=>"abcdefghijklmnopqrstuvwxyz0123456789"[b%36]).join("");
+people.forEach(p=>{p.recordName=p.name;});spouses.forEach(s=>{s.recordName=s.name;});
+function setOrds(par){ // once a person has several marriages, number them
+  if(par.unions.length<2)return;
+  par.unions.forEach(u=>{if(u.ord==null){u.ord=u.i+1;undoAdded.push(()=>{u.ord=null;});}});
+}
+function addSpouse(par,r){
+  let u=par.unions.find(x=>!x.spouse);
+  const fresh=!u;
+  if(fresh){
+    u={of:par,i:par.unions.length,ord:null,inh:false,cnt:null,note:null,sameAs:null,children:[],spouse:null,branch:par.gen===1?0:par.branch,added:true};
+    par.unions.push(u);undoAdded.push(()=>{par.unions.splice(par.unions.indexOf(u),1);});
+  }
+  const s={kind:"spouse",id:r.id,name:r.name,recordName:null,from:null,q:null,union:u,partner:par,branch:u.branch,added:r};
+  u.spouse=s;spouses.set(s.id,s);
+  undoAdded.push(()=>{spouses.delete(s.id);if(!fresh)u.spouse=null;});
+  setOrds(par);
+}
+function addChild(par,r){
+  let u=null;
+  if(r.other_parent)u=par.unions.find(x=>(x.spouse&&x.spouse.id===r.other_parent)||("u"+x.i)===r.other_parent)||null;
+  if(!u)u=par.unions[0]||null;
+  if(!u){
+    u={of:par,i:0,ord:null,inh:false,cnt:null,note:null,sameAs:null,children:[],spouse:null,branch:par.gen===1?0:par.branch,added:true};
+    par.unions.push(u);undoAdded.push(()=>{par.unions.splice(par.unions.indexOf(u),1);});
+  }
+  const c={kind:"person",id:r.id,name:r.name,recordName:null,sex:r.sex||null,tag:null,q:null,aka:"",by:null,
+           parent:par,union:u,gen:par.gen+1,branch:u.branch,unions:[],desc:0,added:r};
+  u.children.push(c);people.set(c.id,c);
+  undoAdded.push(()=>{const k=u.children.indexOf(c);if(k>=0)u.children.splice(k,1);people.delete(c.id);});
+}
+function applyCloud(){
+  for(let i=undoAdded.length-1;i>=0;i--)undoAdded[i]();
+  undoAdded=[];
+  people.forEach(p=>{if(!p.added)p.name=p.recordName;});spouses.forEach(s=>{if(!s.added)s.name=s.recordName;});
+  let pending=(cloud.added||[]).filter(r=>ADDED_RE.test(r.id)),progress=true;
+  while(pending.length&&progress){ // a new child may hang off a new spouse or another new child
+    progress=false;
+    pending=pending.filter(r=>{
+      const par=people.get(r.parent_id);if(!par)return true;
+      if(r.kind==="child"&&r.other_parent&&ADDED_RE.test(r.other_parent)&&!getAny(r.other_parent)&&pending.some(x=>x.id===r.other_parent))return true;
+      if(r.kind==="spouse")addSpouse(par,r);else addChild(par,r);
+      progress=true;return false;
+    });
+  }
+  cloud.data.forEach((f,id)=>{const e=getAny(id);if(e&&f.name&&f.name.v)e.name=f.name.v;});
+  rebuildTree();
+}
+function rebuildTree(){
+  countDesc(ROOT);
+  tparent.clear();TREE=tnode(ROOT,null);
+  entries=buildEntries();
+  wcache.clear();gNodes.selectAll("*").remove();gLinks.selectAll("*").remove();prevPos=new Map();
+  if(view==="tree")render(false);
+  renderList();renderGaps();renderFacts();markList();
+  posterStale=true;
+  if(selected&&!getAny(selected))closePanel();
+  else if(selected&&!$("#panel").hidden&&!editing){openPanel(getAny(selected));}
+  const h=decodeURIComponent(location.hash.replace(/^#/,"")); // a link to someone added since the record
+  if(h&&!selected&&!VIEWS.includes(h)&&getAny(h)){if(view!=="tree")setView("tree",true);select(h,{fromHash:true});}
+}
+
+/* ================= Manage: one table for editors ================= */
+const MFIELDS=[{k:"name",label:"Name",max:120},{k:"born",label:"Born",max:80},{k:"died",label:"Died",max:80},{k:"place",label:"Location",max:120}];
+const mstate={q:"",filter:"all",open:null};
+function manageOrder(){
+  const out=[];
+  (function walk(p){
+    out.push(p);
+    p.unions.forEach(u=>{if(u.spouse)out.push(u.spouse);u.children.forEach(c=>{if(c.kind==="person")walk(c);});});
+  })(ROOT);
+  return out;
+}
+const curVal=(e,k)=>k==="name"?(e.name||""):((details(e.id)[k]||{}).v||"");
+function rowMatches(e){
+  if(mstate.filter==="descent"&&e.kind!=="person")return false;
+  if(mstate.filter==="married"&&e.kind!=="spouse")return false;
+  if(mstate.filter==="added"&&!e.added)return false;
+  if(mstate.filter==="nodates"&&(curVal(e,"born")||curVal(e,"died")))return false;
+  const q=fold(mstate.q).trim();if(!q)return true;
+  const hay=fold([e.name,e.recordName,e.aka,e.kind==="spouse"?e.partner.name:(e.parent&&e.parent.name)].filter(Boolean).join(" "));
+  return q.split(/\s+/).every(t=>hay.includes(t));
+}
+function spouseCell(e){
+  if(e.kind==="spouse")return `<span class="mmuted">${esc(cap1(role(e.partner)))} of</span> ${esc(e.partner.name)}`;
+  const named=e.unions.filter(u=>u.spouse).map(u=>`<span class="mline">${esc(spName(u.spouse))}</span>`).join("");
+  return (named||`<span class="mmuted">None recorded</span>`)+`<br><button class="linkish" data-m="add-spouse" data-id="${e.id}">Add ${esc(role(e))}</button>`;
+}
+function childCell(e){
+  const kids=e.kind==="spouse"?kidsOf(e.union).length:e.unions.reduce((a,u)=>a+kidsOf(u).length,0);
+  return `${kids?`${kids} ${kids===1?"child":"children"}`:`<span class="mmuted">None recorded</span>`}<br><button class="linkish" data-m="add-child" data-id="${e.id}">Add child</button>`;
+}
+function addForm(e,kind){
+  const par=e.kind==="spouse"?e.partner:e;
+  let h=`<tr class="maddrow"><td colspan="8"><div class="madd" data-kind="${kind}" data-id="${e.id}">`;
+  if(kind==="spouse"){
+    h+=`<b>New ${esc(role(par))} for ${esc(par.name)}</b><div class="mgrid"><label>Full name<input name="nm" maxlength="120" autocomplete="off"></label></div>`;
+  }else{
+    h+=`<b>New child of ${esc(par.name)}</b><div class="mgrid"><label>Full name<input name="nm" maxlength="120" autocomplete="off"></label>
+      <label>Son or daughter<select name="sx"><option value="">Not sure</option><option value="m">Son</option><option value="f">Daughter</option></select></label>`;
+    if(e.kind==="spouse")h+=`<input type="hidden" name="op" value="${e.id}">`;
+    else if(par.unions.length)h+=`<label>Other parent<select name="op">${par.unions.map(u=>`<option value="${u.spouse?u.spouse.id:"u"+u.i}">${esc(u.spouse&&u.spouse.name?u.spouse.name:"Not recorded")}</option>`).join("")}</select></label>`;
+    h+=`<label>Born (optional)<input name="bn" maxlength="80" placeholder="Year or date"></label></div>`;
+  }
+  h+=`<div class="row" style="margin:10px 0 0"><button class="solid small" data-m="add-save">Add to the tree</button><button class="ghost small" data-m="add-cancel">Cancel</button><span class="status" data-st></span></div></div></td></tr>`;
+  return h;
+}
+function renderManage(){
+  const box=$("#manage-body");if(!box)return;
+  if(!canEditNow()){
+    box.innerHTML=`<h2>Manage</h2><p>${cloud.me?"This table is for approved editors. Ask the admin for editor access under <i>Contribute</i>.":"Sign in under <i>Contribute</i> and ask the admin for editor access to use this table."}</p>`;
+    return;
+  }
+  // keep anything typed but not yet saved
+  const kept={};
+  box.querySelectorAll("tr[data-id].dirty").forEach(tr=>{kept[tr.dataset.id]={};tr.querySelectorAll("input[data-k]").forEach(i=>{kept[tr.dataset.id][i.dataset.k]=i.value;});});
+  const list=manageOrder(),rows=list.filter(rowMatches);
+  if(!box.querySelector(".mtools")){
+    box.innerHTML=`<h2>Manage</h2>
+      <p>Find anyone, correct their name, and add dates and locations right in the table. Use <i>Add child</i> or <i>Add ${"wife or husband"}</i> to put new people on the tree. Open a person for photos, life stories and removal requests.</p>
+      <div class="mtools"><label class="msearch"><span>Find a person</span><input id="m-q" type="search" autocomplete="off" spellcheck="false" placeholder="Type any part of a name"></label>
+        <label><span>Show</span><select id="m-f"><option value="all">Everyone</option><option value="descent">Family by descent</option><option value="married">Married into the family</option><option value="added">Added since the 2026 record</option><option value="nodates">No dates yet</option></select></label></div>
+      <p class="byline" id="m-count"></p>
+      <div class="mwrap"><table class="mtable"><thead><tr><th>Name</th><th>Relationship</th><th>Born</th><th>Died</th><th>Location</th><th>Wife or husband</th><th>Children</th><th></th></tr></thead><tbody id="m-rows"></tbody></table></div>`;
+    $("#m-q").addEventListener("input",ev=>{mstate.q=ev.target.value;renderManage();});
+    $("#m-f").addEventListener("change",ev=>{mstate.filter=ev.target.value;renderManage();});
+  }
+  const shown=rows.slice(0,300);
+  $("#m-count").textContent=`${rows.length} ${rows.length===1?"person":"people"}${rows.length>shown.length?`, showing the first ${shown.length}. Search to narrow it down.`:""}`;
+  $("#m-rows").innerHTML=shown.map(e=>{
+    const cells=MFIELDS.map(f=>`<td data-label="${f.label}"><input data-k="${f.k}" maxlength="${f.max}" value="${esc(curVal(e,f.k))}" data-orig="${esc(curVal(e,f.k))}" placeholder="${f.k==="name"?"Name not recorded":""}" aria-label="${f.label} of ${esc(e.name||"this person")}"></td>`);
+    const was=e.recordName&&e.name!==e.recordName?`<span class="mmuted mwas">Record: ${esc(e.recordName)}</span>`:e.added?`<span class="mmuted mwas">Added since the record</span>`:"";
+    let tr=`<tr data-id="${e.id}" style="--bc:${bcol(e.branch)}">`+cells[0].replace("</td>",`${was}</td>`)+
+      `<td data-label="Relationship" class="mrel">${esc(shortRel(e))}</td>`+cells.slice(1).join("")+
+      `<td data-label="Wife or husband">${spouseCell(e)}</td><td data-label="Children">${childCell(e)}</td>`+
+      `<td class="mact"><button class="solid small" data-m="save" disabled>Save</button><button class="linkish" data-m="open">Open</button><span class="status" data-st></span></td></tr>`;
+    if(mstate.open&&mstate.open.id===e.id)tr+=addForm(e,mstate.open.kind);
+    return tr;
+  }).join("")||`<tr><td colspan="8">No one matches. Try part of the name, or a different spelling.</td></tr>`;
+  for(const id in kept){
+    const tr=$("#m-rows").querySelector(`tr[data-id="${id}"]`);if(!tr)continue;
+    for(const k in kept[id]){const i=tr.querySelector(`input[data-k="${k}"]`);if(i)i.value=kept[id][k];}
+    markDirty(tr);
+  }
+}
+function markDirty(tr){
+  const d=[...tr.querySelectorAll("input[data-k]")].some(i=>i.value.trim()!==i.dataset.orig);
+  tr.classList.toggle("dirty",d);tr.querySelector('[data-m="save"]').disabled=!d;
+}
+const mst=(el,t,bad)=>{const s=el.querySelector("[data-st]");if(s){s.textContent=t;s.classList.toggle("bad",!!bad);}};
+async function saveRow(tr){
+  const id=tr.dataset.id,e=getAny(id),rows=[];
+  for(const i of tr.querySelectorAll("input[data-k]")){
+    const k=i.dataset.k,v=i.value.trim().slice(0,+i.maxLength||120);
+    if(v===i.dataset.orig)continue;
+    if(!v){mst(tr,`To remove a ${k==="place"?"location":k==="name"?"name correction":k+" date"}, open the person and use the remove link.`,true);return;}
+    if(k==="name"&&e.added&&!(details(id).name)&&v===e.name)continue;
+    rows.push({person_id:id,field:k,value:v});
+  }
+  if(!rows.length){markDirty(tr);return;}
+  tr.querySelector('[data-m="save"]').disabled=true;mst(tr,"Saving…");
+  try{
+    chk(await sb.from("person_details").upsert(rows,{onConflict:"person_id,field"}));
+    tr.classList.remove("dirty");
+    await loadDetails();renderManage();
+    const again=$("#m-rows").querySelector(`tr[data-id="${id}"]`);if(again)mst(again,"Saved");
+  }catch(err){tr.querySelector('[data-m="save"]').disabled=false;mst(tr,errText(err),true);}
+}
+async function saveAdd(form){
+  const kind=form.dataset.kind,e=getAny(form.dataset.id),par=e.kind==="spouse"?e.partner:e;
+  const nm=form.querySelector('[name="nm"]').value.trim();
+  if(!nm){mst(form,"Enter the person’s name.",true);return;}
+  const row={id:newPersonId(),kind,parent_id:par.id,name:nm.slice(0,120)};
+  if(kind==="child"){
+    const sx=form.querySelector('[name="sx"]').value;if(sx)row.sex=sx;
+    const op=form.querySelector('[name="op"]');if(op&&op.value)row.other_parent=op.value;
+  }
+  const bn=kind==="child"?form.querySelector('[name="bn"]').value.trim():"";
+  const same=par.unions.flatMap(u=>kind==="spouse"?(u.spouse?[u.spouse]:[]):kidsOf(u)).find(x=>x.name&&fold(x.name)===fold(nm));
+  if(same&&!form.dataset.confirmed){form.dataset.confirmed="1";mst(form,`${same.name} is already listed here. Select “Add to the tree” again if this is a different person.`,true);return;}
+  form.querySelectorAll("button").forEach(b=>b.disabled=true);mst(form,"Adding…");
+  try{
+    chk(await sb.from("added_people").insert(row));
+    if(bn)chk(await sb.from("person_details").upsert({person_id:row.id,field:"born",value:bn.slice(0,80)},{onConflict:"person_id,field"}));
+    mstate.open=null;await loadDetails();renderManage();
+    const tr=$("#m-rows").querySelector(`tr[data-id="${row.id}"]`);
+    if(tr){mst(tr,"Added");tr.scrollIntoView({block:"center",behavior:"smooth"});}
+  }catch(err){form.querySelectorAll("button").forEach(b=>b.disabled=false);mst(form,errText(err),true);}
+}
+$("#manage-body").addEventListener("input",ev=>{const tr=ev.target.closest("tr[data-id]");if(tr&&ev.target.dataset.k)markDirty(tr);});
+$("#manage-body").addEventListener("keydown",ev=>{
+  if(ev.key!=="Enter")return;
+  const tr=ev.target.closest("tr[data-id]"),form=ev.target.closest(".madd");
+  if(form){ev.preventDefault();saveAdd(form);}
+  else if(tr&&ev.target.dataset.k){ev.preventDefault();saveRow(tr);}
+});
+$("#manage-body").addEventListener("click",ev=>{
+  const b=ev.target.closest("[data-m]");if(!b)return;
+  const tr=b.closest("tr[data-id]"),form=b.closest(".madd");
+  switch(b.dataset.m){
+    case "save":saveRow(tr);break;
+    case "open":select(tr.dataset.id);break;
+    case "add-child":case "add-spouse":mstate.open={id:b.dataset.id,kind:b.dataset.m==="add-child"?"child":"spouse"};renderManage();
+      {const f=$("#manage-body .madd input[name='nm']");if(f)f.focus();}break;
+    case "add-cancel":mstate.open=null;renderManage();break;
+    case "add-save":saveAdd(form);break;
+  }
+});
 
 /* ================= poster ================= */
 let posterCache=null,CREST_DATA=null;
