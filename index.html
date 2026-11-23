@@ -4,6 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Nwaogwugwu Family Tree</title>
+<meta name="description" content="Find your place in the Umu Nwaogwugwu family, and see the Homecoming 2026 programme: 30 December 2026 to 2 January 2027 in Ezi Ukwu.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Nwaogwugwu Family Tree">
+<meta property="og:title" content="Nwaogwugwu Family Tree and Homecoming 2026">
+<meta property="og:description" content="Find your place in the family, and see the Homecoming 2026 programme: 30 December 2026 to 2 January 2027 in Ezi Ukwu.">
+<meta property="og:url" content="https://nwaogwugwu-family-tree-site.vercel.app/">
+<meta property="og:image" content="https://nwaogwugwu-family-tree-site.vercel.app/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <script>try{var t=localStorage.getItem("ft-theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -273,6 +283,110 @@ main{flex:1;min-height:0;position:relative;display:flex}
   .mtable td[data-label]::before{content:attr(data-label);display:block;font-size:.8rem;font-weight:700;color:var(--muted)}
   .mtable td input,.mtable td:first-child input{min-width:0}
 }
+/* ---------- homecoming ---------- */
+:root{--hc-navy:#161B36;--hc-cream:#FBF3E4;--hc-gold:#E4B555;--hc-red:#C0473A;--hc-green:#5E9447;
+  --hc-band:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='24' viewBox='0 0 48 24'%3E%3Crect width='48' height='24' fill='%23161B36'/%3E%3Cpath d='M0 24 12 0 24 24z' fill='%23E4B555'/%3E%3Cpath d='M24 24 36 0 48 24z' fill='%23C0473A'/%3E%3Cpath d='M12 0h24L24 24z' fill='%235E9447'/%3E%3Ccircle cx='24' cy='8' r='2.4' fill='%23FBF3E4'/%3E%3C/svg%3E")}
+.tabs button[data-view="homecoming"]{color:var(--ink);font-weight:700}
+.tabs button[data-view="homecoming"]::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--hc-gold);margin-right:7px;vertical-align:1px;box-shadow:0 0 0 2px color-mix(in srgb,var(--hc-gold) 35%,transparent)}
+.hcbanner{display:flex;align-items:center;gap:12px;padding:8px 16px 8px 24px;background:var(--hc-navy);color:var(--hc-cream);font-size:.95rem;position:relative;z-index:4}
+.hcbanner::before{content:"";align-self:stretch;width:36px;flex:none;background:var(--hc-band) left center/24px 12px repeat;border-radius:3px;opacity:.95}
+.hcbanner b{color:var(--hc-gold)}
+.hcbanner a{color:var(--hc-cream);font-weight:700;text-underline-offset:3px}
+.hcbanner button{margin-left:auto;width:32px;height:32px;border:0;border-radius:50%;background:transparent;color:var(--hc-cream);font-size:1.2rem;line-height:1}
+.hcbanner[hidden]{display:none}
+#view-homecoming.scroll{padding:0 0 80px}
+.hc-hero{background:var(--hc-navy);color:var(--hc-cream);position:relative}
+.hc-hero::before,.hc-hero::after{content:"";display:block;height:24px;background:var(--hc-band) left top/48px 24px repeat-x}
+.hc-hero::after{transform:scaleY(-1)}
+.hc-inner{max-width:68rem;margin:0 auto;padding:36px 24px 40px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px 40px;align-items:center}
+.hc-kicker{margin:0 0 6px;font-family:var(--display);font-weight:700;color:var(--hc-gold);font-size:1.15rem}
+.hc-title{font-family:var(--display);font-weight:700;font-size:clamp(2.4rem,6.2vw,4.6rem);line-height:1.02;letter-spacing:-.02em;margin:0;color:var(--hc-cream);text-wrap:balance}
+.hc-when{margin:16px 0 0;font-size:1.1rem;color:color-mix(in srgb,var(--hc-cream) 88%,transparent);max-width:36rem}
+.hc-when b{color:var(--hc-cream)}
+.hc-crest{width:min(210px,34vw);height:auto;filter:drop-shadow(0 10px 24px rgba(0,0,0,.45))}
+.hc-count{display:flex;gap:10px;margin:24px 0 0;padding:0;list-style:none}
+.hc-count li{min-width:88px;padding:10px 12px 8px;border:1.5px solid color-mix(in srgb,var(--hc-gold) 55%,transparent);border-radius:14px;text-align:center;background:color-mix(in srgb,var(--hc-cream) 5%,transparent)}
+.hc-count b{display:block;font-family:var(--display);font-size:2.1rem;line-height:1;color:var(--hc-gold);font-variant-numeric:tabular-nums}
+.hc-count span{font-size:.85rem}
+.hc-now{margin:22px 0 0;font-family:var(--display);font-size:1.5rem;color:var(--hc-gold)}
+.hc-ctas{display:flex;flex-wrap:wrap;gap:10px;margin:26px 0 0}
+.hc-btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 20px;border-radius:999px;font-weight:700;text-decoration:none;border:1.5px solid var(--hc-cream);color:var(--hc-cream);background:transparent;cursor:pointer}
+.hc-btn.gold{background:var(--hc-gold);border-color:var(--hc-gold);color:var(--hc-navy)}
+.hc-btn svg{width:18px;height:18px;fill:currentColor;flex:none}
+.hc-body{max-width:68rem;margin:0 auto;padding:8px 24px 0}
+.hc-body>section{margin:44px 0 0}
+.hc-body h3.hc-h{font-family:var(--display);font-size:clamp(1.6rem,3.2vw,2.2rem);margin:0 0 6px}
+.hc-lede{margin:0 0 20px;color:var(--muted);max-width:44rem}
+.hc-dress{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:0;padding:0;list-style:none}
+.hc-dress li{display:flex;gap:14px;align-items:flex-start;padding:16px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.hc-sw{flex:none;width:44px;height:44px;border-radius:12px}
+.hc-sw.sport{background:linear-gradient(135deg,var(--b4) 0 50%,var(--sunk) 50%)}
+.hc-sw.tee{background:var(--hc-red)}
+.hc-sw.ankara{background:var(--hc-band) center/24px 12px}
+.hc-dress b{display:block;font-family:var(--display);font-size:1.05rem}
+.hc-dress span{color:var(--muted);font-size:.92rem}
+.hc-days{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.hc-day{background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.hc-day.rest{background:transparent;border-style:dashed}
+.hc-dayhead{display:flex;align-items:center;gap:14px;padding:16px 18px;border-bottom:1px solid var(--line)}
+.hc-num{flex:none;display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:var(--hc-navy);color:var(--hc-gold);font-family:var(--display);font-weight:700;font-size:1.5rem;box-shadow:inset 0 0 0 3px var(--hc-gold)}
+.hc-dayhead h4{margin:0;font-family:var(--display);font-size:1.25rem}
+.hc-dayhead p{margin:2px 0 0;color:var(--muted);font-size:.9rem}
+.hc-ev{list-style:none;margin:0;padding:6px 0}
+.hc-ev>li{display:grid;grid-template-columns:7.2rem minmax(0,1fr);gap:4px 14px;padding:12px 18px}
+.hc-ev>li+li{border-top:1px solid var(--line)}
+.hc-ev .t{font-weight:700;font-variant-numeric:tabular-nums;font-size:.92rem;padding-top:2px}
+.hc-ev .ti{font-family:var(--display);font-size:1.12rem;font-weight:700;margin:0}
+.hc-ev .wh{margin:2px 0 0;color:var(--muted);font-size:.93rem}
+.hc-ev .rest .ti,.hc-ev .rest .t{color:var(--muted);font-weight:400;font-family:var(--body);font-size:.95rem}
+.hc-ev .star{background:color-mix(in srgb,var(--hc-gold) 14%,transparent);box-shadow:inset 4px 0 0 var(--hc-gold)}
+.hc-tags{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0;padding:0;list-style:none}
+.hc-tags li{font-size:.84rem;padding:3px 10px;border-radius:999px;background:var(--sunk)}
+.hc-tags li b{font-weight:700}
+.hc-tags li.wear{background:color-mix(in srgb,var(--hc-red) 16%,transparent)}
+.hc-tags li.feat{background:color-mix(in srgb,var(--hc-green) 18%,transparent)}
+.hc-evfoot{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;margin:8px 0 0;font-size:.86rem;color:var(--muted)}
+.hc-going{font-weight:700;color:var(--ink)}
+.hc-rsvp{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:22px;align-items:start}
+.hc-card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px}
+.hc-card h4{margin:0 0 10px;font-family:var(--display);font-size:1.2rem}
+.hc-form .field{margin:0 0 14px}
+.hc-form label.l,.hc-form legend{display:block;font-weight:700;font-size:.92rem;margin:0 0 6px;padding:0}
+.hc-form input[type=text],.hc-form input[type=tel],.hc-form input[type=number],.hc-form textarea,.hc-form input[type=email]{width:100%;min-height:44px;padding:9px 12px;border:1.5px solid var(--muted);border-radius:10px;background:var(--bg);color:var(--ink)}
+.hc-form textarea{min-height:80px}
+.hc-form fieldset{border:0;margin:0 0 14px;padding:0}
+.hc-two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hc-choice{display:flex;flex-wrap:wrap;gap:8px}
+.hc-choice label{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border:1.5px solid var(--line);border-radius:999px;cursor:pointer;background:var(--bg)}
+.hc-choice input{accent-color:var(--accent);width:18px;height:18px}
+.hc-choice label:has(input:checked){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 9%,transparent)}
+.hc-evchk{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px}
+.hc-evchk label{display:flex;gap:8px;align-items:flex-start;font-size:.93rem}
+.hc-evchk input{accent-color:var(--accent);width:18px;height:18px;margin-top:2px;flex:none}
+.hc-pick{position:relative}
+.hc-pick .results{top:calc(100% + 4px)}
+.hc-done{border-left:5px solid var(--hc-gold)}
+.hc-done .big{font-family:var(--display);font-size:1.45rem;margin:0 0 6px}
+.hc-stat{display:flex;align-items:baseline;gap:10px;margin:0 0 8px}
+.hc-stat b{font-family:var(--display);font-size:3rem;line-height:1;color:var(--accent)}
+.hc-stat span{color:var(--muted)}
+.hc-share{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,340px);gap:24px;align-items:start}
+.hc-poster{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;box-shadow:var(--shadow)}
+.hc-poster svg{display:block;width:100%;height:auto}
+.hc-wa{background:#1F7A4D;border-color:#1F7A4D;color:#fff}
+.hc-admin table{width:100%;border-collapse:collapse;font-size:.9rem}
+.hc-admin th,.hc-admin td{text-align:left;padding:8px;border-top:1px solid var(--line);vertical-align:top}
+.hc-admin th{background:var(--sunk);font-size:.82rem;white-space:nowrap}
+.hc-admin .wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+@media (max-width:899px){
+  .hc-inner{grid-template-columns:1fr;padding:28px 16px 32px}
+  .hc-crest{order:-1;width:120px}
+  .hc-body{padding:8px 16px 0}
+  .hc-days,.hc-rsvp,.hc-share,.hc-dress{grid-template-columns:1fr}
+  .hc-count li{min-width:0;flex:1}
+  .hcbanner{padding:8px 10px 8px 14px;font-size:.88rem}
+}
+@media (max-width:480px){.hc-ev>li{grid-template-columns:1fr}.hc-evchk,.hc-two{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -297,6 +411,7 @@ main{flex:1;min-height:0;position:relative;display:flex}
     </div>
     <div class="recent" id="recent" hidden></div>
     <nav class="tabs" role="tablist" aria-label="Views">
+      <button role="tab" data-view="homecoming">Homecoming 2026</button>
       <button role="tab" data-view="tree">Tree</button>
       <button role="tab" data-view="list">Full list</button>
       <button role="tab" data-view="related">How are we related?</button>
@@ -307,6 +422,7 @@ main{flex:1;min-height:0;position:relative;display:flex}
       <button role="tab" data-view="contribute">Contribute</button>
     </nav>
   </header>
+  <div class="hcbanner" id="hcbanner" hidden><span id="hcbanner-text"></span> <a href="#homecoming">See the programme</a><button id="hcbanner-x" type="button" aria-label="Hide this message">×</button></div>
 
   <main>
     <section class="view" id="view-tree" aria-label="Family tree">
@@ -399,6 +515,8 @@ main{flex:1;min-height:0;position:relative;display:flex}
       </div>
     </section>
 
+    <section class="view scroll" id="view-homecoming" aria-label="Homecoming 2026"><div id="hc-body"></div></section>
+
     <section class="view scroll" id="view-manage" aria-label="Manage">
       <div class="col prose" id="manage-body" style="max-width:none"></div>
     </section>
@@ -412,6 +530,7 @@ main{flex:1;min-height:0;position:relative;display:flex}
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js" integrity="sha384-8FWZA6BGMXhsfO+BLtrJK0We6gg5o1JyO8xQm6peWDEUs17ACA5ziE/NIAkl9z2k" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" integrity="sha384-0w2KAL2YHP6wKOkUDzkCDGgVvfmHnj02DHeQ6XcHOgTfFsGyonKOpShMH1x6nk9o" crossorigin="anonymous"></script>
 <script>
 "use strict";
@@ -782,7 +901,7 @@ function computePath(e){
 
 /* ================= selection + panel ================= */
 let view="tree";
-const VIEWS=["tree","list","related","story","poster","gaps","manage","contribute"];
+const VIEWS=["homecoming","tree","list","related","story","poster","gaps","manage","contribute"];
 function setView(v,fromHash){
   view=v;
   VIEWS.forEach(x=>{$("#view-"+x).classList.toggle("on",x===v);});
@@ -791,6 +910,8 @@ function setView(v,fromHash){
   if(v==="poster")showPoster();
   if(v==="contribute")renderContribute();
   if(v==="manage")renderManage();
+  if(v==="homecoming"){renderHC();if(!hc.loaded)loadRsvp().then(()=>{if(view==="homecoming")renderHC();});}
+  paintBanner();
   if(!fromHash&&!selected)setHash(v==="tree"?"":v);
 }
 let fitted=false;
@@ -886,7 +1007,7 @@ function openPanel(e){
   }
   h=h.replace("</ul>",`</ul><div id="pdetails"></div>`);
   h+=`<div id="phist"></div>`;
-  h+=`<div>`+(view!=="tree"?`<button class="go" data-tree="1">Show in the tree</button>`:"")+`<button class="go alt" data-rel="1"${view==="tree"?' style="margin-left:0"':""}>How are we related?</button></div>`;
+  h+=`<div>`+(view!=="tree"?`<button class="go" data-tree="1">Show in the tree</button>`:"")+`<button class="go alt" data-rel="1"${view==="tree"?' style="margin-left:0"':""}>How are we related?</button><a class="go alt" style="display:inline-flex;align-items:center;text-decoration:none" target="_blank" rel="noopener" href="${waLink("Find "+(e.name||"our relative")+" on the Nwaogwugwu family tree: "+SITE+"#"+e.id)}">Share on WhatsApp</a></div>`;
   el.innerHTML=h;el.hidden=false;el.scrollTop=0;document.body.classList.add("panel-open");
   renderDetails(e.id);
   renderHistory(e.id);
@@ -1402,6 +1523,7 @@ async function loadUser(session){
   }
 }
 function cloudChanged(){
+  loadRsvp().then(()=>{if(view==="homecoming")renderHC();});
   posterStale=true;
   $("#tab-manage").hidden=!canEditNow();
   if(view==="manage"&&!$("#manage-body").contains(document.activeElement))renderManage();
@@ -1433,10 +1555,10 @@ async function initCloud(){
         if(first){first=false;await loadDetails();}
         clearTimeout(slow);cloud.status="ok";
       }catch(e){clearTimeout(slow);cloud.status="none";}
-      let after=false;try{after=sessionStorage.getItem("ft-after-signin")==="1";}catch(e){}
+      let after=false,back="contribute";try{const v=sessionStorage.getItem("ft-after-signin");after=!!v;if(v==="homecoming")back="homecoming";}catch(e){}
       if(session&&/access_token=/.test(location.hash))history.replaceState(null,"",location.pathname+location.search);
       if(session)cloud.authError="";
-      if(session&&after&&event==="SIGNED_IN"){try{sessionStorage.removeItem("ft-after-signin");}catch(e){}cloud.sent="";relateClose();setView("contribute");setHash("contribute");}
+      if(session&&after&&event==="SIGNED_IN"){try{sessionStorage.removeItem("ft-after-signin");}catch(e){}cloud.sent="";relateClose();setView(back);setHash(back);}
       if(!session)cloud.sent=cloud.sent||"";
       cloudChanged();
     },0);
@@ -1809,6 +1931,306 @@ async function savePoster(kind){
 }
 $("#dl-svg").onclick=()=>savePoster("svg");
 $("#dl-png").onclick=()=>savePoster("png");
+
+/* ================= Homecoming 2026 ================= */
+const SITE="https://nwaogwugwu-family-tree-site.vercel.app/";
+const HC={
+  start:"2026-12-30T08:00:00+01:00",end:"2027-01-02T12:30:00+01:00",
+  days:[
+    {n:1,label:"Wednesday 30 December",date:"2026-12-30",items:[
+      {k:"walk",t:"8:00–9:30 am",s:"08:00",e:"09:30",title:"Morning walk",where:"Meet at De Mgbo’s compound (Ezi Ukwu), then walk to every Umu Nwaogwugwu extension",give:"Cold water",wear:"Comfortable sportswear and sneakers"},
+      {k:"aerobics",t:"9:30–10:00 am",s:"09:30",e:"10:00",title:"Aerobics session",where:"De Nna’s compound",give:"Cold water"},
+      {rest:true,t:"10:00 am–4:00 pm",title:"Rest"},
+      {k:"match",t:"4:00–6:00 pm",s:"16:00",e:"18:00",title:"Novelty match: Umu Ala vs Ndi Okene",give:"Jerseys for all players; water and glucose for players",wear:"Family T-shirt, for everyone not playing"},
+      {k:"youth",t:"8:00–11:00 pm",s:"20:00",e:"23:00",title:"Youth hangout",where:"OC Ukomadu’s place",give:"Drinks, small chops, bole and fish",feat:"Karaoke, games, talks, music and dancing"}]},
+    {n:2,label:"Thursday 31 December",date:"2026-12-31",items:[
+      {k:"medicals",t:"9:00 am–12 noon",s:"09:00",e:"12:00",title:"Medicals",where:"Dr Uzoma Ukomadu’s place"},
+      {k:"gathering",t:"4:00 pm till midnight",s:"16:00",e:"24:00",title:"Umu Nwaogwugwu Family Homecoming get-together",where:"Ezi Ukwu",give:"Drinks and meals of every kind",feat:"Music, speeches, family stories and traditional dances. We see 2027 in together.",wear:"Family Ankara uniform",star:true}]},
+    {n:3,label:"Friday 1 January",date:"2027-01-01",rest:true,items:[{rest:true,t:"All day",title:"Rest day. Happy New Year!"}]},
+    {n:4,label:"Saturday 2 January",date:"2027-01-02",items:[
+      {k:"thanksgiving",t:"9:30 am–12:30 pm",s:"09:30",e:"12:30",title:"Thanksgiving service",where:"SDA Church, Umuanunu",wear:"Family Ankara uniform"}]}
+  ]
+};
+const HC_EVENTS=HC.days.flatMap(d=>d.items.filter(i=>i.k).map(i=>({...i,date:d.date,day:d})));
+const hcEv=k=>HC_EVENTS.find(e=>e.k===k);
+const hc={totals:{},mine:undefined,all:[],editing:false,loaded:false,rel:null};
+
+/* times are in Nigeria (WAT, UTC+1) */
+function watToUtc(date,hm){const [h,m]=hm.split(":").map(Number);return new Date(Date.parse(date+"T00:00:00+01:00")+(h*60+m)*60000);}
+const icsStamp=d=>d.toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,"");
+const icsText=s=>String(s).replace(/\\/g,"\\\\").replace(/;/g,"\\;").replace(/,/g,"\\,").replace(/\n/g,"\\n");
+function icsFor(list){
+  const now=icsStamp(new Date());
+  let s="BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Nwaogwugwu Family//Homecoming 2026//EN\r\nCALSCALE:GREGORIAN\r\nMETHOD:PUBLISH\r\nX-WR-CALNAME:Homecoming 2026\r\n";
+  list.forEach(e=>{
+    const desc=[e.give&&"Provided: "+e.give,e.feat&&"Featuring: "+e.feat,e.wear&&"Wear: "+e.wear,"Programme: "+SITE+"#homecoming"].filter(Boolean).join("\n");
+    s+="BEGIN:VEVENT\r\nUID:"+e.k+"-2026@nwaogwugwu-family-tree\r\nDTSTAMP:"+now+"\r\nDTSTART:"+icsStamp(watToUtc(e.date,e.s))+"\r\nDTEND:"+icsStamp(watToUtc(e.date,e.e))+
+      "\r\nSUMMARY:"+icsText("Homecoming: "+e.title)+"\r\nLOCATION:"+icsText(e.where||"Ezi Ukwu")+"\r\nDESCRIPTION:"+icsText(desc)+"\r\nEND:VEVENT\r\n";
+  });
+  return s+"END:VCALENDAR\r\n";
+}
+function saveIcs(list,name){giveFile(name,new Blob([icsFor(list)],{type:"text/calendar"}));}
+
+/* countdown */
+function hcCountdown(){
+  const now=Date.now(),s=Date.parse(HC.start),e=Date.parse(HC.end);
+  if(now>=e)return {state:"over"};
+  if(now>=s)return {state:"on"};
+  let m=Math.floor((s-now)/60000);const d=Math.floor(m/1440);m-=d*1440;const h=Math.floor(m/60);m-=h*60;
+  return {state:"soon",d,h,m};
+}
+function countHtml(){
+  const c=hcCountdown();
+  if(c.state==="over")return `<p class="hc-now">Thank you for coming home. Photos and stories are welcome on the tree.</p>`;
+  if(c.state==="on")return `<p class="hc-now">Homecoming is happening now. Welcome home!</p>`;
+  const u=(n,w)=>`<li><b>${n}</b><span>${w}${n===1?"":"s"}</span></li>`;
+  return `<ul class="hc-count" aria-label="Time until Homecoming starts">${u(c.d,"day")}${u(c.h,"hour")}${u(c.m,"minute")}</ul>`;
+}
+function paintBanner(){
+  const b=$("#hcbanner");if(!b)return;
+  let off=false;try{off=localStorage.getItem("ft-hc-banner")==="off";}catch(e){}
+  const c=hcCountdown();
+  if(off||view==="homecoming"||c.state==="over"){b.hidden=true;return;}
+  $("#hcbanner-text").innerHTML=c.state==="on"?`Homecoming 2026 is happening now in Ezi Ukwu.`:`Homecoming 2026 starts in <b>${c.d} day${c.d===1?"":"s"}</b> in Ezi Ukwu.`;
+  b.hidden=false;
+}
+$("#hcbanner-x").addEventListener("click",()=>{try{localStorage.setItem("ft-hc-banner","off");}catch(e){}$("#hcbanner").hidden=true;});
+setInterval(()=>{paintBanner();const el=$("#hc-countbox");if(el&&view==="homecoming")el.innerHTML=countHtml();},30000);
+
+/* WhatsApp */
+const waIcon=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a9.9 9.9 0 0 0-8.5 15l-1.4 5 5.1-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 2.9 2.9 0 0 0-.9 2.2 5 5 0 0 0 1.1 2.7 11.4 11.4 0 0 0 4.4 3.9c1.6.7 2.3.8 3.1.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.2-.2-.4-.3z"/></svg>`;
+const waLink=text=>"https://wa.me/?text="+encodeURIComponent(text);
+const hcShareText=()=>"Umu Nwaogwugwu, come home! Homecoming 2026 runs from Wednesday 30 December to Saturday 2 January in Ezi Ukwu. See the programme, tell us you're coming, and find yourself on the family tree: "+SITE+"#homecoming";
+
+/* the page */
+function tagList(i){
+  const t=[];
+  if(i.give)t.push(`<li><b>Provided:</b> ${esc(i.give)}</li>`);
+  if(i.feat)t.push(`<li class="feat"><b>Featuring:</b> ${esc(i.feat)}</li>`);
+  if(i.wear)t.push(`<li class="wear"><b>Wear:</b> ${esc(i.wear)}</li>`);
+  return t.length?`<ul class="hc-tags">${t.join("")}</ul>`:"";
+}
+function goingTxt(k){const t=hc.totals[k];return t&&t.people?`<span class="hc-going">${t.people} coming</span>`:"";}
+function renderHC(){
+  const box=$("#hc-body");if(!box)return;
+  if(box.contains(document.activeElement)&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))return;
+  const all=hc.totals.all||{people:0,households:0};
+  let h=`<div class="hc-hero"><div class="hc-inner"><div>
+      <p class="hc-kicker">Homecoming 2026</p>
+      <h2 class="hc-title">Umu Nwaogwugwu, come home.</h2>
+      <p class="hc-when">Four days together, from <b>Wednesday 30 December 2026</b> to <b>Saturday 2 January 2027</b>, in Ezi Ukwu. All times are Nigerian time.</p>
+      <div id="hc-countbox">${countHtml()}</div>
+      <div class="hc-ctas">
+        <a class="hc-btn gold" href="#hc-reply" data-hc="jump">Tell us you’re coming</a>
+        <button class="hc-btn" data-hc="ics-all"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2zm-2 8h14v10H5z"/></svg>Add all to my calendar</button>
+        <a class="hc-btn hc-wa" href="${waLink(hcShareText())}" target="_blank" rel="noopener">${waIcon}Share on WhatsApp</a>
+      </div></div>
+      <img class="hc-crest" src="img/crest.webp" alt="" width="300" height="344">
+    </div></div>
+  <div class="hc-body">
+    <section aria-labelledby="hc-dress-h"><h3 class="hc-h" id="hc-dress-h">What to wear</h3>
+      <p class="hc-lede">Three outfits to pack for the four days.</p>
+      <ul class="hc-dress">
+        <li><span class="hc-sw sport" aria-hidden="true"></span><div><b>Sportswear and sneakers</b><span>Day 1 morning walk and aerobics</span></div></li>
+        <li><span class="hc-sw tee" aria-hidden="true"></span><div><b>Family T-shirt</b><span>Day 1 novelty match, for everyone not playing. Players get jerseys.</span></div></li>
+        <li><span class="hc-sw ankara" aria-hidden="true"></span><div><b>Family Ankara uniform</b><span>Day 2 get-together and the Day 4 thanksgiving service</span></div></li>
+      </ul></section>
+    <section aria-labelledby="hc-prog-h"><h3 class="hc-h" id="hc-prog-h">The programme</h3>
+      <p class="hc-lede">Save any event to your phone’s calendar with its <i>Add to calendar</i> link.</p>
+      <div class="hc-days">`+HC.days.map(d=>`<article class="hc-day${d.rest?" rest":""}">
+          <header class="hc-dayhead"><span class="hc-num" aria-hidden="true">${d.n}</span><div><h4>Day ${d.n}</h4><p>${d.label}</p></div></header>
+          <ul class="hc-ev">`+d.items.map(i=>i.rest
+            ?`<li class="rest"><span class="t">${esc(i.t)}</span><div><p class="ti">${esc(i.title)}</p></div></li>`
+            :`<li${i.star?' class="star"':""}><span class="t">${esc(i.t)}</span><div><p class="ti">${esc(i.title)}</p>${i.where?`<p class="wh">${esc(i.where)}</p>`:""}${tagList(i)}
+               <div class="hc-evfoot">${goingTxt(i.k)}<button class="linkish" data-hc="ics" data-k="${i.k}">Add to calendar</button></div></div></li>`).join("")+`</ul></article>`).join("")+`</div></section>
+    <section id="hc-reply" aria-labelledby="hc-reply-h"><h3 class="hc-h" id="hc-reply-h">Will you be there?</h3>
+      <p class="hc-lede">Let the organisers know who is coming and to which events, so there is enough food, water and jerseys for everyone.</p>
+      <div class="hc-rsvp"><div class="hc-card hc-form" id="hc-formbox">${rsvpHtml()}</div>
+        <div class="hc-card"><div class="hc-stat"><b>${all.people}</b><span>${all.people===1?"person has":"people have"} said they’re coming${all.households?`, from ${all.households} ${all.households===1?"reply":"replies"}`:""}</span></div>
+          <p class="byline" style="margin:0!important">Only the family tree admin sees names, phone numbers and notes. Everyone else sees these totals.</p></div></div></section>
+    <section aria-labelledby="hc-share-h"><h3 class="hc-h" id="hc-share-h">Spread the word</h3>
+      <p class="hc-lede">Share the programme on WhatsApp, or print the poster for the venue. Anyone who scans its code with a phone camera lands on the family tree.</p>
+      <div class="hc-share"><div>
+        <div class="row"><a class="solid hc-wa" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none" href="${waLink(hcShareText())}" target="_blank" rel="noopener">${waIcon.replace('<svg ','<svg width="18" height="18" fill="currentColor" ')}Share the programme on WhatsApp</a></div>
+        <div class="row"><button class="ghost" data-hc="qr-png">Download the poster (PNG)</button><button class="ghost" data-hc="qr-svg">For a print shop (SVG)</button></div>
+        <p class="status" id="hc-qrstatus" aria-live="polite"></p></div>
+        <div class="hc-poster" id="hc-poster" aria-label="Poster with a QR code to the family tree"></div></div></section>
+    ${cloud.isAdmin?`<section class="hc-admin" aria-labelledby="hc-admin-h"><h3 class="hc-h" id="hc-admin-h">Replies so far</h3>${adminRsvpHtml()}</section>`:""}
+  </div>`;
+  box.innerHTML=h;
+  const p=qrPoster();$("#hc-poster").innerHTML=p?p.svg:`<p style="padding:16px">The poster appears once the page has finished loading.</p>`;
+}
+function evChecks(sel){
+  return `<div class="hc-evchk">`+HC_EVENTS.map(e=>`<label><input type="checkbox" name="ev" value="${e.k}"${sel.includes(e.k)?" checked":""}><span>${esc(e.title.replace(/^Umu Nwaogwugwu Family Homecoming /,"Family "))} <span class="mmuted">(Day ${e.day.n})</span></span></label>`).join("")+`</div>`;
+}
+function rsvpHtml(){
+  if(!sb)return `<p>Replies cannot be sent right now. Try again later.</p>`;
+  if(cloud.status==="loading")return `<p>Loading…</p>`;
+  if(!cloud.me){
+    if(cloud.sent)return `<h4>Check your email</h4><p>We sent a sign-in link to <b>${esc(cloud.sent)}</b>. Open it on this device and you’ll come straight back here to reply.</p><p><button class="linkish" data-hc="again">Use a different email address</button></p>`;
+    return `<h4>Sign in to reply</h4><p>Signing in takes a minute and needs no password, so your reply stays yours to change later.</p>
+      ${cloud.google?`<button class="solid" data-hc="google" style="width:100%;margin:4px 0 12px">Continue with Google</button>`:""}
+      <div class="field"><label class="l" for="hc-email">Your email address</label><input id="hc-email" type="email" autocomplete="email" inputmode="email" maxlength="200"></div>
+      <button class="${cloud.google?"ghost":"solid"}" data-hc="email">Email me a sign-in link</button><p class="status" id="hc-status" aria-live="polite"></p>`;
+  }
+  const m=hc.mine;
+  if(m&&!hc.editing){
+    const n=m.adults+m.children,evs=(m.events||[]).map(k=>hcEv(k)).filter(Boolean);
+    return `<div class="hc-done" style="padding-left:14px">`+(m.coming
+      ?`<p class="big">You’re coming${n>1?` with ${n} people`:""}. See you in Ezi Ukwu!</p><p>${evs.length?"Events: "+evs.map(e=>esc(e.title)).join(", ")+".":"No events chosen yet."}</p>`
+      :`<p class="big">Thank you for letting us know.</p><p>You’ve said you can’t make it this time. You can change that any time.</p>`)+
+      `<div class="row"><button class="ghost small" data-hc="edit">Change my reply</button>${m.coming&&evs.length?`<button class="linkish" data-hc="ics-mine">Add my events to my calendar</button>`:""}</div></div>`;
+  }
+  const name=m?m.name:(cloud.names[cloud.me]||"");
+  const sel=m&&m.coming&&(m.events||[]).length?m.events:HC_EVENTS.map(e=>e.k);
+  const rel=hc.rel!==null?hc.rel:(m&&m.related_to)||"";const relE=rel&&getAny(rel);
+  return `<h4>${m?"Change your reply":"Your reply"}</h4>
+    <div class="field"><label class="l" for="hc-name">Your name</label><input type="text" id="hc-name" maxlength="80" autocomplete="name" value="${esc(name)}"></div>
+    <fieldset><legend>Are you coming?</legend><div class="hc-choice">
+      <label><input type="radio" name="coming" value="yes"${!m||m.coming?" checked":""}>Yes, I’m coming</label>
+      <label><input type="radio" name="coming" value="no"${m&&!m.coming?" checked":""}>Sorry, I can’t make it</label></div></fieldset>
+    <div class="hc-two"><div class="field"><label class="l" for="hc-ad">Adults, including you</label><input type="number" id="hc-ad" min="0" max="30" value="${m?m.adults:1}"></div>
+      <div class="field"><label class="l" for="hc-ch">Children</label><input type="number" id="hc-ch" min="0" max="30" value="${m?m.children:0}"></div></div>
+    <fieldset><legend>Which events?</legend>${evChecks(sel)}</fieldset>
+    <div class="field hc-pick"><label class="l" for="hc-rel">Who are you on the family tree? <span class="mmuted">(optional)</span></label>
+      <input type="text" id="hc-rel" autocomplete="off" placeholder="Type your name or a parent’s name" value="${esc(relE?relE.name:"")}"><ul class="results" id="hc-relres" hidden></ul></div>
+    <div class="field"><label class="l" for="hc-ph">Phone or WhatsApp number <span class="mmuted">(optional, for the organisers)</span></label><input type="tel" id="hc-ph" maxlength="40" autocomplete="tel" value="${esc(m&&m.phone||"")}"></div>
+    <div class="field"><label class="l" for="hc-note">Anything the organisers should know? <span class="mmuted">(optional)</span></label><textarea id="hc-note" maxlength="300">${esc(m&&m.note||"")}</textarea></div>
+    <div class="row"><button class="solid" data-hc="save">Send my reply</button>${m?`<button class="ghost" data-hc="cancel">Cancel</button>`:""}</div><p class="status" id="hc-status" aria-live="polite"></p>`;
+}
+function adminRsvpHtml(){
+  const rows=hc.all;
+  if(!rows.length)return `<p>No replies yet.</p>`;
+  const short=k=>({walk:"Walk",aerobics:"Aerobics",match:"Match",youth:"Youth",medicals:"Medicals",gathering:"Get-together",thanksgiving:"Thanksgiving"}[k]||k);
+  return `<div class="row"><button class="ghost small" data-hc="csv">Download replies (CSV)</button></div><div class="wrap"><table><thead><tr><th>Name</th><th>Coming</th><th>Adults</th><th>Children</th><th>Events</th><th>On the tree</th><th>Phone</th><th>Note</th><th>Replied</th></tr></thead><tbody>`+
+    rows.map(r=>{const e=r.related_to&&getAny(r.related_to);return `<tr><td><b>${esc(r.name)}</b></td><td>${r.coming?"Yes":"No"}</td><td>${r.adults}</td><td>${r.children}</td><td>${(r.events||[]).map(short).join(", ")}</td><td>${e?btn(e):""}</td><td>${esc(r.phone||"")}</td><td>${esc(r.note||"")}</td><td>${esc(whenTime(r.updated_at))}</td></tr>`;}).join("")+`</tbody></table></div>`;
+}
+function rsvpCsv(){
+  const q=v=>{const s=String(v==null?"":v);return /[",\n]/.test(s)?`"${s.replace(/"/g,'""')}"`:s;};
+  const head=["Name","Coming","Adults","Children",...HC_EVENTS.map(e=>e.title),"On the tree","Phone","Note","Replied"];
+  const lines=[head.map(q).join(",")].concat(hc.all.map(r=>{const e=r.related_to&&getAny(r.related_to);
+    return [r.name,r.coming?"Yes":"No",r.adults,r.children,...HC_EVENTS.map(ev=>(r.events||[]).includes(ev.k)?"Yes":""),e?e.name:"",r.phone||"",r.note||"",new Date(r.updated_at).toISOString()].map(q).join(",");}));
+  return "\ufeff"+lines.join("\r\n");
+}
+async function loadRsvp(){
+  if(!sb)return;
+  try{
+    const t=(await sb.rpc("rsvp_totals")).data||[];
+    hc.totals=Object.fromEntries(t.map(r=>[r.event,{people:+r.people,households:+r.households}]));
+    if(cloud.me){const {data}=await sb.from("rsvps").select("*").eq("user_id",cloud.me).maybeSingle();hc.mine=data||null;}else hc.mine=undefined;
+    hc.all=cloud.isAdmin?((await sb.from("rsvps").select("*").order("updated_at",{ascending:false}).limit(1000)).data||[]):[];
+    hc.loaded=true;
+  }catch(e){}
+}
+const hcStatus=(t,bad)=>{const s=$("#hc-status");if(s){s.textContent=t;s.classList.toggle("bad",!!bad);}};
+async function saveRsvp(b){
+  const name=$("#hc-name").value.trim();
+  if(!name){hcStatus("Enter your name.",true);return;}
+  const coming=document.querySelector('#hc-formbox input[name="coming"]:checked').value==="yes";
+  const num=(id,d)=>{const v=parseInt($(id).value,10);return Number.isFinite(v)?Math.min(30,Math.max(0,v)):d;};
+  const adults=num("#hc-ad",1),children=num("#hc-ch",0);
+  const events=[...document.querySelectorAll('#hc-formbox input[name="ev"]:checked')].map(i=>i.value);
+  if(coming&&adults+children===0){hcStatus("Add at least one adult or child, or choose “Sorry, I can’t make it”.",true);return;}
+  if(coming&&!events.length){hcStatus("Tick at least one event you plan to attend.",true);return;}
+  const relTxt=$("#hc-rel").value.trim(),relE=hc.rel&&getAny(hc.rel);
+  const row={user_id:cloud.me,name:name.slice(0,80),coming,adults,children,events:coming?events:[],
+    phone:$("#hc-ph").value.trim().slice(0,40)||null,note:$("#hc-note").value.trim().slice(0,300)||null,
+    related_to:relTxt&&relE&&relE.name===relTxt?relE.id:(relTxt&&hc.mine&&hc.mine.related_to&&getAny(hc.mine.related_to)&&getAny(hc.mine.related_to).name===relTxt?hc.mine.related_to:null)};
+  b.disabled=true;hcStatus("Sending…");
+  try{
+    chk(await sb.from("rsvps").upsert(row,{onConflict:"user_id"}));
+    hc.editing=false;hc.rel=null;await loadRsvp();renderHC();
+    const f=$("#hc-formbox");if(f)f.scrollIntoView({block:"center",behavior:reduce?"auto":"smooth"});
+  }catch(e){b.disabled=false;hcStatus(errText(e),true);}
+}
+async function hcEmail(b){
+  const em=$("#hc-email").value.trim();
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){hcStatus("Enter your email address, for example name@example.com.",true);return;}
+  b.disabled=true;hcStatus("Sending…");
+  try{
+    try{sessionStorage.setItem("ft-after-signin","homecoming");}catch(e){}
+    chk(await sb.auth.signInWithOtp({email:em,options:{emailRedirectTo:here(),shouldCreateUser:true}}));
+    cloud.sent=em;renderHC();
+  }catch(e){b.disabled=false;hcStatus(errText(e),true);}
+}
+$("#hc-body").addEventListener("click",async ev=>{
+  const g=ev.target.closest("[data-go]");if(g&&g.closest(".hc-admin")){select(g.dataset.go);return;}
+  const b=ev.target.closest("[data-hc]");if(!b)return;
+  switch(b.dataset.hc){
+    case "jump":ev.preventDefault();$("#hc-reply").scrollIntoView({behavior:reduce?"auto":"smooth"});{const f=$("#hc-name")||$("#hc-email");if(f)setTimeout(()=>f.focus({preventScroll:true}),400);}break;
+    case "ics-all":saveIcs(HC_EVENTS,"homecoming-2026.ics");break;
+    case "ics":saveIcs([hcEv(b.dataset.k)],"homecoming-"+b.dataset.k+".ics");break;
+    case "ics-mine":saveIcs((hc.mine.events||[]).map(hcEv).filter(Boolean),"my-homecoming-2026.ics");break;
+    case "email":hcEmail(b);break;
+    case "again":cloud.sent="";renderHC();break;
+    case "google":try{sessionStorage.setItem("ft-after-signin","homecoming");}catch(e){}
+      try{chk(await sb.auth.signInWithOAuth({provider:"google",options:{redirectTo:here()}}));}catch(e){hcStatus(errText(e),true);}break;
+    case "edit":hc.editing=true;renderHC();{const f=$("#hc-formbox");if(f)f.scrollIntoView({block:"start",behavior:reduce?"auto":"smooth"});}break;
+    case "cancel":hc.editing=false;hc.rel=null;renderHC();break;
+    case "save":saveRsvp(b);break;
+    case "csv":giveFile("homecoming-2026-replies.csv",new Blob([rsvpCsv()],{type:"text/csv"}));break;
+    case "qr-svg":case "qr-png":qrDownload(b.dataset.hc==="qr-png"?"png":"svg");break;
+  }
+});
+$("#hc-body").addEventListener("keydown",ev=>{if(ev.key==="Enter"&&ev.target.id==="hc-email"){ev.preventDefault();hcEmail(document.querySelector('[data-hc="email"]'));}});
+/* "who are you on the tree" picker */
+let hcItems=[];
+$("#hc-body").addEventListener("input",ev=>{
+  if(ev.target.id!=="hc-rel")return;
+  const ul=$("#hc-relres"),q=ev.target.value.trim();hc.rel="";
+  if(!q){ul.hidden=true;return;}
+  hcItems=search(q).slice(0,8);
+  ul.innerHTML=hcItems.length?hcItems.map((e,i)=>`<li data-i="${i}"><span class="dot" style="--bc:${bcol(e.branch)}"></span><span><span class="nm">${esc(e.name)}</span><span class="sub">${esc(shortRel(e))}</span></span></li>`).join(""):`<li class="none">No one by that name yet. You can leave this empty.</li>`;
+  ul.hidden=false;
+});
+$("#hc-body").addEventListener("mousedown",ev=>{if(ev.target.closest("#hc-relres"))ev.preventDefault();});
+$("#hc-body").addEventListener("click",ev=>{
+  const li=ev.target.closest("#hc-relres li[data-i]");if(!li)return;
+  const e=hcItems[+li.dataset.i];hc.rel=e.id;$("#hc-rel").value=e.name;$("#hc-relres").hidden=true;
+});
+$("#hc-body").addEventListener("focusout",ev=>{if(ev.target.id==="hc-rel")setTimeout(()=>{const u=$("#hc-relres");if(u)u.hidden=true;},150);});
+
+/* QR poster */
+function qrPoster(){
+  if(typeof qrcode!=="function")return null;
+  const q=qrcode(0,"M");q.addData(SITE);q.make();
+  const n=q.getModuleCount(),W=1240,H=1754,qs=640,cell=qs/(n+8),qx=(W-qs)/2,qy=640;
+  const NAVY="#161B36",GOLD="#E4B555",CREAM="#FBF3E4",RED="#C0473A",GREEN="#5E9447";
+  const SERIF="Georgia,'Times New Roman',serif",SANS="Helvetica,Arial,sans-serif";
+  let mods="";
+  for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(q.isDark(r,c))mods+=`M${(qx+(c+4)*cell).toFixed(2)} ${(qy+(r+4)*cell).toFixed(2)}h${cell.toFixed(2)}v${cell.toFixed(2)}h-${cell.toFixed(2)}z`;
+  let band="";for(let x=0;x<W;x+=96)band+=`<path d="M${x} 48 ${x+24} 0 ${x+48} 48z" fill="${GOLD}"/><path d="M${x+48} 48 ${x+72} 0 ${x+96} 48z" fill="${RED}"/><path d="M${x+24} 0h48L${x+48} 48z" fill="${GREEN}"/><circle cx="${x+48}" cy="16" r="5" fill="${CREAM}"/>`;
+  const crest=(typeof CREST_DATA==="string"&&CREST_DATA)||"img/crest.webp";
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">
+<rect width="${W}" height="${H}" fill="${CREAM}"/>
+<rect width="${W}" height="560" fill="${NAVY}"/>
+<g>${band}</g><g transform="translate(0 512)">${band}</g>
+<image href="${crest}" xlink:href="${crest}" x="${W/2-95}" y="84" width="190" height="218"/>
+<text x="${W/2}" y="372" text-anchor="middle" font-family="${SERIF}" font-weight="bold" font-size="40" fill="${GOLD}">Homecoming 2026</text>
+<text x="${W/2}" y="450" text-anchor="middle" font-family="${SERIF}" font-weight="bold" font-size="66" fill="${CREAM}">Find your place in the family</text>
+<rect x="${qx}" y="${qy}" width="${qs}" height="${qs}" rx="28" fill="#FFFFFF" stroke="${NAVY}" stroke-width="6"/>
+<path d="${mods}" fill="${NAVY}"/>
+<text x="${W/2}" y="${qy+qs+80}" text-anchor="middle" font-family="${SANS}" font-weight="bold" font-size="44" fill="${NAVY}">Scan with your phone camera</text>
+<text x="${W/2}" y="${qy+qs+138}" text-anchor="middle" font-family="${SANS}" font-size="32" fill="#4A4F68">to explore the Nwaogwugwu family tree and the programme</text>
+<text x="${W/2}" y="${qy+qs+196}" text-anchor="middle" font-family="${SANS}" font-size="30" fill="${RED}">${SITE.replace(/^https:\/\//,"").replace(/\/$/,"")}</text>
+<g transform="translate(0 ${H-96})">${band}</g>
+<rect y="${H-48}" width="${W}" height="48" fill="${NAVY}"/>
+<text x="${W/2}" y="${H-120}" text-anchor="middle" font-family="${SERIF}" font-size="30" fill="${NAVY}">30 December 2026 to 2 January 2027, Ezi Ukwu</text>
+</svg>`;
+  return {svg,w:W,h:H};
+}
+async function qrDownload(kind){
+  const p=qrPoster(),st=$("#hc-qrstatus");if(!p){st.textContent="The QR code tool did not load. Reload the page and try again.";return;}
+  if(kind==="svg"){giveFile("homecoming-2026-qr-poster.svg",new Blob([p.svg],{type:"image/svg+xml"}));return;}
+  try{
+    st.textContent="Preparing the poster…";
+    const im=new Image();
+    await new Promise((res,rej)=>{im.onload=res;im.onerror=rej;im.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(p.svg);});
+    const c=document.createElement("canvas");c.width=p.w*2;c.height=p.h*2;c.getContext("2d").drawImage(im,0,0,c.width,c.height);
+    const blob=await new Promise(r=>c.toBlob(r,"image/png"));if(!blob)throw 0;
+    giveFile("homecoming-2026-qr-poster.png",blob);st.textContent="";
+  }catch(e){st.textContent="The picture could not be made in this browser. Try the SVG download instead.";}
+}
 
 /* ================= controls + routing ================= */
 document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>{
